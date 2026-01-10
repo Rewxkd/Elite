@@ -7,34 +7,34 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <aside class="sidebar" id="sidebar" aria-hidden="true">
-        <button class="sidebar__toggle" id="sidebarToggle" aria-label="Toggle navigation" aria-expanded="false">☰</button>
-        <nav class="sidebar__nav">
-            <a href="#" class="nav__item"><span class="nav__icon">⁉️</span><span class="nav__text">...</span></a>
-            <a href="#" class="nav__item"><span class="nav__icon">⁉️</span><span class="nav__text">...</span></a>
-            <a href="#" class="nav__item"><span class="nav__icon">⁉️</span><span class="nav__text">...</span></a>
+    <aside class="side" id="side" aria-hidden="true">
+        <button class="toggle" id="toggle" aria-label="Toggle navigation" aria-expanded="false">☰</button>
+        <nav class="nav">
+            <a href="#" class="item"><span class="icon">⁉️</span><span class="text">...</span></a>
+            <a href="#" class="item"><span class="icon">⁉️</span><span class="text">...</span></a>
+            <a href="#" class="item"><span class="icon">⁉️</span><span class="text">...</span></a>
         </nav>
     </aside>
 
-    <header class="header">
-        <div class="header__container">
-            <div class="header__logo">
-                <span class="logo-icon">◆</span>
-                <span class="logo-text">Brand</span>
+    <header class="hdr">
+        <div class="hdr-box">
+            <div class="logo">
+                <span class="logo-sym">◆</span>
+                <span class="logo-txt">Brand</span>
             </div>
-            <div class="header__balance">
-                <span class="balance-amount">$0.00</span>
+            <div class="bal">
+                <span class="bal-amt">$0.00</span>
             </div>
-            <div class="header__actions">
-                <button class="btn btn--icon" id="searchBtn" aria-label="Search">
+            <div class="acts">
+                <button class="btn icon" id="search" aria-label="Search">
                     <span>🔍</span>
                 </button>
-                <div class="header__profile-group" role="group" aria-label="Profile and notifications">
-                    <button class="btn btn--icon btn--notif" id="notifBtn" aria-label="Notifications" aria-expanded="false">
+                <div class="group" role="group" aria-label="Profile and notifications">
+                    <button class="btn icon notif" id="notif" aria-label="Notifications" aria-expanded="false">
                         <span>🔔</span>
-                        <span class="icon-badge" id="notifBadge">3</span>
+                        <span class="badge" id="badge">3</span>
                     </button>
-                    <button class="btn btn--icon" id="profileBtn" aria-label="Profile" aria-expanded="false">
+                    <button class="btn icon" id="prof" aria-label="Profile" aria-expanded="false">
                         <span>👤</span>
                     </button>
                 </div>
@@ -42,20 +42,20 @@
         </div>
     </header>
 
-    <main class="main">
-        <div class="main__container">
+    <main class="cnt">
+        <div class="cnt-box">
         </div>
     </main>
 
-    <div class="panel profile-menu" id="profileMenu" aria-hidden="true">
+    <div class="pnl prof-menu" id="profMenu" aria-hidden="true">
         <a href="#">My account</a>
         <a href="#">Settings</a>
         <a href="#">Sign out</a>
     </div>
 
-    <div class="panel notifications-panel" id="notificationsPanel" aria-hidden="true">
-        <div class="panel__header">Notifications</div>
-        <ul class="notifications-list">
+    <div class="pnl notif-pnl" id="notifPnl" aria-hidden="true">
+        <div class="pnl-hdr">Notifications</div>
+        <ul class="lst">
             <li>New message from Alice</li>
             <li>Server backup completed</li>
             <li>Password change required</li>
@@ -64,18 +64,18 @@
 
     <script>
         (function(){
-            const btn = document.getElementById('sidebarToggle');
-            const sidebar = document.getElementById('sidebar');
+            const btn = document.getElementById('toggle');
+            const sidebar = document.getElementById('side');
             btn.addEventListener('click', function(){
-                const isOpen = document.body.classList.toggle('sidebar-open');
+                const isOpen = document.body.classList.toggle('open');
                 sidebar.setAttribute('aria-hidden', (!isOpen).toString());
                 btn.setAttribute('aria-expanded', isOpen.toString());
             });
-            const profileBtn = document.getElementById('profileBtn');
-            const notifBtn = document.getElementById('notifBtn');
-            const profileMenu = document.getElementById('profileMenu');
-            const notificationsPanel = document.getElementById('notificationsPanel');
-            const notifBadge = document.getElementById('notifBadge');
+            const profileBtn = document.getElementById('prof');
+            const notifBtn = document.getElementById('notif');
+            const profileMenu = document.getElementById('profMenu');
+            const notificationsPanel = document.getElementById('notifPnl');
+            const notifBadge = document.getElementById('badge');
 
             function closeAllPanels() {
                 profileMenu.setAttribute('aria-hidden', 'true');

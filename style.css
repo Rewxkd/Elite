@@ -17,7 +17,7 @@ body {
 }
 
 /* Header Styles */
-.header {
+.hdr {
     background: linear-gradient(180deg, #1a1a1a 0%, #121212 100%);
     border-bottom: 1px solid rgba(255, 255, 255, 0.08);
     padding: 1.25rem 0;
@@ -27,7 +27,7 @@ body {
     box-shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
 }
 
-.header__container {
+.hdr-box {
     max-width: 1400px;
     margin: 0 auto;
     padding: 0 2rem;
@@ -39,7 +39,7 @@ body {
 }
 
 /* Logo */
-.header__logo {
+.logo {
     display: flex;
     align-items: center;
     gap: 0.75rem;
@@ -50,16 +50,16 @@ body {
     transition: opacity 0.2s ease;
 }
 
-.header__logo:hover {
+.logo:hover {
     opacity: 0.8;
 }
 
-.logo-icon {
+.logo-sym {
     font-size: 1.5rem;
     color: #6366f1;
 }
 
-.logo-text {
+.logo-txt {
     background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
@@ -67,7 +67,7 @@ body {
 }
 
 /* Balance */
-.header__balance {
+.bal {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -85,12 +85,12 @@ body {
     white-space: nowrap;
 }
 
-.header__balance:hover {
+.bal:hover {
     background: rgba(99, 102, 241, 0.1);
     border-color: rgba(99, 102, 241, 0.4);
 }
 
-.balance-label {
+.bal-lbl {
     font-size: 0.75rem;
     text-transform: uppercase;
     letter-spacing: 1px;
@@ -98,14 +98,14 @@ body {
     font-weight: 600;
 }
 
-.balance-amount {
+.bal-amt {
     font-size: 1.2rem;
     font-weight: 700;
     color: #6366f1;
 }
 
 /* Actions */
-.header__actions {
+.acts {
     display: flex;
     align-items: center;
     gap: 0.5rem;
@@ -113,7 +113,7 @@ body {
 }
 
 /* Group profile and notifications visually */
-.header__profile-group {
+.group {
     display: inline-flex;
     align-items: center;
     background: rgba(255,255,255,0.03);
@@ -122,21 +122,21 @@ body {
     overflow: hidden;
 }
 
-.header__profile-group .btn--icon {
+.group .btn.icon {
     padding: 0.55rem 0.9rem;
     border-radius: 0;
     background: transparent;
     border: none;
 }
 
-.header__profile-group .btn--icon:hover { background: rgba(255,255,255,0.04); }
+.group .btn.icon:hover { background: rgba(255,255,255,0.04); }
 
-.header__profile-group .btn--notif { border-right: 1px solid rgba(255,255,255,0.03); position: relative; }
+.group .btn.notif { border-right: 1px solid rgba(255,255,255,0.03); position: relative; }
 
-.header__profile-group .icon-badge { top: 6px; right: 8px; }
+.group .badge { top: 6px; right: 8px; }
 
 /* Make the standalone search button visually match the profile group */
-#searchBtn {
+#search {
     background: rgba(255,255,255,0.03);
     border: 1px solid rgba(255,255,255,0.06);
     border-radius: 12px;
@@ -147,7 +147,7 @@ body {
     justify-content: center;
 }
 
-#searchBtn:hover { background: rgba(255,255,255,0.04); transform: translateY(-2px); }
+#search:hover { background: rgba(255,255,255,0.04); transform: translateY(-2px); }
 
 /* Button Styles */
 .btn {
@@ -176,15 +176,15 @@ body {
     background: rgba(255, 255, 255, 0.15);
 }
 
-.btn--icon {
+.btn.icon {
     padding: 0.75rem;
     border-radius: 8px;
     font-size: 1.125rem;
 }
 
 /* Notification badge */
-.btn--notif { position: relative; }
-.icon-badge {
+.btn.notif { position: relative; }
+.badge {
     position: absolute;
     top: 6px;
     right: 6px;
@@ -197,7 +197,7 @@ body {
 }
 
 /* Floating panels (profile menu, notifications) */
-.panel {
+.pnl {
     position: absolute;
     top: 64px; /* below header */
     right: 2rem;
@@ -212,17 +212,17 @@ body {
     z-index: 1300;
 }
 
-.panel a { display: block; padding: 0.5rem; color: inherit; text-decoration: none; border-radius: 8px; }
-.panel a:hover { background: rgba(255,255,255,0.03); }
-.panel__header { font-weight: 700; padding: 0.5rem 0.5rem 0.25rem; }
-.notifications-list { list-style: none; padding: 0.25rem 0.5rem; margin: 0; }
-.notifications-list li { padding: 0.4rem 0; border-bottom: 1px dashed rgba(255,255,255,0.03); }
+.pnl a { display: block; padding: 0.5rem; color: inherit; text-decoration: none; border-radius: 8px; }
+.pnl a:hover { background: rgba(255,255,255,0.03); }
+.pnl-hdr { font-weight: 700; padding: 0.5rem 0.5rem 0.25rem; }
+.lst { list-style: none; padding: 0.25rem 0.5rem; margin: 0; }
+.lst li { padding: 0.4rem 0; border-bottom: 1px dashed rgba(255,255,255,0.03); }
 
 /* When visible, show panels */
-.panel[aria-hidden="false"] { display: block; }
+.pnl[aria-hidden="false"] { display: block; }
 
 /* Sidebar */
-.sidebar {
+.side {
     position: fixed;
     left: 0;
     top: 0;
@@ -241,7 +241,7 @@ body {
     box-shadow: 0 8px 24px rgba(2,6,23,0.6);
 }
 
-.sidebar__toggle {
+.toggle {
     /* consistent button appearance with header */
     background: rgba(255, 255, 255, 0.04);
     border: 1px solid rgba(255, 255, 255, 0.06);
@@ -256,9 +256,9 @@ body {
     transition: transform 0.12s ease, background 0.12s ease;
 }
 
-.sidebar__toggle:hover { transform: translateY(-2px); background: rgba(255,255,255,0.06); }
+.toggle:hover { transform: translateY(-2px); background: rgba(255,255,255,0.06); }
 
-.sidebar__nav {
+.nav {
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
@@ -267,7 +267,7 @@ body {
     margin-top: 0.5rem;
 }
 
-.nav__item {
+.item {
     display: flex;
     align-items: center;
     gap: 0.75rem;
@@ -278,24 +278,24 @@ body {
     transition: background 0.15s ease, color 0.15s ease, transform 0.12s ease;
 }
 
-.nav__item:hover {
+.item:hover {
     background: rgba(99, 102, 241, 0.12);
     color: #ffffff;
     transform: translateX(4px);
 }
 
-.nav__icon { font-size: 1.125rem; color: #6366f1; }
-.nav__text { display: none; font-weight: 600; }
+.icon { font-size: 1.125rem; color: #6366f1; }
+.text { display: none; font-weight: 600; }
 
 /* Expanded state */
-body.sidebar-open .sidebar {
+body.open .side {
     width: 220px;
 }
 
-body.sidebar-open .nav__text { display: inline-block; }
+body.open .text { display: inline-block; }
 
 /* Overlay behavior: do not shift header/main; sidebar sits above header */
 /* Header stays at its natural position; sidebar overlays it because of z-index */
 
 /* Ensure header aligns with shifted layout */
-.main { padding: 2rem; }
+.cnt { padding: 2rem; }
