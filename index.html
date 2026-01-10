@@ -44,11 +44,9 @@
 
     <main class="main">
         <div class="main__container">
-            <!-- Page content placeholder -->
         </div>
     </main>
 
-    <!-- Floating panels -->
     <div class="panel profile-menu" id="profileMenu" aria-hidden="true">
         <a href="#">My account</a>
         <a href="#">Settings</a>
@@ -73,7 +71,6 @@
                 sidebar.setAttribute('aria-hidden', (!isOpen).toString());
                 btn.setAttribute('aria-expanded', isOpen.toString());
             });
-            // Profile and notification panel toggles
             const profileBtn = document.getElementById('profileBtn');
             const notifBtn = document.getElementById('notifBtn');
             const profileMenu = document.getElementById('profileMenu');
@@ -100,14 +97,11 @@
                 closeAllPanels();
                 notificationsPanel.setAttribute('aria-hidden', (!open).toString());
                 notifBtn.setAttribute('aria-expanded', open.toString());
-                // clear badge when opening
                 if (open) { notifBadge.style.display = 'none'; }
                 e.stopPropagation();
             });
 
-            // Close panels when clicking outside
             document.addEventListener('click', function(){ closeAllPanels(); });
-            // Prevent clicks inside panels from closing
             profileMenu.addEventListener('click', function(e){ e.stopPropagation(); });
             notificationsPanel.addEventListener('click', function(e){ e.stopPropagation(); });
         })();
