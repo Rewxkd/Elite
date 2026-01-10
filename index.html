@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modern App</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <aside class="sidebar" id="sidebar" aria-hidden="true">
+        <button class="sidebar__toggle" id="sidebarToggle" aria-label="Toggle navigation" aria-expanded="false">☰</button>
+        <nav class="sidebar__nav">
+            <a href="#" class="nav__item"><span class="nav__icon">⁉️</span><span class="nav__text">...</span></a>
+            <a href="#" class="nav__item"><span class="nav__icon">⁉️</span><span class="nav__text">...</span></a>
+            <a href="#" class="nav__item"><span class="nav__icon">⁉️</span><span class="nav__text">...</span></a>
+        </nav>
+    </aside>
+
+    <header class="header">
+        <div class="header__container">
+            <div class="header__logo">
+                <span class="logo-icon">◆</span>
+                <span class="logo-text">Brand</span>
+            </div>
+            <div class="header__balance">
+                <span class="balance-amount">$0.00</span>
+            </div>
+            <div class="header__actions">
+                <button class="btn btn--icon" id="searchBtn" aria-label="Search">
+                    <span>🔍</span>
+                </button>
+                <div class="header__profile-group" role="group" aria-label="Profile and notifications">
+                    <button class="btn btn--icon btn--notif" id="notifBtn" aria-label="Notifications" aria-expanded="false">
+                        <span>🔔</span>
+                        <span class="icon-badge" id="notifBadge">3</span>
+                    </button>
+                    <button class="btn btn--icon" id="profileBtn" aria-label="Profile" aria-expanded="false">
+                        <span>👤</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="main">
+        <div class="main__container">
+            <!-- Page content placeholder -->
+        </div>
+    </main>
+
+    <!-- Floating panels -->
+    <div class="panel profile-menu" id="profileMenu" aria-hidden="true">
+        <a href="#">My account</a>
+        <a href="#">Settings</a>
+        <a href="#">Sign out</a>
+    </div>
+
+    <div class="panel notifications-panel" id="notificationsPanel" aria-hidden="true">
+        <div class="panel__header">Notifications</div>
+        <ul class="notifications-list">
+            <li>New message from Alice</li>
+            <li>Server backup completed</li>
+            <li>Password change required</li>
+        </ul>
+    </div>
+
+    <script>
+        (function(){
+            const btn = document.getElementById('sidebarToggle');
+            const sidebar = document.getElementById('sidebar');
+            btn.addEventListener('click', function(){
+                const isOpen = document.body.classList.toggle('sidebar-open');
+                sidebar.setAttribute('aria-hidden', (!isOpen).toString());
+                btn.setAttribute('aria-expanded', isOpen.toString());
+            });
+            // Profile and notification panel toggles
+            const profileBtn = document.getElementById('profileBtn');
+            const notifBtn = document.getElementById('notifBtn');
+            const profileMenu = document.getElementById('profileMenu');
+            const notificationsPanel = document.getElementById('notificationsPanel');
+            const notifBadge = document.getElementById('notifBadge');
+
+            function closeAllPanels() {
+                profileMenu.setAttribute('aria-hidden', 'true');
+                profileBtn.setAttribute('aria-expanded', 'false');
+                notificationsPanel.setAttribute('aria-hidden', 'true');
+                notifBtn.setAttribute('aria-expanded', 'false');
+            }
+
+            profileBtn.addEventListener('click', function(e){
+                const open = profileMenu.getAttribute('aria-hidden') === 'true';
+                closeAllPanels();
+                profileMenu.setAttribute('aria-hidden', (!open).toString());
+                profileBtn.setAttribute('aria-expanded', open.toString());
+                e.stopPropagation();
+            });
+
+            notifBtn.addEventListener('click', function(e){
+                const open = notificationsPanel.getAttribute('aria-hidden') === 'true';
+                closeAllPanels();
+                notificationsPanel.setAttribute('aria-hidden', (!open).toString());
+                notifBtn.setAttribute('aria-expanded', open.toString());
+                // clear badge when opening
+                if (open) { notifBadge.style.display = 'none'; }
+                e.stopPropagation();
+            });
+
+            // Close panels when clicking outside
+            document.addEventListener('click', function(){ closeAllPanels(); });
+            // Prevent clicks inside panels from closing
+            profileMenu.addEventListener('click', function(e){ e.stopPropagation(); });
+            notificationsPanel.addEventListener('click', function(e){ e.stopPropagation(); });
+        })();
+    </script>
+</body>
+</html>
