@@ -19,8 +19,7 @@
     <header class="hdr">
         <div class="hdr-box">
             <div class="logo">
-                <span class="logo-sym">Elite</span>
-                <span class="logo-txt">Logo</span>
+                <span class="logo-txt"><img src="Elite-logo.png" alt=""></span>
             </div>
             <div class="bal">
                 <span class="bal-amt">$0.00</span>
@@ -51,43 +50,23 @@
         (function(){
             const btn = document.getElementById('toggle');
             const sidebar = document.getElementById('side');
-            btn.addEventListener('click', function(){
+            if (btn) btn.addEventListener('click', function(){
                 const isOpen = document.body.classList.toggle('open');
-                sidebar.setAttribute('aria-hidden', (!isOpen).toString());
+                if (sidebar) sidebar.setAttribute('aria-hidden', (!isOpen).toString());
                 btn.setAttribute('aria-expanded', isOpen.toString());
             });
+
             const profileBtn = document.getElementById('prof');
             const notifBtn = document.getElementById('notif');
-            const profileMenu = document.getElementById('profMenu');
             const notificationsPanel = document.getElementById('notifPnl');
             const notifBadge = document.getElementById('badge');
 
             function closeAllPanels() {
-                profileMenu.setAttribute('aria-hidden', 'true');
-                profileBtn.setAttribute('aria-expanded', 'false');
-                notificationsPanel.setAttribute('aria-hidden', 'true');
-                notifBtn.setAttribute('aria-expanded', 'false');
+                if (notificationsPanel) notificationsPanel.setAttribute('aria-hidden', 'true');
+                if (notifBtn) notifBtn.setAttribute('aria-expanded', 'false');
             }
 
-            profileBtn.addEventListener('click', function(e){
-                const open = profileMenu.getAttribute('aria-hidden') === 'true';
-                closeAllPanels();
-                profileMenu.setAttribute('aria-hidden', (!open).toString());
-                profileBtn.setAttribute('aria-expanded', open.toString());
-                e.stopPropagation();
-            });
-
-            notifBtn.addEventListener('click', function(e){
-                const open = notificationsPanel.getAttribute('aria-hidden') === 'true';
-                closeAllPanels();
-                notificationsPanel.setAttribute('aria-hidden', (!open).toString());
-                notifBtn.setAttribute('aria-expanded', open.toString());
-                if (open) { notifBadge.style.display = 'none'; }
-                e.stopPropagation();
-            });
             document.addEventListener('click', function(){ closeAllPanels(); });
-            profileMenu.addEventListener('click', function(e){ e.stopPropagation(); });
-            notificationsPanel.addEventListener('click', function(e){ e.stopPropagation(); });
         })();
     </script>
 </body>

@@ -4,25 +4,33 @@
     box-sizing: border-box;
 }
 
+:root {
+    --side-width: 72px;
+}
+
 html {
     font-size: 16px;
 }
 
 body {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
-    background: linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 100%);
+    background: linear-gradient(135deg, #071028 0%, #09293b 100%);
     color: #ffffff;
     min-height: 100vh;
 }
 
+body.open {
+    --side-width: 220px;
+}
+
 .hdr {
-    background: linear-gradient(180deg, #1a1a1a 0%, #121212 100%);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-    padding: 1.25rem 0;
+    background-color: #071a2a;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+    padding: 0.5rem 0;
     position: sticky;
     top: 0;
     z-index: 100;
-    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.35);
 }
 
 .hdr-box {
@@ -34,6 +42,12 @@ body {
     justify-content: space-between;
     position: relative;
     gap: 2rem;
+}
+
+.hdr-box,
+.cnt-box {
+    transition: transform 0.25s ease;
+    transform: translateX(calc(var(--side-width) / 2));
 }
 
 .logo {
@@ -51,17 +65,14 @@ body {
     opacity: 0.8;
 }
 
-.logo-sym {
-    font-size: 1.5rem;
-    color: #6366f1;
+.logo img {
+    display: block;
+    height: 60px;
+    width: auto;
+    max-width: 100%;
 }
 
-.logo-txt {
-    background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-}
+
 
 .bal {
     display: flex;
@@ -69,7 +80,7 @@ body {
     align-items: center;
     gap: 0.25rem;
     background: rgba(255, 255, 255, 0.05);
-    padding: 1rem 1.5rem;
+    padding: 0.625rem 1rem;
     border-radius: 12px;
     border: 1px solid rgba(99, 102, 241, 0.2);
     transition: all 0.3s ease;
@@ -97,7 +108,7 @@ body {
 .bal-amt {
     font-size: 1.2rem;
     font-weight: 700;
-    color: #6366f1;
+    color: #ffffff;
 }
 
 .acts {
@@ -206,8 +217,8 @@ body {
     top: 64px;
     right: 2rem;
     min-width: 220px;
-    background: linear-gradient(180deg, #1a1a1a, #121212);
-    border: 1px solid rgba(255, 255, 255, 0.06);
+    background-color: #071a2a;
+    border: 1px solid rgba(255, 255, 255, 0.05);
     box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6);
     border-radius: 12px;
     padding: 0.5rem;
@@ -254,7 +265,7 @@ body {
     top: 0;
     height: 100vh;
     width: 72px;
-    background: linear-gradient(180deg, #1a1a1a 0%, #121212 100%);
+    background-color: #061427;
     border-right: 1px solid rgba(255, 255, 255, 0.08);
     display: flex;
     flex-direction: column;
