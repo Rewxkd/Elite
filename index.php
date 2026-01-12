@@ -109,8 +109,16 @@
             const menuBtns = document.querySelectorAll('.menu-btn');
             menuBtns.forEach(btn => {
                 btn.addEventListener('click', function(e) {
-                    // Only open dropdown if sidebar is expanded
+                    // If sidebar is closed, open it and show dropdown
                     if (!document.body.classList.contains('open')) {
+                        document.body.classList.add('open');
+                        sidebar.setAttribute('aria-hidden', 'false');
+                        btn.setAttribute('aria-expanded', 'true');
+                        // Show dropdown only after sidebar is open
+                        setTimeout(() => {
+                            const dropdown = this.parentElement.querySelector('.menu-dropdown');
+                            dropdown.setAttribute('aria-hidden', 'false');
+                        }, 0);
                         return;
                     }
                     e.stopPropagation();
@@ -135,7 +143,7 @@
             // Close dropdowns when clicking outside
             document.addEventListener('click', function(e) {
                 menuBtns.forEach(btn => {
-                    const dropdown = btn.querySelector('.menu-dropdown');
+                    const dropdown = btn.parentElement.querySelector('.menu-dropdown');
                     if (!btn.contains(e.target)) {
                         dropdown.setAttribute('aria-hidden', 'true');
                         btn.setAttribute('aria-expanded', 'false');
@@ -144,6 +152,17 @@
                 closeAllPanels();
             });
         })();
+            // Hide all dropdowns if sidebar is closed
+            function updateDropdownVisibility() {
+                const isSidebarOpen = document.body.classList.contains('open');
+                document.querySelectorAll('.menu-dropdown').forEach(dropdown => {
+                    dropdown.setAttribute('aria-hidden', (!isSidebarOpen).toString());
+                });
+            }
+            // Listen for sidebar toggle
+            btn.addEventListener('click', updateDropdownVisibility);
+            // Initial state
+            updateDropdownVisibility();
     </script>
 </body>
 </html>
