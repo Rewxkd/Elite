@@ -10,9 +10,48 @@
     <aside class="side" id="side" aria-hidden="true">
         <button class="toggle" id="toggle" aria-label="Toggle navigation" aria-expanded="false">☰</button>
         <nav class="nav">
-            <a href="#" class="item"><span class="icon">⁉️</span><span class="text">...</span></a>
-            <a href="#" class="item"><span class="icon">⁉️</span><span class="text">...</span></a>
-            <a href="#" class="item"><span class="icon">⁉️</span><span class="text">...</span></a>
+            <a href="#" class="item" id="active"><span class="icon">🏠</span><span class="text">Home</span></a>
+            <a href="#" class="item"><span class="icon">❤️</span><span class="text">Favourites</span></a>
+            <a href="#" class="item"><span class="icon">🕒</span><span class="text">Recent</span></a>
+            <br>
+            <div class="menu">
+                <div class="menu-item">
+                    <button class="menu-btn" aria-haspopup="true" aria-expanded="false">
+                        <span class="menu-icon">⁉️</span>
+                        <span class="menu-text">placeholder</span>
+                        <span class="menu-arrow">▼</span>
+                    </button>
+                    <div class="menu-dropdown" aria-hidden="true">
+                        <a href="#">text</a>
+                        <a href="#">text</a>
+                        <a href="#">text</a>
+                    </div>
+                </div>
+                <div class="menu-item">
+                    <button class="menu-btn" aria-haspopup="true" aria-expanded="false">
+                        <span class="menu-icon">⁉️</span>
+                        <span class="menu-text">placeholder</span>
+                        <span class="menu-arrow">▼</span>
+                    </button>
+                    <div class="menu-dropdown" aria-hidden="true">
+                        <a href="#">text</a>
+                        <a href="#">text</a>
+                        <a href="#">text</a>
+                    </div>
+                </div>
+                <div class="menu-item">
+                    <button class="menu-btn" aria-haspopup="true" aria-expanded="false">
+                        <span class="menu-icon">⁉️</span>
+                        <span class="menu-text">placeholder</span>
+                        <span class="menu-arrow">▼</span>
+                    </button>
+                    <div class="menu-dropdown" aria-hidden="true">
+                        <a href="#">text</a>
+                        <a href="#">text</a>
+                        <a href="#">text</a>
+                    </div>
+                </div>
+            </div>
         </nav>
     </aside>
 
@@ -66,7 +105,44 @@
                 if (notifBtn) notifBtn.setAttribute('aria-expanded', 'false');
             }
 
-            document.addEventListener('click', function(){ closeAllPanels(); });
+            // Menu dropdown functionality
+            const menuBtns = document.querySelectorAll('.menu-btn');
+            menuBtns.forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    // Only open dropdown if sidebar is expanded
+                    if (!document.body.classList.contains('open')) {
+                        return;
+                    }
+                    e.stopPropagation();
+                    const dropdown = this.parentElement.querySelector('.menu-dropdown');
+                    const isOpen = dropdown.getAttribute('aria-hidden') === 'true';
+                    
+                    // Close all other dropdowns
+                    menuBtns.forEach(otherBtn => {
+                        if (otherBtn !== this) {
+                            const otherDropdown = otherBtn.parentElement.querySelector('.menu-dropdown');
+                            otherDropdown.setAttribute('aria-hidden', 'true');
+                            otherBtn.setAttribute('aria-expanded', 'false');
+                        }
+                    });
+                    
+                    // Toggle current dropdown
+                    dropdown.setAttribute('aria-hidden', (!isOpen).toString());
+                    this.setAttribute('aria-expanded', isOpen.toString());
+                });
+            });
+            
+            // Close dropdowns when clicking outside
+            document.addEventListener('click', function(e) {
+                menuBtns.forEach(btn => {
+                    const dropdown = btn.querySelector('.menu-dropdown');
+                    if (!btn.contains(e.target)) {
+                        dropdown.setAttribute('aria-hidden', 'true');
+                        btn.setAttribute('aria-expanded', 'false');
+                    }
+                });
+                closeAllPanels();
+            });
         })();
     </script>
 </body>
