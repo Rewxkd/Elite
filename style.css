@@ -1,3 +1,20 @@
+.progress-bar-container {
+    width: 100%;
+    background: #1a2a3a;
+    border-radius: 8px;
+    height: 18px;
+    margin-bottom: 8px;
+    overflow: hidden;
+    box-shadow: 0 1px 4px #0002;
+}
+
+.progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, #2c9ffd 0%, #90beff 100%);
+    border-radius: 8px 0 0 8px;
+    transition: width 0.5s cubic-bezier(.4,2,.6,1);
+    width: 10;
+}
 * {
     margin: 0;
     padding: 0;
@@ -347,7 +364,8 @@ body.open .text {
 }
 
 .cnt {
-    padding: 2rem;
+    max-width: 1400px;
+    margin: 100px auto;
 }
 
 .small-logo {
@@ -476,4 +494,20 @@ body.open .menu-arrow {
 .menu-dropdown a:hover {
     background: rgba(99, 102, 241, 0.12);
     color: #ffffff;
+}
+
+.progress-top{
+    padding: 10px 30px;
+    background-color: #2073b827;
+}
+
+.progress-bottom{
+    padding: 10px 30px;
+    background-color: #12436b27;
+}
+
+.cnt-box-progress{
+    border: 2px solid #2c9ffd3a;
+    border-radius: 12px;
+    max-width: 550px;
 }

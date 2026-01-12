@@ -82,10 +82,36 @@
 
     <main class="cnt">
         <div class="cnt-box">
+            <h1>Welcome <span style="color: #90beff;">(User)</span>!</h1>
         </div>
+        <br>
+        <div class="cnt-box-progress">
+            <div class="progress-top">
+                <p>Your Progress</p>
+            </div>
+            <div class="progress-bottom">
+                <p id="progressText">$0.00 / $1000.00 Wagered</p>
+                <br>
+                <div class="progress-bar-container">
+                    <div class="progress-bar" id="progressBar" style="width: 0%"></div>
+                </div>
+            </div>
+        </div>
+
+
     </main>
 
     <script>
+        // Progress bar logic
+        function setProgressBar(current, total) {
+            const percent = Math.min(100, Math.round((current / total) * 100));
+            document.getElementById('progressBar').style.width = percent + '%';
+            document.getElementById('progressText').textContent = `$${current.toFixed(2)} / $${total.toFixed(2)} Wagered (${percent}%)`;
+        }
+
+        // Example: Set progress (replace with dynamic values as needed)
+        setProgressBar(350, 1000);
+
         (function(){
             const btn = document.getElementById('toggle');
             const sidebar = document.getElementById('side');
