@@ -61,7 +61,7 @@
                 <span class="logo-txt"><img src="Elite-logo.png" alt=""></span>
             </div>
             <div class="bal">
-                <span class="bal-amt">$0.00</span>
+                <span class="bal-amt">$100,000,000,000.00</span>
             </div>
             <div class="acts">
                 <button class="btn icon" id="search" aria-label="Search">
@@ -102,14 +102,12 @@
     </main>
 
     <script>
-        // Progress bar logic
         function setProgressBar(current, total) {
             const percent = Math.min(100, Math.round((current / total) * 100));
             document.getElementById('progressBar').style.width = percent + '%';
             document.getElementById('progressText').textContent = `$${current.toFixed(2)} / $${total.toFixed(2)} Wagered (${percent}%)`;
         }
 
-        // Example: Set progress (replace with dynamic values as needed)
         setProgressBar(350, 1000);
 
         (function(){
@@ -131,16 +129,13 @@
                 if (notifBtn) notifBtn.setAttribute('aria-expanded', 'false');
             }
 
-            // Menu dropdown functionality
             const menuBtns = document.querySelectorAll('.menu-btn');
             menuBtns.forEach(btn => {
                 btn.addEventListener('click', function(e) {
-                    // If sidebar is closed, open it and show dropdown
                     if (!document.body.classList.contains('open')) {
                         document.body.classList.add('open');
                         sidebar.setAttribute('aria-hidden', 'false');
                         btn.setAttribute('aria-expanded', 'true');
-                        // Show dropdown only after sidebar is open
                         setTimeout(() => {
                             const dropdown = this.parentElement.querySelector('.menu-dropdown');
                             dropdown.setAttribute('aria-hidden', 'false');
@@ -151,7 +146,6 @@
                     const dropdown = this.parentElement.querySelector('.menu-dropdown');
                     const isOpen = dropdown.getAttribute('aria-hidden') === 'true';
                     
-                    // Close all other dropdowns
                     menuBtns.forEach(otherBtn => {
                         if (otherBtn !== this) {
                             const otherDropdown = otherBtn.parentElement.querySelector('.menu-dropdown');
@@ -160,13 +154,11 @@
                         }
                     });
                     
-                    // Toggle current dropdown
                     dropdown.setAttribute('aria-hidden', (!isOpen).toString());
                     this.setAttribute('aria-expanded', isOpen.toString());
                 });
             });
             
-            // Close dropdowns when clicking outside
             document.addEventListener('click', function(e) {
                 menuBtns.forEach(btn => {
                     const dropdown = btn.parentElement.querySelector('.menu-dropdown');
@@ -178,17 +170,14 @@
                 closeAllPanels();
             });
         })();
-            // Hide all dropdowns if sidebar is closed
             function updateDropdownVisibility() {
                 const isSidebarOpen = document.body.classList.contains('open');
                 document.querySelectorAll('.menu-dropdown').forEach(dropdown => {
                     dropdown.setAttribute('aria-hidden', (!isSidebarOpen).toString());
                 });
             }
-            // Listen for sidebar toggle
             btn.addEventListener('click', updateDropdownVisibility);
             // Initial state
-            updateDropdownVisibility();
     </script>
 </body>
 </html>
