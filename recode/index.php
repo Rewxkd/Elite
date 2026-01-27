@@ -1,137 +1,113 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <!-- Character encoding and viewport for responsive design -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Elite</title>
-    <!-- Link to external CSS stylesheet -->
-    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <!-- SIDEBAR/NAVIGATION SECTION - Hidden by default, toggleable via button -->
-    <aside class="side" id="side" aria-hidden="true">
-        <!-- Toggle button to open/close sidebar (hamburger menu) -->
-        <button class="toggle" id="toggle" aria-label="Toggle navigation" aria-expanded="false">☰</button>
-        <!-- Navigation menu with links -->
-        <!-- Navigation menu with links -->
-        <nav class="nav">
-            <!-- Primary navigation items with icons -->
-            <a href="#" class="item" id="active"><span class="icon">🏠</span><span class="text">Home</span></a>
-            <a href="#" class="item"><span class="icon">❤️</span><span class="text">Favourites</span></a>
-            <a href="#" class="item"><span class="icon">🕒</span><span class="text">Recent</span></a>
+    <aside class="sidebar">
+        <button class="toggle">☰</button>
+        <nav class="navigation">
+            <a href="#" class="item">❓<span class="text">text</span></a>
+            <a href="#" class="item">❓<span class="text">text</span></a>
+            <a href="#" class="item">❓<span class="text">text</span></a>
             <br>
-            <!-- DROPDOWN MENU SECTION - Multiple menu items with expandable dropdowns -->
-            <div class="menu">
-                <!-- FIRST MENU ITEM - Expandable dropdown menu -->
-                <div class="menu-item">
-                    <!-- Menu button with icon, text, and arrow indicator -->
-                    <button class="menu-btn" aria-haspopup="true" aria-expanded="false">
+            <div class="dropdown">
+                <!-- DROPDOWN 1 -->
+                <div class="dropdown-item">
+                    <button class="dropdown-button">
                         <span class="menu-icon">⁉️</span>
                         <span class="menu-text">placeholder</span>
                         <span class="menu-arrow">▼</span>
                     </button>
-                    <!-- Dropdown content that toggles visibility -->
-                    <div class="menu-dropdown" aria-hidden="true">
+                    <div class="dropdown-items">
                         <a href="#">text</a>
                         <a href="#">text</a>
                         <a href="#">text</a>
                     </div>
                 </div>
-                <!-- SECOND MENU ITEM - Same structure as first -->
-                <div class="menu-item">
-                    <button class="menu-btn" aria-haspopup="true" aria-expanded="false">
+
+                <!-- DROPDOWN 2 -->
+                <div class="dropdown-item">
+                    <button class="dropdown-button">
                         <span class="menu-icon">⁉️</span>
                         <span class="menu-text">placeholder</span>
                         <span class="menu-arrow">▼</span>
                     </button>
-                    <div class="menu-dropdown" aria-hidden="true">
+                    <div class="dropdown-items">
                         <a href="#">text</a>
                         <a href="#">text</a>
                         <a href="#">text</a>
                     </div>
                 </div>
-                <!-- THIRD MENU ITEM - Same structure as first two -->
-                <div class="menu-item">
-                    <button class="menu-btn" aria-haspopup="true" aria-expanded="false">
+
+                <!-- DROPDOWN 3 -->
+                <div class="dropdown-item">
+                    <button class="dropdown-button">
                         <span class="menu-icon">⁉️</span>
                         <span class="menu-text">placeholder</span>
                         <span class="menu-arrow">▼</span>
                     </button>
-                    <div class="menu-dropdown" aria-hidden="true">
+                    <div class="dropdown-items">
                         <a href="#">text</a>
                         <a href="#">text</a>
                         <a href="#">text</a>
                     </div>
                 </div>
+
             </div>
         </nav>
     </aside>
 
-    <!-- HEADER SECTION - Top navigation bar with logo, balance, and action buttons -->
-    <header class="hdr">
-        <div class="hdr-box">
-            <!-- Logo section with image -->
+    <header class="header">
+        <div class="header-box">
             <div class="logo">
-                <span class="logo-txt"><img src="Elite-logo.png" alt=""></span>
+                <img src="Elite-logo.png" alt="">
             </div>
-            <!-- Balance display section -->
-            <div class="bal">
-                <span class="bal-amt">$100,000,000,000.00</span>
+            <div class="balance">
+                <span class="balance-amount">$100,000,000,000.00</span>
             </div>
-            <!-- Action buttons section (search, notifications, profile) -->
-            <div class="acts">
-                <!-- Search button -->
-                <button class="btn icon" id="search" aria-label="Search">
+            
+            <div class="header-buttons">
+                <!-- search button -->
+                <button class="button">
                     <span>🔍</span>
                 </button>
-                <!-- Profile and notification buttons grouped together -->
-                <div class="group" role="group" aria-label="Profile and notifications">
-                    <!-- Notification button with badge counter -->
-                    <button class="btn icon notif" id="notif" aria-label="Notifications" aria-expanded="false">
-                        <span>🔔</span>
-                        <!-- Badge showing number of notifications -->
-                        <span class="badge" id="badge">3</span>
-                    </button>
-                    <!-- Profile/user button -->
-                    <button class="btn icon" id="prof" aria-label="Profile" aria-expanded="false">
-                        <span>👤</span>
-                    </button>
-                </div>
+
+                <!-- notification button -->
+                <button class="button">
+                    <span>🔔</span>
+                    <!-- notification badge -->
+                    <span class="badge" id="badge">3</span>
+                </button>
+
+                <!-- profile button -->
+                 <button class="button">
+                    <span>👤</span>
+                 </button>
             </div>
         </div>
     </header>
 
-    <!-- MAIN CONTENT SECTION - Primary page content area -->
-    <main class="cnt">
-        <!-- Welcome message with user name -->
-        <div class="cnt-box">
-            <h1>Welcome <span style="color: #90beff;">(User)</span>!</h1>
+    <main class="container">
+        <div class="container-box">
+            <h1>Welcome<span style="color: #90beff;">(User)</span>!</h1>
         </div>
         <br>
-        <!-- PROGRESS SECTION - Tracks wagering progress -->
-        <div class="cnt-box-progress">
-            <!-- Progress header/title -->
-            <div class="progress-top">
-                <p>Your Progress</p>
-            </div>
-            <!-- Progress display and bar -->
-            <div class="progress-bottom">
-                <!-- Text showing current and target wagering amounts -->
-                <p id="progressText">$0.00 / $1000.00 Wagered</p>
-                <br>
-                <!-- Visual progress bar container -->
-                <div class="progress-bar-container">
-                    <!-- Actual progress bar (width changes dynamically) -->
-                    <div class="progress-bar" id="progressBar" style="width: 0%"></div>
-                </div>
-            </div>
+        <div class="container-progress">
+            <p>Your Progress</p>
         </div>
 
-
+        <div class="progress-button">
+            <p class="progress-text">$0.00 / $1000.00 Wagered</p>
+            <br>
+            <div class="progress-bar-contaiener">
+                <div class="progress-bar" style="width: 0%"></div>
+            </div>
+        </div>
     </main>
 
-    <!-- JAVASCRIPT SECTION - All interactive functionality -->
     <script>
         /**
          * Function: setProgressBar
