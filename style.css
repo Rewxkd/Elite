@@ -32,7 +32,7 @@ html {
 body {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
     background: linear-gradient(135deg, #071028 0%, #09293b 100%);
-    color: #ffffff;
+    color: #fff;
     min-height: 100vh;
 }
 
@@ -40,7 +40,7 @@ body.open {
     --side-width: 220px;
 }
 
-.hdr {
+.header {
     background-color: #071a2a;
     border-bottom: 1px solid rgba(255, 255, 255, 0.04);
     padding: 0.5rem 0;
@@ -50,7 +50,7 @@ body.open {
     box-shadow: 0 2px 12px rgba(0, 0, 0, 0.35);
 }
 
-.hdr-box {
+.header-box {
     max-width: 1400px;
     margin: 0 auto;
     padding: 0 2rem;
@@ -61,8 +61,8 @@ body.open {
     gap: 2rem;
 }
 
-.hdr-box,
-.cnt-box {
+.header-box,
+.container-box {
     transition: transform 0.25s ease;
     transform: translateX(calc(var(--side-width) / 2));
 }
@@ -91,7 +91,7 @@ body.open {
 
 
 
-.bal {
+.balance {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -109,26 +109,18 @@ body.open {
     white-space: nowrap;
 }
 
-.bal:hover {
+.balance:hover {
     background: rgba(99, 102, 241, 0.1);
     border-color: rgba(99, 102, 241, 0.4);
 }
 
-.bal-lbl {
-    font-size: 0.75rem;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    color: #9ca3af;
-    font-weight: 600;
-}
-
-.bal-amt {
+.balance-amount {
     font-size: 1.2rem;
     font-weight: 700;
     color: #ffffff;
 }
 
-.acts {
+.header-buttons {
     display: flex;
     align-items: center;
     gap: 0.5rem;
@@ -144,18 +136,18 @@ body.open {
     overflow: hidden;
 }
 
-.group .btn.icon {
+.group .button.icon {
     padding: 0.55rem 0.9rem;
     border-radius: 0;
     background: transparent;
     border: none;
 }
 
-.group .btn.icon:hover {
+.group .button.icon:hover {
     background: rgba(255, 255, 255, 0.04);
 }
 
-.group .btn.notif {
+.group .button.notif {
     border-right: 1px solid rgba(255, 255, 255, 0.03);
     position: relative;
 }
@@ -181,7 +173,7 @@ body.open {
     transform: translateY(-2px);
 }
 
-.btn {
+.button {
     background: rgba(255, 255, 255, 0.08);
     border: 1px solid rgba(255, 255, 255, 0.12);
     color: #ffffff;
@@ -196,24 +188,24 @@ body.open {
     justify-content: center;
 }
 
-.btn:hover {
+.button:hover {
     background: rgba(255, 255, 255, 0.12);
     border-color: rgba(255, 255, 255, 0.2);
     transform: translateY(-2px);
 }
 
-.btn:active {
+.button:active {
     transform: translateY(0);
     background: rgba(255, 255, 255, 0.15);
 }
 
-.btn.icon {
+.button.icon {
     padding: 0.75rem;
     border-radius: 8px;
     font-size: 1.125rem;
 }
 
-.btn.notif {
+.button.notif {
     position: relative;
 }
 
@@ -229,54 +221,7 @@ body.open {
     line-height: 1;
 }
 
-.pnl {
-    position: absolute;
-    top: 64px;
-    right: 2rem;
-    min-width: 220px;
-    background-color: #071a2a;
-    border: 1px solid rgba(255, 255, 255, 0.05);
-    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6);
-    border-radius: 12px;
-    padding: 0.5rem;
-    color: #e5e7eb;
-    display: none;
-    z-index: 1300;
-}
-
-.pnl a {
-    display: block;
-    padding: 0.5rem;
-    color: inherit;
-    text-decoration: none;
-    border-radius: 8px;
-}
-
-.pnl a:hover {
-    background: rgba(255, 255, 255, 0.03);
-}
-
-.pnl-hdr {
-    font-weight: 700;
-    padding: 0.5rem 0.5rem 0.25rem;
-}
-
-.lst {
-    list-style: none;
-    padding: 0.25rem 0.5rem;
-    margin: 0;
-}
-
-.lst li {
-    padding: 0.4rem 0;
-    border-bottom: 1px dashed rgba(255, 255, 255, 0.03);
-}
-
-.pnl[aria-hidden="false"] {
-    display: block;
-}
-
-.side {
+.sidebar {
     position: fixed;
     left: 0;
     top: 0;
@@ -313,7 +258,7 @@ body.open {
     background: rgba(255, 255, 255, 0.06);
 }
 
-.nav {
+.navigation {
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
@@ -355,7 +300,7 @@ body.open {
     font-weight: 600;
 }
 
-body.open .side {
+body.open .sidebar {
     width: 220px;
 }
 
@@ -363,17 +308,8 @@ body.open .text {
     display: inline-block;
 }
 
-.cnt {
-    max-width: 1400px;
-    margin: 100px auto;
-}
-
-.small-logo {
-    height: 1px;
-}
-
 /* Menu button styles */
-.menu {
+.dropdown {
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
@@ -381,12 +317,12 @@ body.open .text {
     width: 100%;
 }
 
-.menu-item {
+.dropdown-item {
     display: flex;
     flex-direction: column;
 }
 
-.menu-btn {
+.dropdown-button {
     position: relative;
     display: flex;
     flex-direction: row;
@@ -405,13 +341,13 @@ body.open .text {
     width: 100%;
 }
 
-.menu-btn:hover {
+.dropdown-button:hover {
     background: rgba(99, 102, 241, 0.12) !important;
     color: #ffffff;
     transform: translateX(4px);
 }
 
-.menu-btn[aria-expanded="true"] {
+.dropdown-button[aria-expanded="true"] {
     background: rgba(99, 102, 241, 0.12) !important;
     color: #ffffff;
 }
@@ -442,11 +378,11 @@ body.open .menu-arrow {
     display: inline;
 }
 
-.menu-btn[aria-expanded="true"] .menu-arrow {
+.dropdown-button[aria-expanded="true"] .menu-arrow {
     transform: rotate(180deg);
 }
 
-.menu-dropdown {
+.dropdown-items {
     position: static;
     width: 100%;
     background-color: rgba(12, 40, 78, 0.404);
@@ -462,7 +398,7 @@ body.open .menu-arrow {
     opacity: 0;
 }
 
-.menu-dropdown[aria-hidden="true"] {
+.dropdown-items[aria-hidden="true"] {
     display: block;
     pointer-events: none;
     max-height: 0;
@@ -471,7 +407,7 @@ body.open .menu-arrow {
     opacity: 0;
 }
 
-.menu-dropdown[aria-hidden="false"] {
+.dropdown-items[aria-hidden="false"] {
     display: block;
     max-height: 500px;
     margin-top: 0.75rem;
@@ -481,7 +417,7 @@ body.open .menu-arrow {
     padding: 0.5rem 0;
 }
 
-.menu-dropdown a {
+.dropdown-items a {
     display: block;
     padding: 0.625rem 0.75rem;
     color: #cbd5e1;
@@ -491,9 +427,16 @@ body.open .menu-arrow {
     border: none;
 }
 
-.menu-dropdown a:hover {
+.dropdown-items a:hover {
     background: rgba(99, 102, 241, 0.12);
     color: #ffffff;
+}
+
+.container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 2rem;
+    padding-top: 100px;
 }
 
 .progress-top{
@@ -506,8 +449,10 @@ body.open .menu-arrow {
     background-color: #12436b27;
 }
 
-.cnt-box-progress{
+.container-progress{
     border: 2px solid #2c9ffd3a;
     border-radius: 12px;
     max-width: 550px;
+    transition: transform 0.25s ease;
+    transform: translateX(calc(var(--side-width) / 2));
 }

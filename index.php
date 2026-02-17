@@ -1,266 +1,152 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <!-- Character encoding and viewport for responsive design -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Elite</title>
-    <!-- Link to external CSS stylesheet -->
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <!-- SIDEBAR/NAVIGATION SECTION - Hidden by default, toggleable via button -->
-    <aside class="side" id="side" aria-hidden="true">
-        <!-- Toggle button to open/close sidebar (hamburger menu) -->
+    <!-- Sidebar navigation -->
+    <aside class="sidebar" id="side" aria-hidden="true">
         <button class="toggle" id="toggle" aria-label="Toggle navigation" aria-expanded="false">☰</button>
-        <!-- Navigation menu with links -->
-        <!-- Navigation menu with links -->
-        <nav class="nav">
-            <!-- Primary navigation items with icons -->
+        <nav class="navigation">
             <a href="#" class="item" id="active"><span class="icon">🏠</span><span class="text">Home</span></a>
             <a href="#" class="item"><span class="icon">❤️</span><span class="text">Favourites</span></a>
             <a href="#" class="item"><span class="icon">🕒</span><span class="text">Recent</span></a>
-            <br>
-            <!-- DROPDOWN MENU SECTION - Multiple menu items with expandable dropdowns -->
-            <div class="menu">
-                <!-- FIRST MENU ITEM - Expandable dropdown menu -->
-                <div class="menu-item">
-                    <!-- Menu button with icon, text, and arrow indicator -->
-                    <button class="menu-btn" aria-haspopup="true" aria-expanded="false">
-                        <span class="menu-icon">⁉️</span>
-                        <span class="menu-text">placeholder</span>
-                        <span class="menu-arrow">▼</span>
+            <div class="dropdown">
+                <div class="dropdown-item">
+                    <button class="dropdown-button" aria-haspopup="true" aria-expanded="false">
+                        <span class="menu-icon">⁉️</span><span class="menu-text">placeholder</span><span class="menu-arrow">▼</span>
                     </button>
-                    <!-- Dropdown content that toggles visibility -->
-                    <div class="menu-dropdown" aria-hidden="true">
-                        <a href="#">text</a>
-                        <a href="#">text</a>
-                        <a href="#">text</a>
+                    <div class="dropdown-items" aria-hidden="true">
+                        <a href="#">text</a><a href="#">text</a><a href="#">text</a>
                     </div>
                 </div>
-                <!-- SECOND MENU ITEM - Same structure as first -->
-                <div class="menu-item">
-                    <button class="menu-btn" aria-haspopup="true" aria-expanded="false">
-                        <span class="menu-icon">⁉️</span>
-                        <span class="menu-text">placeholder</span>
-                        <span class="menu-arrow">▼</span>
+                <div class="dropdown-item">
+                    <button class="dropdown-button" aria-haspopup="true" aria-expanded="false">
+                        <span class="menu-icon">⁉️</span><span class="menu-text">placeholder</span><span class="menu-arrow">▼</span>
                     </button>
-                    <div class="menu-dropdown" aria-hidden="true">
-                        <a href="#">text</a>
-                        <a href="#">text</a>
-                        <a href="#">text</a>
+                    <div class="dropdown-items" aria-hidden="true">
+                        <a href="#">text</a><a href="#">text</a><a href="#">text</a>
                     </div>
                 </div>
-                <!-- THIRD MENU ITEM - Same structure as first two -->
-                <div class="menu-item">
-                    <button class="menu-btn" aria-haspopup="true" aria-expanded="false">
-                        <span class="menu-icon">⁉️</span>
-                        <span class="menu-text">placeholder</span>
-                        <span class="menu-arrow">▼</span>
+                <div class="dropdown-item">
+                    <button class="dropdown-button" aria-haspopup="true" aria-expanded="false">
+                        <span class="menu-icon">⁉️</span><span class="menu-text">placeholder</span><span class="menu-arrow">▼</span>
                     </button>
-                    <div class="menu-dropdown" aria-hidden="true">
-                        <a href="#">text</a>
-                        <a href="#">text</a>
-                        <a href="#">text</a>
+                    <div class="dropdown-items" aria-hidden="true">
+                        <a href="#">text</a><a href="#">text</a><a href="#">text</a>
                     </div>
                 </div>
             </div>
         </nav>
     </aside>
 
-    <!-- HEADER SECTION - Top navigation bar with logo, balance, and action buttons -->
-    <header class="hdr">
-        <div class="hdr-box">
-            <!-- Logo section with image -->
+    <!-- Header with logo, balance, and controls -->
+    <header class="header">
+        <div class="header-box">
             <div class="logo">
-                <span class="logo-txt"><img src="Elite-logo.png" alt=""></span>
+                <img src="Elite-logo.png" alt="">
             </div>
-            <!-- Balance display section -->
-            <div class="bal">
-                <span class="bal-amt">$100,000,000,000.00</span>
+            <div class="balance">
+                <span class="balance-amount">$100,000,000,000.00</span>
             </div>
-            <!-- Action buttons section (search, notifications, profile) -->
-            <div class="acts">
-                <!-- Search button -->
-                <button class="btn icon" id="search" aria-label="Search">
-                    <span>🔍</span>
-                </button>
-                <!-- Profile and notification buttons grouped together -->
+            <div class="header-buttons">
+                <button class="button icon" id="search" aria-label="Search"><span>🔍</span></button>
                 <div class="group" role="group" aria-label="Profile and notifications">
-                    <!-- Notification button with badge counter -->
-                    <button class="btn icon notif" id="notif" aria-label="Notifications" aria-expanded="false">
-                        <span>🔔</span>
-                        <!-- Badge showing number of notifications -->
-                        <span class="badge" id="badge">3</span>
-                    </button>
-                    <!-- Profile/user button -->
-                    <button class="btn icon" id="prof" aria-label="Profile" aria-expanded="false">
-                        <span>👤</span>
-                    </button>
+                    <button class="button icon notif" id="notif" aria-label="Notifications"><span>🔔</span><span class="badge" id="badge">3</span></button>
+                    <button class="button icon" id="prof" aria-label="Profile"><span>👤</span></button>
                 </div>
             </div>
         </div>
     </header>
 
-    <!-- MAIN CONTENT SECTION - Primary page content area -->
-    <main class="cnt">
-        <!-- Welcome message with user name -->
-        <div class="cnt-box">
+    <!-- Main content -->
+    <main class="container">
+        <div class="container-box">
             <h1>Welcome <span style="color: #90beff;">(User)</span>!</h1>
         </div>
-        <br>
-        <!-- PROGRESS SECTION - Tracks wagering progress -->
-        <div class="cnt-box-progress">
-            <!-- Progress header/title -->
-            <div class="progress-top">
-                <p>Your Progress</p>
-            </div>
-            <!-- Progress display and bar -->
+        <div class="container-progress">
+            <div class="progress-top"><p>Your Progress</p></div>
             <div class="progress-bottom">
-                <!-- Text showing current and target wagering amounts -->
                 <p id="progressText">$0.00 / $1000.00 Wagered</p>
-                <br>
-                <!-- Visual progress bar container -->
                 <div class="progress-bar-container">
-                    <!-- Actual progress bar (width changes dynamically) -->
                     <div class="progress-bar" id="progressBar" style="width: 0%"></div>
                 </div>
             </div>
         </div>
-
-
     </main>
 
-    <!-- JAVASCRIPT SECTION - All interactive functionality -->
     <script>
-        /**
-         * Function: setProgressBar
-         * Updates the progress bar width and text based on current/total values
-         * @param {number} current - Current wagering amount
-         * @param {number} total - Total wagering target
-         */
+        // Update progress bar display
         function setProgressBar(current, total) {
-            // Calculate percentage, max 100%
             const percent = Math.min(100, Math.round((current / total) * 100));
-            // Update progress bar width
             document.getElementById('progressBar').style.width = percent + '%';
-            // Update progress text with amounts and percentage
             document.getElementById('progressText').textContent = `$${current.toFixed(2)} / $${total.toFixed(2)} Wagered (${percent}%)`;
         }
-
-        // Initialize progress bar with $350 of $1000 wagered
         setProgressBar(350, 1000);
 
-        /**
-         * IIFE (Immediately Invoked Function Expression)
-         * Contains all event listeners for sidebar, menus, and buttons
-         */
+        // Initialize sidebar and dropdown functionality
         (function(){
-            // Get references to key elements
             const btn = document.getElementById('toggle');
             const sidebar = document.getElementById('side');
-            
-            /**
-             * SIDEBAR TOGGLE FUNCTIONALITY
-             * Opens/closes sidebar when hamburger button is clicked
-             */
+            const menuBtns = document.querySelectorAll('.dropdown-button');
+
+            // Toggle sidebar open/closed
             if (btn) btn.addEventListener('click', function(){
-                // Toggle 'open' class on body
                 const isOpen = document.body.classList.toggle('open');
-                // Update sidebar accessibility attributes
-                if (sidebar) sidebar.setAttribute('aria-hidden', (!isOpen).toString());
+                sidebar.setAttribute('aria-hidden', (!isOpen).toString());
                 btn.setAttribute('aria-expanded', isOpen.toString());
             });
 
-            // Get references to profile and notification buttons
-            const profileBtn = document.getElementById('prof');
-            const notifBtn = document.getElementById('notif');
-            const notificationsPanel = document.getElementById('notifPnl');
-            const notifBadge = document.getElementById('badge');
-
-            /**
-             * Function: closeAllPanels
-             * Closes all open panels (notifications, etc)
-             */
-            function closeAllPanels() {
-                if (notificationsPanel) notificationsPanel.setAttribute('aria-hidden', 'true');
-                if (notifBtn) notifBtn.setAttribute('aria-expanded', 'false');
-            }
-
-            // Get all menu buttons in the sidebar
-            const menuBtns = document.querySelectorAll('.menu-btn');
-            
-            /**
-             * MENU BUTTON CLICK HANDLER
-             * Toggles dropdown menus and manages their visibility
-             */
+            // Handle dropdown menu clicks
             menuBtns.forEach(btn => {
                 btn.addEventListener('click', function(e) {
-                    // If sidebar is closed, open it first
                     if (!document.body.classList.contains('open')) {
                         document.body.classList.add('open');
                         sidebar.setAttribute('aria-hidden', 'false');
                         btn.setAttribute('aria-expanded', 'true');
                         setTimeout(() => {
-                            const dropdown = this.parentElement.querySelector('.menu-dropdown');
-                            dropdown.setAttribute('aria-hidden', 'false');
+                            this.parentElement.querySelector('.dropdown-items').setAttribute('aria-hidden', 'false');
                         }, 0);
                         return;
                     }
                     
                     e.stopPropagation();
-                    // Get the dropdown for this menu button
-                    const dropdown = this.parentElement.querySelector('.menu-dropdown');
-                    // Check if dropdown is currently hidden
+                    const dropdown = this.parentElement.querySelector('.dropdown-items');
                     const isOpen = dropdown.getAttribute('aria-hidden') === 'true';
                     
-                    // Close all other dropdowns (only show one at a time)
                     menuBtns.forEach(otherBtn => {
                         if (otherBtn !== this) {
-                            const otherDropdown = otherBtn.parentElement.querySelector('.menu-dropdown');
-                            otherDropdown.setAttribute('aria-hidden', 'true');
+                            otherBtn.parentElement.querySelector('.dropdown-items').setAttribute('aria-hidden', 'true');
                             otherBtn.setAttribute('aria-expanded', 'false');
                         }
                     });
                     
-                    // Toggle current dropdown visibility
                     dropdown.setAttribute('aria-hidden', (!isOpen).toString());
                     this.setAttribute('aria-expanded', isOpen.toString());
                 });
             });
             
-            /**
-             * DOCUMENT CLICK HANDLER
-             * Closes dropdowns when clicking outside them
-             */
+            // Close dropdowns when clicking outside
             document.addEventListener('click', function(e) {
                 menuBtns.forEach(btn => {
-                    const dropdown = btn.parentElement.querySelector('.menu-dropdown');
-                    // If click is outside the button, hide the dropdown
                     if (!btn.contains(e.target)) {
-                        dropdown.setAttribute('aria-hidden', 'true');
+                        btn.parentElement.querySelector('.dropdown-items').setAttribute('aria-hidden', 'true');
                         btn.setAttribute('aria-expanded', 'false');
                     }
                 });
-                closeAllPanels();
+            });
+
+            // Update dropdowns visibility with sidebar
+            btn.addEventListener('click', function() {
+                const isSidebarOpen = document.body.classList.contains('open');
+                document.querySelectorAll('.dropdown-items').forEach(dropdown => {
+                    dropdown.setAttribute('aria-hidden', (!isSidebarOpen).toString());
+                });
             });
         })();
-        
-        /**
-         * Function: updateDropdownVisibility
-         * Updates dropdown menu visibility based on sidebar state
-         */
-        function updateDropdownVisibility() {
-            // Check if sidebar is open
-            const isSidebarOpen = document.body.classList.contains('open');
-            // Update all dropdowns to match sidebar state
-            document.querySelectorAll('.menu-dropdown').forEach(dropdown => {
-                dropdown.setAttribute('aria-hidden', (!isSidebarOpen).toString());
-            });
-        }
-        
-        // Update dropdowns when sidebar toggle is clicked
-        btn.addEventListener('click', updateDropdownVisibility);
     </script>
 </body>
 </html>
