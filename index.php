@@ -43,7 +43,7 @@
         </nav>
     </aside>
 
-    <!-- Header with logo, balance, and controls -->
+    <!-- Header with logo, balance -->
     <header class="header">
         <div class="header-box">
             <div class="logo">
