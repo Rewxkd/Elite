@@ -1,3 +1,44 @@
+<?php
+session_start();
+include 'db_connect.php';
+
+$user_id = $_SESSION['user_id'] ?? null;
+$username = '';
+$balance = 0;
+$total_wagered = 0;
+$notification_count = 0;
+$notifications = array();
+$is_logged_in = false;
+
+if ($user_id) {
+    $is_logged_in = true;
+    $user_query = $conn->query("SELECT username FROM users WHERE user_id = $user_id");
+    if ($user_query && $user_query->num_rows > 0) {
+        $user = $user_query->fetch_assoc();
+        $username = $user['username'];
+    }
+
+    $wallet_query = $conn->query("SELECT balance, total_wagered FROM wallets WHERE user_id = $user_id");
+    if ($wallet_query && $wallet_query->num_rows > 0) {
+        $wallet = $wallet_query->fetch_assoc();
+        $balance = $wallet['balance'];
+        $total_wagered = $wallet['total_wagered'];
+    }
+
+    $notif_count_query = $conn->query("SELECT COUNT(*) as count FROM notifications WHERE user_id = $user_id AND is_read = FALSE");
+    if ($notif_count_query && $notif_count_query->num_rows > 0) {
+        $notif = $notif_count_query->fetch_assoc();
+        $notification_count = $notif['count'];
+    }
+
+    $notifications_query = $conn->query("SELECT notification_id, message, is_read, created_at FROM notifications WHERE user_id = $user_id ORDER BY created_at DESC LIMIT 10");
+    if ($notifications_query && $notifications_query->num_rows > 0) {
+        while ($notif = $notifications_query->fetch_assoc()) {
+            $notifications[] = $notif;
+        }
+    }
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -7,7 +48,45 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <!-- Sidebar navigation -->
+    <div class="login-modal" id="loginModal" style="display: <?php echo $is_logged_in ? 'none' : 'flex'; ?>;">
+        <div class="login-container">
+            <button class="login-close" id="closeLogin" aria-label="Close login">&times;</button>
+            <div class="login-tabs">
+                <button class="login-tab active" data-tab="login">Login</button>
+                <button class="login-tab" data-tab="register">Register</button>
+            </div>
+
+            <form id="loginForm" class="login-form active">
+                <h2>Login In to your Account</h2>
+                <div class="form-group">
+                    <input type="text" placeholder="Username" name="username" required>
+                </div>
+                <div class="form-group">
+                    <input type="password" placeholder="Password" name="password" required>
+                </div>
+                <button type="submit" class="submit-btn">Login</button>
+                <p class="form-message" id="loginMessage"></p>
+            </form>
+
+            <form id="registerForm" class="login-form">
+                <h2>Create an Account</h2>
+                <div class="form-group">
+                    <input type="text" placeholder="Username" name="username" required>
+                </div>
+                <div class="form-group">
+                    <input type="email" placeholder="Email" name="email" required>
+                </div>
+                <div class="form-group">
+                    <input type="password" placeholder="Password" name="password" required>
+                </div>
+                <div class="form-group">
+                    <input type="password" placeholder="Confirm Password" name="confirm_password" required>
+                </div>
+                <button type="submit" class="submit-btn">Register</button>
+                <p class="form-message" id="registerMessage"></p>
+            </form>
+        </div>
+    </div>
     <aside class="sidebar" id="side" aria-hidden="true">
         <button class="toggle" id="toggle" aria-label="Toggle navigation" aria-expanded="false">☰</button>
         <nav class="navigation">
@@ -43,64 +122,170 @@
         </nav>
     </aside>
 
-    <!-- Header with logo, balance -->
     <header class="header">
         <div class="header-box">
             <div class="logo">
                 <img src="Elite-logo.png" alt="">
             </div>
+            <?php if ($is_logged_in): ?>
             <div class="balance">
-                <span class="balance-amount">$100,000,000,000.00</span>
+                <span class="balance-amount">$<?php echo number_format($balance, 2); ?></span>
             </div>
+            <?php endif; ?>
             <div class="header-buttons">
                 <button class="button icon" id="search" aria-label="Search"><span>🔍</span></button>
                 <div class="group" role="group" aria-label="Profile and notifications">
-                    <button class="button icon notif" id="notif" aria-label="Notifications"><span>🔔</span><span class="badge" id="badge">3</span></button>
-                    <button class="button icon" id="prof" aria-label="Profile"><span>👤</span></button>
+                    <button class="button icon notif" id="notif" aria-label="Notifications"><span>🔔</span><span class="badge" id="badge"><?php echo $notification_count; ?></span></button>
+                    <?php if ($is_logged_in): ?>
+                        <button class="button icon" id="prof" aria-label="Profile"><span>👤</span></button>
+                    <?php endif; ?>
                 </div>
+                <?php if ($is_logged_in): ?>
+                    <button class="auth-button" id="logoutBtn"><span class="auth-icon">🚪</span><span class="auth-text">Logout</span></button>
+                <?php else: ?>
+                    <button class="auth-button" id="loginBtn"><span class="auth-icon">🔐</span><span class="auth-text">Login</span></button>
+                <?php endif; ?>
             </div>
         </div>
     </header>
 
-    <!-- Main content -->
     <main class="container">
+        <?php if ($is_logged_in): ?>
         <div class="container-box">
-            <h1>Welcome <span style="color: #90beff;">(User)</span>!</h1>
+            <h1>Welcome <span style="color: #90beff;"><?php echo htmlspecialchars($username); ?></span>!</h1>
         </div>
         <div class="container-progress">
             <div class="progress-top"><p>Your Progress</p></div>
             <div class="progress-bottom">
-                <p id="progressText">$0.00 / $1000.00 Wagered</p>
+                <p id="progressText">$<?php echo number_format($total_wagered, 2); ?> / $1000.00 Wagered</p>
                 <div class="progress-bar-container">
                     <div class="progress-bar" id="progressBar" style="width: 0%"></div>
                 </div>
             </div>
         </div>
+        <?php endif; ?>
     </main>
 
     <script>
-        // Update progress bar display
+        const loginModal = document.getElementById('loginModal');
+        const loginBtn = document.getElementById('loginBtn');
+        const closeLogin = document.getElementById('closeLogin');
+        const logoutBtn = document.getElementById('logoutBtn');
+        const loginTabs = document.querySelectorAll('.login-tab');
+        const loginForms = document.querySelectorAll('.login-form');
+        const loginForm = document.getElementById('loginForm');
+        const registerForm = document.getElementById('registerForm');
+
+        if (loginBtn) {
+            loginBtn.addEventListener('click', () => {
+                loginModal.style.display = 'flex';
+            });
+        }
+
+        if (closeLogin) {
+            closeLogin.addEventListener('click', () => {
+                loginModal.style.display = 'none';
+            });
+        }
+
+        if (loginModal) {
+            loginModal.addEventListener('click', (e) => {
+                if (e.target === loginModal) {
+                    loginModal.style.display = 'none';
+                }
+            });
+        }
+
+        loginTabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                const tabName = tab.getAttribute('data-tab');
+                
+                loginTabs.forEach(t => t.classList.remove('active'));
+                loginForms.forEach(f => f.classList.remove('active'));
+                
+                tab.classList.add('active');
+                document.getElementById(tabName + 'Form').classList.add('active');
+            });
+        });
+
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new FormData(loginForm);
+            formData.append('action', 'login');
+
+            const response = await fetch('login.php', {
+                method: 'POST',
+                body: formData
+            });
+
+            const data = await response.json();
+            const messageEl = document.getElementById('loginMessage');
+            
+            if (data.success) {
+                messageEl.textContent = 'Login successful!';
+                messageEl.style.color = '#00ff00';
+                setTimeout(() => location.reload(), 1500);
+            } else {
+                messageEl.textContent = data.message;
+                messageEl.style.color = '#ff0000';
+            }
+        });
+
+        registerForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new FormData(registerForm);
+            formData.append('action', 'register');
+
+            const response = await fetch('login.php', {
+                method: 'POST',
+                body: formData
+            });
+
+            const data = await response.json();
+            const messageEl = document.getElementById('registerMessage');
+            
+            if (data.success) {
+                messageEl.textContent = 'Registration successful!';
+                messageEl.style.color = '#00ff00';
+                setTimeout(() => location.reload(), 1500);
+            } else {
+                messageEl.textContent = data.message;
+                messageEl.style.color = '#ff0000';
+            }
+        });
+
+        if (logoutBtn) {
+            logoutBtn.addEventListener('click', async () => {
+                const formData = new FormData();
+                formData.append('action', 'logout');
+
+                await fetch('login.php', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                location.reload();
+            });
+        }
+
         function setProgressBar(current, total) {
             const percent = Math.min(100, Math.round((current / total) * 100));
             document.getElementById('progressBar').style.width = percent + '%';
             document.getElementById('progressText').textContent = `$${current.toFixed(2)} / $${total.toFixed(2)} Wagered (${percent}%)`;
         }
-        setProgressBar(350, 1000);
+        setProgressBar(<?php echo $total_wagered; ?>, 1000);
 
-        // Initialize sidebar and dropdown functionality
         (function(){
             const btn = document.getElementById('toggle');
             const sidebar = document.getElementById('side');
             const menuBtns = document.querySelectorAll('.dropdown-button');
 
-            // Toggle sidebar open/closed
             if (btn) btn.addEventListener('click', function(){
                 const isOpen = document.body.classList.toggle('open');
                 sidebar.setAttribute('aria-hidden', (!isOpen).toString());
                 btn.setAttribute('aria-expanded', isOpen.toString());
             });
 
-            // Handle dropdown menu clicks
             menuBtns.forEach(btn => {
                 btn.addEventListener('click', function(e) {
                     if (!document.body.classList.contains('open')) {
@@ -129,7 +314,6 @@
                 });
             });
             
-            // Close dropdowns when clicking outside
             document.addEventListener('click', function(e) {
                 menuBtns.forEach(btn => {
                     if (!btn.contains(e.target)) {
@@ -139,7 +323,6 @@
                 });
             });
 
-            // Update dropdowns visibility with sidebar
             btn.addEventListener('click', function() {
                 const isSidebarOpen = document.body.classList.contains('open');
                 document.querySelectorAll('.dropdown-items').forEach(dropdown => {
