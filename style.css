@@ -554,7 +554,6 @@ body.open .menu-arrow {
 .login-form h2 {
     margin-bottom: 25px;
     font-size: 24px;
-    color: #90beff;
 }
 
 .form-group {
@@ -639,6 +638,75 @@ body.open .menu-arrow {
 
 .auth-text {
     font-weight: 600;
+}
+
+.games-carousel {
+    margin: 2rem auto;
+    max-width: 1200px;
+}
+.games-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+}
+.games-header h2 {
+    font-size: 1.5rem;
+}
+.games-container {
+    display: flex;
+    align-items: center;
+}
+.carousel-btn {
+    background: #0048ac1a;
+    border: none;
+    color: #90beff;
+    font-size: 1rem;
+    width: 40px;
+    height: 120px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border-radius: 12px;
+    transition: background 0.3s ease, transform 0.2s ease;
+    z-index: 10;
+    backdrop-filter: blur(4px);
+    margin: 0 0.5rem;
+}
+.carousel-btn:hover {
+    background: #398cff27;
+    transform: scale(1.2);
+}
+.games-row {
+    display: flex;
+    overflow-x: auto;
+    gap: 1rem;
+    scroll-behavior: smooth;
+    padding-bottom: 1rem;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+.games-row::-webkit-scrollbar {
+    display: none;
+}
+.game-card {
+    min-width: 160px;
+    background: rgba(12,40,78,0.6);
+    border-radius: 12px;
+    overflow: hidden;
+    flex-shrink: 0;
+    text-align: center;
+    color: #fff;
+}
+.game-img {
+    height: 120px;
+    background: #22334f;
+}
+.game-title {
+    padding: 0.5rem;
+    font-size: 0.9rem;
 }
 
 

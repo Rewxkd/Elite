@@ -158,6 +158,7 @@ if ($user_id) {
             <div class="progress-top"><p>Your Progress</p></div>
             <div class="progress-bottom">
                 <p id="progressText">$<?php echo number_format($total_wagered, 2); ?> / $1000.00 Wagered</p>
+                <br>
                 <div class="progress-bar-container">
                     <div class="progress-bar" id="progressBar" style="width: 0%"></div>
                 </div>
@@ -165,6 +166,24 @@ if ($user_id) {
         </div>
         <?php endif; ?>
     </main>
+
+    <section class="games-carousel">
+        <div class="games-header">
+            <h2>Games</h2>
+        </div>
+        <div class="games-container">
+            <button class="carousel-btn prev" id="prevBtn">&#10094;</button>
+            <div class="games-row" id="gamesRow">
+                <?php for ($i = 1; $i <= 20; $i++): ?>
+                    <div class="game-card">
+                        <div class="game-img"></div>
+                        <div class="game-title">Game <?php echo $i; ?></div>
+                    </div>
+                <?php endfor; ?>
+            </div>
+            <button class="carousel-btn next" id="nextBtn">&#10095;</button>
+        </div>
+    </section>
 
     <script>
         const loginModal = document.getElementById('loginModal');
@@ -276,6 +295,22 @@ if ($user_id) {
         setProgressBar(<?php echo $total_wagered; ?>, 1000);
 
         (function(){
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+            const gamesRow = document.getElementById('gamesRow');
+            if (prevBtn && nextBtn && gamesRow) {
+                const scrollAmount = () => {
+                    const card = gamesRow.querySelector('.game-card');
+                    if (!card) return 400;
+                    return (card.offsetWidth + 16) * 5;
+                };
+                prevBtn.addEventListener('click', () => {
+                    gamesRow.scrollBy({ left: -scrollAmount(), behavior: 'smooth' });
+                });
+                nextBtn.addEventListener('click', () => {
+                    gamesRow.scrollBy({ left: scrollAmount(), behavior: 'smooth' });
+                });
+            }
             const btn = document.getElementById('toggle');
             const sidebar = document.getElementById('side');
             const menuBtns = document.querySelectorAll('.dropdown-button');
