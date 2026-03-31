@@ -227,6 +227,21 @@ if ($user_id) {
             });
         });
 
+        function setProgressBar(current, total) {
+            const progressBar = document.getElementById('progressBar');
+            const progressText = document.getElementById('progressText');
+            if (!progressBar || !progressText) {
+                return;
+            }
+            const percent = Math.min(100, Math.round((current / total) * 100));
+            progressBar.style.width = percent + '%';
+            progressText.textContent = `$${current.toFixed(2)} / $${total.toFixed(2)} Wagered (${percent}%)`;
+        }
+
+        if (document.getElementById('progressBar') && document.getElementById('progressText')) {
+            setProgressBar(<?php echo $total_wagered; ?>, 1000);
+        }
+
         loginForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             const formData = new FormData(loginForm);
@@ -286,13 +301,6 @@ if ($user_id) {
                 location.reload();
             });
         }
-
-        function setProgressBar(current, total) {
-            const percent = Math.min(100, Math.round((current / total) * 100));
-            document.getElementById('progressBar').style.width = percent + '%';
-            document.getElementById('progressText').textContent = `$${current.toFixed(2)} / $${total.toFixed(2)} Wagered (${percent}%)`;
-        }
-        setProgressBar(<?php echo $total_wagered; ?>, 1000);
 
         (function(){
             const prevBtn = document.getElementById('prevBtn');
