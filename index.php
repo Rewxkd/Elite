@@ -164,6 +164,19 @@ if ($user_id) {
                 </div>
             </div>
         </div>
+        <?php else: ?>
+        <div class="login-prompt">
+            <div class="login-prompt-left">
+                <h2>...<br>...</h2>
+                <div class="login-prompt-buttons">
+                    <button class="btn-register" id="loginPromptBtn">Register</button>
+                    <button class="btn-login" id="loginPromptBtnLogin">Login</button>
+                </div>
+            </div>
+            <div class="login-prompt-right">
+                <button class="game-category-btn">� Games</button>
+            </div>
+        </div>
         <?php endif; ?>
     </main>
 
@@ -190,6 +203,8 @@ if ($user_id) {
         const loginBtn = document.getElementById('loginBtn');
         const closeLogin = document.getElementById('closeLogin');
         const logoutBtn = document.getElementById('logoutBtn');
+        const loginPromptBtn = document.getElementById('loginPromptBtn');
+        const loginPromptBtnLogin = document.getElementById('loginPromptBtnLogin');
         const loginTabs = document.querySelectorAll('.login-tab');
         const loginForms = document.querySelectorAll('.login-form');
         const loginForm = document.getElementById('loginForm');
@@ -198,6 +213,19 @@ if ($user_id) {
         if (loginBtn) {
             loginBtn.addEventListener('click', () => {
                 loginModal.style.display = 'flex';
+            });
+        }
+
+        if (loginPromptBtn) {
+            loginPromptBtn.addEventListener('click', () => {
+                loginModal.style.display = 'flex';
+            });
+        }
+
+        if (loginPromptBtnLogin) {
+            loginPromptBtnLogin.addEventListener('click', () => {
+                loginModal.style.display = 'flex';
+                document.querySelector('.login-tab[data-tab="login"]').click();
             });
         }
 
