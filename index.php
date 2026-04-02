@@ -187,7 +187,11 @@ if ($user_id) {
         <div class="games-container">
             <button class="carousel-btn prev" id="prevBtn">&#10094;</button>
             <div class="games-row" id="gamesRow">
-                <?php for ($i = 1; $i <= 20; $i++): ?>
+                <a href="blackjack.php" class="game-card" style="text-decoration:none;">
+                    <div class="game-img" style="background: linear-gradient(135deg, #0d123a, #1f2d58); display:flex; align-items:center; justify-content:center; color:#fff; font-weight:700;">BJ</div>
+                    <div class="game-title">Blackjack</div>
+                </a>
+                <?php for ($i = 2; $i <= 20; $i++): ?>
                     <div class="game-card">
                         <div class="game-img"></div>
                         <div class="game-title">Game <?php echo $i; ?></div>
