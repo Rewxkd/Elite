@@ -8,6 +8,15 @@ if (!isset($_SESSION['user_id'])) {
 }
 
 $user_id = intval($_SESSION['user_id']);
+$is_logged_in = true;
+$activePage = 'blackjack';
+$notification_count = 0;
+
+$notif_count_query = $conn->query("SELECT COUNT(*) as count FROM notifications WHERE user_id = $user_id AND is_read = FALSE");
+if ($notif_count_query && $notif_count_query->num_rows > 0) {
+    $notif = $notif_count_query->fetch_assoc();
+    $notification_count = $notif['count'];
+}
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $payload = json_decode(file_get_contents('php://input'), true);
@@ -79,7 +88,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     exit;
 }
 
-// GET and render page
 $stmt = $conn->prepare('SELECT balance, total_wagered FROM wallets WHERE user_id = ?');
 $stmt->bind_param('i', $user_id);
 $stmt->execute();
@@ -90,7 +98,6 @@ $stmt->close();
 $balance = floatval($wallet['balance'] ?? 0);
 $total_wagered = floatval($wallet['total_wagered'] ?? 0);
 
-// now render HTML
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -183,31 +190,16 @@ $total_wagered = floatval($wallet['total_wagered'] ?? 0);
         .bet-actions { margin-top: 10px; }
         .split-layout { display: flex; flex-wrap: wrap; gap: 1rem; margin-top: 0.75rem; }
         .split-hand { flex: 1 1 48%; min-width: 180px; border: 1px solid rgba(70, 142, 216, 0.35); background: rgba(8, 17, 31, 0.65); border-radius: 12px; padding: 0.75rem; }
-        .dealer-panel, .player-panel { background: rgba(8, 16, 28, 0.65); padding: 0.9rem; border: 1px solid rgba(75, 140, 232, 0.3); border-radius: 12px; margin-bottom: 0.75rem; }
+        .dealer-panel, .player-panel { background: rgba(8, 16, 28, 0.65); padding: 0.9rem; border: 1px solid rgba(75, 140, 232, 0.3); border-radius: 12px; margin-bottom: 0.75rem; min-height: 180px; }
         .dealer-panel h4, .player-panel h4 { margin: 0 0 0.5rem; color: #a2c4ff; }
-        .card-row { display: flex; gap: 0.6rem; flex-wrap: wrap; justify-content: center; }
+        .card-row { display: flex; gap: 0.6rem; flex-wrap: wrap; justify-content: center; min-height: 128px; }
         .outcome-positive { color:#7fffd4; }
         .outcome-negative { color:#ff7272; }
         .table-info { font-size:0.95rem; }
     </style>
 </head>
 <body>
-    <aside class="sidebar" id="side" aria-hidden="true">
-        <button class="toggle" id="toggle" aria-label="Toggle navigation" aria-expanded="false">☰</button>
-        <nav class="navigation">
-            <a href="index.php" class="item"><span class="icon">🏠</span><span class="text">Home</span></a>
-            <a href="blackjack.php" class="item" id="active"><span class="icon">♠️</span><span class="text">Blackjack</span></a>
-            <a href="#" class="item"><span class="icon">🎰</span><span class="text">Other</span></a>
-        </nav>
-    </aside>
-
-    <header class="header">
-        <div class="header-box">
-            <div class="logo"><img src="Elite-logo.png" alt="Elite"></div>
-            <div class="balance" id="balancePanel"><span class="balance-amount" id="balanceAmount">$<?php echo number_format($balance,2); ?></span></div>
-            <div class="header-buttons"><a href="index.php" class="button">Back</a></div>
-        </div>
-    </header>
+    <?php include 'header_sidebar.php'; ?>
 
     <main class="container blackjack-area">
         <div class="blackjack-wrapper">
@@ -254,6 +246,7 @@ $total_wagered = floatval($wallet['total_wagered'] ?? 0);
         </div>
     </main>
 
+    <!-- JavaScript kods Blackjack spēles loģikai -->
     <script>
         const userState = {
             balance: <?php echo number_format($balance,2,'.',''); ?>,
@@ -273,7 +266,6 @@ $total_wagered = floatval($wallet['total_wagered'] ?? 0);
         const doubleBtn = document.getElementById('doubleBtn');
         const splitBtn = document.getElementById('splitBtn');
         const displayBalance = document.getElementById('balanceAmount');
-        const message = document.getElementById('message');
         const roundStatusEl = document.getElementById('roundStatus');
         const dealerCardsEl = document.getElementById('dealerCards');
         const playerCardsEl = document.getElementById('playerCards');
@@ -292,7 +284,9 @@ $total_wagered = floatval($wallet['total_wagered'] ?? 0);
         }
 
         function updateUI() {
-            displayBalance.textContent = formatCurrency(userState.balance);
+            if (displayBalance) {
+                displayBalance.textContent = formatCurrency(userState.balance);
+            }
         }
 
         function createDeck() {
@@ -452,12 +446,12 @@ $total_wagered = floatval($wallet['total_wagered'] ?? 0);
             const canSplit = options.canSplit || false;
             const canDouble = options.canDouble || false;
 
-            hitBtn.disabled = !isPlaying;
-            standBtn.disabled = !isPlaying;
-            doubleBtn.disabled = !isPlaying || !canDouble;
-            splitBtn.disabled = !isPlaying || !canSplit;
-            betBtn.disabled = isPlaying;
-            betInput.disabled = isPlaying;
+            if (hitBtn) hitBtn.disabled = !isPlaying;
+            if (standBtn) standBtn.disabled = !isPlaying;
+            if (doubleBtn) doubleBtn.disabled = !isPlaying || !canDouble;
+            if (splitBtn) splitBtn.disabled = !isPlaying || !canSplit;
+            if (betBtn) betBtn.disabled = isPlaying;
+            if (betInput) betInput.disabled = isPlaying;
         }
 
         function refreshActionButtons() {
@@ -476,11 +470,13 @@ $total_wagered = floatval($wallet['total_wagered'] ?? 0);
         }
 
         function updateMessage(text, cls = '') {
-            updateRoundStatus(text);
+            updateRoundStatus(text, cls);
         }
 
-        function updateRoundStatus(text) {
+        function updateRoundStatus(text, cls = '') {
+            if (!roundStatusEl) return;
             roundStatusEl.textContent = text;
+            roundStatusEl.className = 'round-status' + (cls ? ' ' + cls : '');
         }
 
         async function beginRound() {
@@ -509,7 +505,6 @@ $total_wagered = floatval($wallet['total_wagered'] ?? 0);
             inRound = true;
             dealerHand.reveal = false;
 
-            // Deal sequence with delay
             await dealCardToHand(dealerHand, true);
             await dealCardToHand(playerHands[0].cards, true);
             await dealCardToHand(dealerHand, false);
@@ -595,7 +590,7 @@ $total_wagered = floatval($wallet['total_wagered'] ?? 0);
             moveToNextHand();
             renderHands();
             refreshActionButtons();
-            updateMessage(`Standing on hand ${currentHandIndex}.`, '');
+            updateMessage(`Standing on hand ${currentHandIndex + 1}.`, '');
         }
 
         async function playerDouble() {
@@ -763,16 +758,15 @@ $total_wagered = floatval($wallet['total_wagered'] ?? 0);
             }
         }
 
-        betBtn.addEventListener('click', beginRound);
-        hitBtn.addEventListener('click', playerHit);
-        standBtn.addEventListener('click', playerStand);
-        doubleBtn.addEventListener('click', playerDouble);
-        splitBtn.addEventListener('click', playerSplit);
+        if (betBtn) betBtn.addEventListener('click', beginRound);
+        if (hitBtn) hitBtn.addEventListener('click', playerHit);
+        if (standBtn) standBtn.addEventListener('click', playerStand);
+        if (doubleBtn) doubleBtn.addEventListener('click', playerDouble);
+        if (splitBtn) splitBtn.addEventListener('click', playerSplit);
 
         setButtons('idle');
         updateUI();
 
-        // Initialize by fetching wallet (sometimes updated elsewhere)
         async function refreshWallet() {
             try {
                 const resp = await fetch('blackjack.php', {
@@ -792,13 +786,6 @@ $total_wagered = floatval($wallet['total_wagered'] ?? 0);
         }
 
         refreshWallet();
-
-        const toggle = document.getElementById('toggle');
-        toggle.addEventListener('click', () => {
-            const isOpen = document.body.classList.toggle('open');
-            document.getElementById('side').setAttribute('aria-hidden', (!isOpen).toString());
-            toggle.setAttribute('aria-expanded', isOpen.toString());
-        });
     </script>
 </body>
 </html>

@@ -250,10 +250,10 @@ if ($user_id) {
         loginTabs.forEach(tab => {
             tab.addEventListener('click', () => {
                 const tabName = tab.getAttribute('data-tab');
-                
+
                 loginTabs.forEach(t => t.classList.remove('active'));
                 loginForms.forEach(f => f.classList.remove('active'));
-                
+
                 tab.classList.add('active');
                 document.getElementById(tabName + 'Form').classList.add('active');
             });
@@ -286,7 +286,7 @@ if ($user_id) {
 
             const data = await response.json();
             const messageEl = document.getElementById('loginMessage');
-            
+
             if (data.success) {
                 messageEl.textContent = 'Login successful!';
                 messageEl.style.color = '#00ff00';
@@ -309,7 +309,7 @@ if ($user_id) {
 
             const data = await response.json();
             const messageEl = document.getElementById('registerMessage');
-            
+
             if (data.success) {
                 messageEl.textContent = 'Registration successful!';
                 messageEl.style.color = '#00ff00';
@@ -372,23 +372,23 @@ if ($user_id) {
                         }, 0);
                         return;
                     }
-                    
+
                     e.stopPropagation();
                     const dropdown = this.parentElement.querySelector('.dropdown-items');
                     const isOpen = dropdown.getAttribute('aria-hidden') === 'true';
-                    
+
                     menuBtns.forEach(otherBtn => {
                         if (otherBtn !== this) {
                             otherBtn.parentElement.querySelector('.dropdown-items').setAttribute('aria-hidden', 'true');
                             otherBtn.setAttribute('aria-expanded', 'false');
                         }
                     });
-                    
+
                     dropdown.setAttribute('aria-hidden', (!isOpen).toString());
                     this.setAttribute('aria-expanded', isOpen.toString());
                 });
             });
-            
+
             document.addEventListener('click', function(e) {
                 menuBtns.forEach(btn => {
                     if (!btn.contains(e.target)) {

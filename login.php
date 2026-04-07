@@ -39,13 +39,13 @@ if ($action === 'register') {
     if ($insert_user) {
         $user_id = $conn->insert_id;
         $conn->query("INSERT INTO wallets (user_id, balance, total_wagered) VALUES ($user_id, 0.00, 0.00)");
-        
+
         $_SESSION['user_id'] = $user_id;
         echo json_encode(['success' => true, 'message' => 'Registration successful']);
     } else {
         echo json_encode(['success' => false, 'message' => 'Registration failed']);
     }
-} 
+}
 elseif ($action === 'login') {
     $username = $_POST['username'] ?? '';
     $password = $_POST['password'] ?? '';
@@ -56,7 +56,7 @@ elseif ($action === 'login') {
     }
 
     $user_query = $conn->query("SELECT user_id, password FROM users WHERE username = '$username'");
-    
+
     if ($user_query->num_rows === 0) {
         echo json_encode(['success' => false, 'message' => 'Invalid username or password']);
         exit;
@@ -71,7 +71,7 @@ elseif ($action === 'login') {
 
     $_SESSION['user_id'] = $user['user_id'];
     echo json_encode(['success' => true, 'message' => 'Login successful']);
-} 
+}
 elseif ($action === 'logout') {
     session_destroy();
     echo json_encode(['success' => true, 'message' => 'Logout successful']);

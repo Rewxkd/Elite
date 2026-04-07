@@ -799,7 +799,7 @@ body.open .menu-arrow {
     overflow-x: auto;
     gap: 1rem;
     scroll-behavior: smooth;
-    padding-bottom: 1rem;
+    padding: 4px 0 1rem 0;
     -ms-overflow-style: none;
     scrollbar-width: none;
 }
@@ -831,6 +831,3 @@ body.open .menu-arrow {
     padding: 0.5rem;
     font-size: 0.9rem;
 }
-
-
-

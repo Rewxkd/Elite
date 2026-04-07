@@ -1,0 +1,8 @@
+{
+    "chat.tools.terminal.autoApprove": {
+        "/^cd 'c:\\\\xampp\\\\htdocs\\\\Elite'; php -l blackjack\\.php$/": {
+            "approve": true,
+            "matchCommandLine": true
+        }
+    }
+}
