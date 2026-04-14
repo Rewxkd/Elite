@@ -3,6 +3,10 @@
         "/^cd 'c:\\\\xampp\\\\htdocs\\\\Elite'; php -l blackjack\\.php$/": {
             "approve": true,
             "matchCommandLine": true
+        },
+        "/^php -v$/": {
+            "approve": true,
+            "matchCommandLine": true
         }
     }
 }

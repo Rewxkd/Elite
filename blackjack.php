@@ -107,7 +107,17 @@ $total_wagered = floatval($wallet['total_wagered'] ?? 0);
     <title>Blackjack | Elite</title>
     <link rel="stylesheet" href="style.css" />
     <style>
-        .blackjack-area { max-width: 1200px; margin: 1rem auto 3rem; padding: 1rem; background: rgba(4, 11, 26, 0.85); border: 1px solid rgba(70, 142, 216, 0.3); border-radius: 20px; backdrop-filter: blur(10px); box-shadow: 0 12px 28px rgba(0, 0, 0, 0.55); }
+        .page-game-main {
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            padding-left: 2rem !important;
+            padding-top: 2rem !important;
+            transform: none !important;
+            min-height: calc(100vh - 120px);
+        }
+
+        .blackjack-area { max-width: 100%; margin: 0; padding: 0; background: transparent; border: none; box-shadow: none; }
         .blackjack-wrapper { display: grid; grid-template-columns: 280px 1fr; gap: 1rem; align-items: start; }
         .left-panel, .table-panel { background: rgba(8, 19, 40, 0.65); border: 1px solid rgba(56, 125, 211, 0.25); border-radius: 14px; padding: 1rem; }
         .left-panel .panel { background: transparent; border: none; padding:0; }
@@ -201,49 +211,56 @@ $total_wagered = floatval($wallet['total_wagered'] ?? 0);
 <body>
     <?php include 'header_sidebar.php'; ?>
 
-    <main class="container blackjack-area">
-        <div class="blackjack-wrapper">
-            <aside class="left-panel">
-                <div class="panel">
-                    <h3>Blackjack</h3>
-                    <p class="table-info">Dealer stands on soft 17. Blackjack pays 3:2.</p>
-                    <div style="display:flex;justify-content:space-between;align-items:center;margin:0.8rem 0 0.4rem;">
-                        <label for="betInput" style="color:#cfdcff;font-weight:600;">Bet:</label>
-                        <input id="betInput" type="number" min="1" step="1" value="10">
-                    </div>
-                    <div class="action-grid" style="margin-top:0.75rem;">
-                        <button id="hitBtn" disabled>Hit</button>
-                        <button id="standBtn" disabled>Stand</button>
-                        <button id="splitBtn" disabled>Split</button>
-                        <button id="doubleBtn" disabled>Double</button>
-                    </div>
-                    <div class="bet-actions">
-                        <button id="betBtn" style="background: linear-gradient(90deg, #1f6aed, #2550de);">Place Bet</button>
-                    </div>
-                </div>
-            </aside>
+    <main class="container page-game-main">
+        <section class="game-overlay">
+            <div class="game-overlay-body blackjack-area">
+                <div class="blackjack-wrapper">
+                    <aside class="left-panel">
+                        <div class="panel">
+                            <h3>Blackjack</h3>
+                            <p class="table-info">Dealer stands on soft 17. Blackjack pays 3:2.</p>
+                            <div style="display:flex;justify-content:space-between;align-items:center;margin:0.8rem 0 0.4rem;">
+                                <label for="betInput" style="color:#cfdcff;font-weight:600;">Bet:</label>
+                                <input id="betInput" type="number" min="1" step="1" value="10">
+                            </div>
+                            <div class="action-grid" style="margin-top:0.75rem;">
+                                <button id="hitBtn" disabled>Hit</button>
+                                <button id="standBtn" disabled>Stand</button>
+                                <button id="splitBtn" disabled>Split</button>
+                                <button id="doubleBtn" disabled>Double</button>
+                            </div>
+                            <div class="bet-actions">
+                                <button id="betBtn" style="background: linear-gradient(90deg, #1f6aed, #2550de);">Place Bet</button>
+                            </div>
+                        </div>
+                    </aside>
 
-            <section class="table-panel">
-                <div class="round-status" style="margin-bottom:1rem;">
-                    <div class="deck-preview"><img src="https://deckofcardsapi.com/static/img/back.png" alt="Card deck"></div>
-                    <div id="roundStatus">Ready to play. Place your bet to start a round.</div>
-                </div>
+                    <section class="table-panel">
+                        <div class="round-status" style="margin-bottom:1rem;">
+                            <div class="deck-preview"><img src="https://deckofcardsapi.com/static/img/back.png" alt="Card deck"></div>
+                            <div id="roundStatus">Ready to play. Place your bet to start a round.</div>
+                        </div>
 
-                <div class="dealer-panel">
-                    <h4>Dealer</h4>
-                    <div class="card-row" id="dealerCards"></div>
-                    <p id="dealerValue" style="color:#c5d8ff;margin:0.5rem 0 0;"></p>
-                </div>
+                        <div class="dealer-panel">
+                            <h4>Dealer</h4>
+                            <div class="card-row" id="dealerCards"></div>
+                            <p id="dealerValue" style="color:#c5d8ff;margin:0.5rem 0 0;"></p>
+                        </div>
 
-                <div class="player-panel" id="singlePlayerPanel">
-                    <h4>Player</h4>
-                    <div class="card-row" id="playerCards"></div>
-                    <p id="playerValue" style="color:#c5d8ff;margin:0.5rem 0 0;"></p>
-                </div>
+                        <div class="player-panel" id="singlePlayerPanel">
+                            <h4>Player</h4>
+                            <div class="card-row" id="playerCards"></div>
+                            <p id="playerValue" style="color:#c5d8ff;margin:0.5rem 0 0;"></p>
+                        </div>
 
-                <div class="split-layout" id="splitHandsSection" style="display:none;"></div>
-            </section>
-        </div>
+                        <div class="split-layout" id="splitHandsSection" style="display:none;"></div>
+                    </section>
+                </div>
+            </div>
+            <footer class="game-overlay-footer">
+                <div class="game-overlay-left">Blackjack</div>
+            </footer>
+        </section>
     </main>
 
     <!-- JavaScript kods Blackjack spēles loģikai -->
