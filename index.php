@@ -9,6 +9,7 @@ $total_wagered = 0;
 $notification_count = 0;
 $notifications = array();
 $is_logged_in = false;
+$activePage = 'home';
 
 if ($user_id) {
     $is_logged_in = true;
@@ -44,7 +45,7 @@ if ($user_id) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Elite</title>
+    <title>Main Page - Elite</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -87,67 +88,7 @@ if ($user_id) {
             </form>
         </div>
     </div>
-    <aside class="sidebar" id="side" aria-hidden="true">
-        <button class="toggle" id="toggle" aria-label="Toggle navigation" aria-expanded="false">☰</button>
-        <nav class="navigation">
-            <a href="#" class="item" id="active"><span class="icon">🏠</span><span class="text">Home</span></a>
-            <a href="#" class="item"><span class="icon">❤️</span><span class="text">Favourites</span></a>
-            <a href="#" class="item"><span class="icon">🕒</span><span class="text">Recent</span></a>
-            <div class="dropdown">
-                <div class="dropdown-item">
-                    <button class="dropdown-button" aria-haspopup="true" aria-expanded="false">
-                        <span class="menu-icon">⁉️</span><span class="menu-text">placeholder</span><span class="menu-arrow">▼</span>
-                    </button>
-                    <div class="dropdown-items" aria-hidden="true">
-                        <a href="#">text</a><a href="#">text</a><a href="#">text</a>
-                    </div>
-                </div>
-                <div class="dropdown-item">
-                    <button class="dropdown-button" aria-haspopup="true" aria-expanded="false">
-                        <span class="menu-icon">⁉️</span><span class="menu-text">placeholder</span><span class="menu-arrow">▼</span>
-                    </button>
-                    <div class="dropdown-items" aria-hidden="true">
-                        <a href="#">text</a><a href="#">text</a><a href="#">text</a>
-                    </div>
-                </div>
-                <div class="dropdown-item">
-                    <button class="dropdown-button" aria-haspopup="true" aria-expanded="false">
-                        <span class="menu-icon">⁉️</span><span class="menu-text">placeholder</span><span class="menu-arrow">▼</span>
-                    </button>
-                    <div class="dropdown-items" aria-hidden="true">
-                        <a href="#">text</a><a href="#">text</a><a href="#">text</a>
-                    </div>
-                </div>
-            </div>
-        </nav>
-    </aside>
-
-    <header class="header">
-        <div class="header-box">
-            <div class="logo">
-                <img src="Elite-logo.png" alt="">
-            </div>
-            <?php if ($is_logged_in): ?>
-            <div class="balance">
-                <span class="balance-amount">$<?php echo number_format($balance, 2); ?></span>
-            </div>
-            <?php endif; ?>
-            <div class="header-buttons">
-                <button class="button icon" id="search" aria-label="Search"><span>🔍</span></button>
-                <div class="group" role="group" aria-label="Profile and notifications">
-                    <button class="button icon notif" id="notif" aria-label="Notifications"><span>🔔</span><span class="badge" id="badge"><?php echo $notification_count; ?></span></button>
-                    <?php if ($is_logged_in): ?>
-                        <button class="button icon" id="prof" aria-label="Profile"><span>👤</span></button>
-                    <?php endif; ?>
-                </div>
-                <?php if ($is_logged_in): ?>
-                    <button class="auth-button" id="logoutBtn"><span class="auth-icon">🚪</span><span class="auth-text">Logout</span></button>
-                <?php else: ?>
-                    <button class="auth-button" id="loginBtn"><span class="auth-icon">🔐</span><span class="auth-text">Login</span></button>
-                <?php endif; ?>
-            </div>
-        </div>
-    </header>
+    <?php include 'header_sidebar.php'; ?>
 
     <main class="container">
         <?php if ($is_logged_in): ?>
@@ -203,57 +144,18 @@ if ($user_id) {
     </section>
 
     <script>
-        const loginModal = document.getElementById('loginModal');
-        const loginBtn = document.getElementById('loginBtn');
-        const closeLogin = document.getElementById('closeLogin');
-        const logoutBtn = document.getElementById('logoutBtn');
-        const loginPromptBtn = document.getElementById('loginPromptBtn');
-        const loginPromptBtnLogin = document.getElementById('loginPromptBtnLogin');
         const loginTabs = document.querySelectorAll('.login-tab');
         const loginForms = document.querySelectorAll('.login-form');
         const loginForm = document.getElementById('loginForm');
         const registerForm = document.getElementById('registerForm');
 
-        if (loginBtn) {
-            loginBtn.addEventListener('click', () => {
-                loginModal.style.display = 'flex';
-            });
-        }
-
-        if (loginPromptBtn) {
-            loginPromptBtn.addEventListener('click', () => {
-                loginModal.style.display = 'flex';
-            });
-        }
-
-        if (loginPromptBtnLogin) {
-            loginPromptBtnLogin.addEventListener('click', () => {
-                loginModal.style.display = 'flex';
-                document.querySelector('.login-tab[data-tab="login"]').click();
-            });
-        }
-
-        if (closeLogin) {
-            closeLogin.addEventListener('click', () => {
-                loginModal.style.display = 'none';
-            });
-        }
-
-        if (loginModal) {
-            loginModal.addEventListener('click', (e) => {
-                if (e.target === loginModal) {
-                    loginModal.style.display = 'none';
-                }
-            });
-        }
-
         loginTabs.forEach(tab => {
             tab.addEventListener('click', () => {
                 const tabName = tab.getAttribute('data-tab');
-
+                
                 loginTabs.forEach(t => t.classList.remove('active'));
                 loginForms.forEach(f => f.classList.remove('active'));
-
+                
                 tab.classList.add('active');
                 document.getElementById(tabName + 'Form').classList.add('active');
             });
@@ -286,7 +188,7 @@ if ($user_id) {
 
             const data = await response.json();
             const messageEl = document.getElementById('loginMessage');
-
+            
             if (data.success) {
                 messageEl.textContent = 'Login successful!';
                 messageEl.style.color = '#00ff00';
@@ -309,7 +211,7 @@ if ($user_id) {
 
             const data = await response.json();
             const messageEl = document.getElementById('registerMessage');
-
+            
             if (data.success) {
                 messageEl.textContent = 'Registration successful!';
                 messageEl.style.color = '#00ff00';
@@ -320,91 +222,38 @@ if ($user_id) {
             }
         });
 
-        if (logoutBtn) {
-            logoutBtn.addEventListener('click', async () => {
-                const formData = new FormData();
-                formData.append('action', 'logout');
+        document.getElementById('closeLogin').addEventListener('click', () => {
+            document.getElementById('loginModal').style.display = 'none';
+        });
 
-                await fetch('login.php', {
-                    method: 'POST',
-                    body: formData
-                });
+        document.getElementById('loginPromptBtn').addEventListener('click', () => {
+            document.getElementById('loginModal').style.display = 'flex';
+            document.querySelector('[data-tab="register"]').click();
+        });
 
-                location.reload();
+        document.getElementById('loginPromptBtnLogin').addEventListener('click', () => {
+            document.getElementById('loginModal').style.display = 'flex';
+            document.querySelector('[data-tab="login"]').click();
+        });
+
+        const gamesRow = document.getElementById('gamesRow');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+
+        if (prevBtn && nextBtn && gamesRow) {
+            const scrollAmount = () => {
+                const card = gamesRow.querySelector('.game-card');
+                return card ? card.offsetWidth + 16 : 200; // 16px gap
+            };
+
+            prevBtn.addEventListener('click', () => {
+                gamesRow.scrollBy({ left: -scrollAmount(), behavior: 'smooth' });
+            });
+
+            nextBtn.addEventListener('click', () => {
+                gamesRow.scrollBy({ left: scrollAmount(), behavior: 'smooth' });
             });
         }
-
-        (function(){
-            const prevBtn = document.getElementById('prevBtn');
-            const nextBtn = document.getElementById('nextBtn');
-            const gamesRow = document.getElementById('gamesRow');
-            if (prevBtn && nextBtn && gamesRow) {
-                const scrollAmount = () => {
-                    const card = gamesRow.querySelector('.game-card');
-                    if (!card) return 400;
-                    return (card.offsetWidth + 16) * 5;
-                };
-                prevBtn.addEventListener('click', () => {
-                    gamesRow.scrollBy({ left: -scrollAmount(), behavior: 'smooth' });
-                });
-                nextBtn.addEventListener('click', () => {
-                    gamesRow.scrollBy({ left: scrollAmount(), behavior: 'smooth' });
-                });
-            }
-            const btn = document.getElementById('toggle');
-            const sidebar = document.getElementById('side');
-            const menuBtns = document.querySelectorAll('.dropdown-button');
-
-            if (btn) btn.addEventListener('click', function(){
-                const isOpen = document.body.classList.toggle('open');
-                sidebar.setAttribute('aria-hidden', (!isOpen).toString());
-                btn.setAttribute('aria-expanded', isOpen.toString());
-            });
-
-            menuBtns.forEach(btn => {
-                btn.addEventListener('click', function(e) {
-                    if (!document.body.classList.contains('open')) {
-                        document.body.classList.add('open');
-                        sidebar.setAttribute('aria-hidden', 'false');
-                        btn.setAttribute('aria-expanded', 'true');
-                        setTimeout(() => {
-                            this.parentElement.querySelector('.dropdown-items').setAttribute('aria-hidden', 'false');
-                        }, 0);
-                        return;
-                    }
-
-                    e.stopPropagation();
-                    const dropdown = this.parentElement.querySelector('.dropdown-items');
-                    const isOpen = dropdown.getAttribute('aria-hidden') === 'true';
-
-                    menuBtns.forEach(otherBtn => {
-                        if (otherBtn !== this) {
-                            otherBtn.parentElement.querySelector('.dropdown-items').setAttribute('aria-hidden', 'true');
-                            otherBtn.setAttribute('aria-expanded', 'false');
-                        }
-                    });
-
-                    dropdown.setAttribute('aria-hidden', (!isOpen).toString());
-                    this.setAttribute('aria-expanded', isOpen.toString());
-                });
-            });
-
-            document.addEventListener('click', function(e) {
-                menuBtns.forEach(btn => {
-                    if (!btn.contains(e.target)) {
-                        btn.parentElement.querySelector('.dropdown-items').setAttribute('aria-hidden', 'true');
-                        btn.setAttribute('aria-expanded', 'false');
-                    }
-                });
-            });
-
-            btn.addEventListener('click', function() {
-                const isSidebarOpen = document.body.classList.contains('open');
-                document.querySelectorAll('.dropdown-items').forEach(dropdown => {
-                    dropdown.setAttribute('aria-hidden', (!isSidebarOpen).toString());
-                });
-            });
-        })();
     </script>
 </body>
 </html>

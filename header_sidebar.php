@@ -3,7 +3,7 @@
     <button class="toggle" id="toggle" aria-label="Toggle navigation" aria-expanded="false">☰</button>
     <nav class="navigation">
         <a href="index.php" class="item" <?php echo $activePage === 'home' ? 'id="active"' : ''; ?>><span class="icon">🏠</span><span class="text">Home</span></a>
-        <a href="#" class="item" <?php echo $activePage === 'favourites' ? 'id="active"' : ''; ?>><span class="icon">❤️</span><span class="text">Favourites</span></a>
+        <a href="favorites.php" class="item" <?php echo $activePage === 'favourites' ? 'id="active"' : ''; ?>><span class="icon">❤️</span><span class="text">Favourites</span></a>
         <a href="#" class="item" <?php echo $activePage === 'recent' ? 'id="active"' : ''; ?>><span class="icon">🕒</span><span class="text">Recent</span></a>
         <div class="dropdown">
             <div class="dropdown-item">
