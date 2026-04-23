@@ -121,27 +121,6 @@ if ($user_id) {
         <?php endif; ?>
     </main>
 
-    <section class="games-carousel">
-        <div class="games-header">
-            <h2>Games</h2>
-        </div>
-        <div class="games-container">
-            <button class="carousel-btn prev" id="prevBtn">&#10094;</button>
-            <div class="games-row" id="gamesRow">
-                <a href="blackjack.php" class="game-card" style="text-decoration:none;">
-                    <div class="game-img" style="background: linear-gradient(135deg, #0d123a, #1f2d58); display:flex; align-items:center; justify-content:center; color:#fff; font-weight:700;">BJ</div>
-                    <div class="game-title">Blackjack</div>
-                </a>
-                <?php for ($i = 2; $i <= 20; $i++): ?>
-                    <div class="game-card">
-                        <div class="game-img"></div>
-                        <div class="game-title">Game <?php echo $i; ?></div>
-                    </div>
-                <?php endfor; ?>
-            </div>
-            <button class="carousel-btn next" id="nextBtn">&#10095;</button>
-        </div>
-    </section>
 
     <script>
         const loginTabs = document.querySelectorAll('.login-tab');
@@ -236,22 +215,12 @@ if ($user_id) {
             document.querySelector('[data-tab="login"]').click();
         });
 
-        const gamesRow = document.getElementById('gamesRow');
-        const prevBtn = document.getElementById('prevBtn');
-        const nextBtn = document.getElementById('nextBtn');
 
-        if (prevBtn && nextBtn && gamesRow) {
-            const scrollAmount = () => {
-                const card = gamesRow.querySelector('.game-card');
                 return card ? card.offsetWidth + 16 : 200; // 16px gap
             };
 
-            prevBtn.addEventListener('click', () => {
-                gamesRow.scrollBy({ left: -scrollAmount(), behavior: 'smooth' });
             });
 
-            nextBtn.addEventListener('click', () => {
-                gamesRow.scrollBy({ left: scrollAmount(), behavior: 'smooth' });
             });
         }
     </script>
