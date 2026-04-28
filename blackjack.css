@@ -1,0 +1,325 @@
+.page-game-main {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding-left: 2rem !important;
+    padding-top: 2rem !important;
+    transform: none !important;
+    min-height: calc(100vh - 120px);
+}
+
+.blackjack-area {
+    max-width: 100%;
+    margin: 0;
+    padding: 0;
+    background: transparent;
+    border: none;
+    box-shadow: none;
+}
+
+.blackjack-wrapper {
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    gap: 1rem;
+    align-items: start;
+}
+
+.left-panel, .table-panel {
+    background: rgba(8, 19, 40, 0.65);
+    border: 1px solid rgba(56, 125, 211, 0.25);
+    border-radius: 14px;
+    padding: 1rem;
+}
+
+.left-panel .panel {
+    background: transparent;
+    border: none;
+    padding: 0;
+}
+
+.table-panel {
+    min-height: 520px;
+}
+
+.hand-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    align-items: start;
+    margin-top: 0.75rem;
+}
+
+.panel {
+    background: rgba(8,19,40,0.7);
+    border: 1px solid rgba(56,125,211,0.25);
+    border-radius: 12px;
+    padding: 0.9rem;
+    min-width: 180px;
+    flex: 1;
+}
+
+.cards {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    min-height: 90px;
+}
+
+.card {
+    width: 84px;
+    height: 118px;
+    border-radius: 10px;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.45);
+    overflow: hidden;
+    position: relative;
+    transform-style: preserve-3d;
+    transition: transform 0.3s ease, box-shadow 0.2s ease;
+    border: 1px solid rgba(193, 220, 255, 0.8);
+    background: #ffffff;
+}
+
+.card:hover {
+    transform: translateY(-4px) scale(1.03);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.45);
+}
+
+.card-img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: block;
+}
+
+.card[data-flip="true"] {
+    transform: rotateY(180deg);
+}
+
+.card-face {
+    position: absolute;
+    inset: 0;
+    backface-visibility: hidden;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.card-back {
+    background: linear-gradient(45deg, #172f6f, #104ea2);
+    color: #fff;
+    transform: rotateY(180deg);
+    font-size: 1.2rem;
+}
+
+.card-front {
+    background: linear-gradient(135deg, #fff, #f8f8f8);
+    color: #1a2030;
+}
+
+.card.animate {
+    animation: card-enter 0.25s ease forwards;
+}
+
+@keyframes card-enter {
+    0% {
+        transform: translateY(-20px) scale(0.95);
+        opacity: 0;
+    }
+    100% {
+        transform: translateY(0) scale(1);
+        opacity: 1;
+    }
+}
+
+.status {
+    color: #fff;
+    font-weight: 700;
+    font-size: 1rem;
+    min-height: 1.2rem;
+}
+
+.round-status {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    padding: 0.75rem;
+    border: 1px solid rgba(74, 158, 245, 0.3);
+    border-radius: 12px;
+    background: rgba(17, 35, 68, 0.65);
+}
+
+.deck-preview img {
+    width: 46px;
+    height: 62px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
+}
+
+#roundStatus {
+    color: #c5d8ff;
+    font-size: 0.95rem;
+    font-weight: 600;
+}
+
+.controls {
+    width: 100%;
+}
+
+.action-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-top: 8px;
+}
+
+.action-grid button, .bet-actions button {
+    width: 100%;
+    padding: 12px 0;
+    border-radius: 10px;
+    border: 1px solid rgba(118, 156, 255, 0.6);
+    background: rgba(45, 84, 140, 0.6);
+    color: #fff;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: transform 0.2s ease, background 0.2s ease;
+}
+
+#betInput {
+    width: 100%;
+    max-width: 150px;
+    padding: 0.65rem 0.75rem;
+    border-radius: 10px;
+    border: 1px solid rgba(118, 156, 255, 0.55);
+    background: rgba(24, 37, 74, 0.75);
+    color: #fff;
+    font-size: 1.07rem;
+    font-weight: 600;
+}
+
+#betInput:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(84, 147, 255, 0.55);
+    border-color: rgba(129, 175, 255, 0.8);
+}
+
+.action-grid button:hover:not(:disabled), .bet-actions button:hover:not(:disabled) {
+    transform: translateY(-2px);
+    background: rgba(65, 115, 213, 0.8);
+}
+
+.action-grid button:disabled, .bet-actions button:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+}
+
+.bet-actions {
+    margin-top: 10px;
+}
+
+.split-layout {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-top: 0.75rem;
+}
+
+.split-hand {
+    flex: 1 1 48%;
+    min-width: 180px;
+    border: 1px solid rgba(70, 142, 216, 0.35);
+    background: rgba(8, 17, 31, 0.65);
+    border-radius: 12px;
+    padding: 0.75rem;
+}
+
+.dealer-panel, .player-panel {
+    background: rgba(8, 16, 28, 0.65);
+    padding: 0.9rem;
+    border: 1px solid rgba(75, 140, 232, 0.3);
+    border-radius: 12px;
+    margin-bottom: 0.75rem;
+    min-height: 180px;
+}
+
+.dealer-panel h4, .player-panel h4 {
+    margin: 0 0 0.5rem;
+    color: #a2c4ff;
+}
+
+.card-row {
+    display: flex;
+    gap: 0.6rem;
+    flex-wrap: wrap;
+    justify-content: center;
+    min-height: 128px;
+}
+
+.outcome-positive {
+    color: #7fffd4;
+}
+
+.outcome-negative {
+    color: #ff7272;
+}
+
+.table-info {
+    font-size: 0.95rem;
+}
+
+/* Game Overlay Footer Styles */
+.game-overlay-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    background: rgba(8, 19, 40, 0.8);
+    border-top: 1px solid rgba(56, 125, 211, 0.25);
+    border-radius: 0 0 14px 14px;
+}
+
+.game-overlay-left {
+    color: #a2c4ff;
+    font-size: 1.2rem;
+    font-weight: 600;
+}
+
+/* Favorite Button Styles */
+.favorite-btn {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    cursor: pointer;
+    padding: 0.45rem;
+    border-radius: 10px;
+    transition: transform 0.25s ease, background 0.25s ease, border-color 0.25s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.favorite-btn:hover {
+    transform: scale(1.08);
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.18);
+}
+
+.favorite-btn.favorited {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 215, 0, 0.4);
+}
+
+.star-icon {
+    width: 24px;
+    height: 24px;
+    stroke: rgba(255, 255, 255, 0.65);
+    stroke-width: 2;
+    fill: none;
+    transition: all 0.25s ease;
+}
+
+.favorite-btn.favorited .star-icon {
+    stroke: #FFD700;
+    fill: #FFD700;
+    filter: drop-shadow(0 0 8px rgba(255, 215, 0, 0.45));
+}
