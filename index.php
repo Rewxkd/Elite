@@ -9,10 +9,17 @@ $total_wagered = 0;
 $notification_count = 0;
 $notifications = array();
 $is_logged_in = false;
+<<<<<<< HEAD
 
 if ($user_id) {
     $is_logged_in = true;
 
+=======
+$activePage = 'home';
+
+if ($user_id) {
+    $is_logged_in = true;
+>>>>>>> 76dd0d18bd76d8a820dce3247eee8bbbe1355fa2
     $user_query = $conn->query("SELECT username FROM users WHERE user_id = $user_id");
     if ($user_query && $user_query->num_rows > 0) {
         $user = $user_query->fetch_assoc();
@@ -39,14 +46,18 @@ if ($user_id) {
         }
     }
 }
+<<<<<<< HEAD
 
 $activePage = 'home';
+=======
+>>>>>>> 76dd0d18bd76d8a820dce3247eee8bbbe1355fa2
 ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<<<<<<< HEAD
     <title>Elite</title>
     <link rel="stylesheet" href="style.css">
 </head>
@@ -56,6 +67,15 @@ $activePage = 'home';
         <div class="login-container">
             <button class="login-close" id="closeLogin" aria-label="Close login">&times;</button>
 
+=======
+    <title>Main Page - Elite</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="login-modal" id="loginModal" style="display: <?php echo $is_logged_in ? 'none' : 'flex'; ?>;">
+        <div class="login-container">
+            <button class="login-close" id="closeLogin" aria-label="Close login">&times;</button>
+>>>>>>> 76dd0d18bd76d8a820dce3247eee8bbbe1355fa2
             <div class="login-tabs">
                 <button class="login-tab active" data-tab="login">Login</button>
                 <button class="login-tab" data-tab="register">Register</button>
@@ -92,7 +112,10 @@ $activePage = 'home';
             </form>
         </div>
     </div>
+<<<<<<< HEAD
 
+=======
+>>>>>>> 76dd0d18bd76d8a820dce3247eee8bbbe1355fa2
     <?php include 'header_sidebar.php'; ?>
 
     <main class="container">
@@ -100,7 +123,10 @@ $activePage = 'home';
         <div class="container-box">
             <h1>Welcome <span style="color: #90beff;"><?php echo htmlspecialchars($username); ?></span>!</h1>
         </div>
+<<<<<<< HEAD
 
+=======
+>>>>>>> 76dd0d18bd76d8a820dce3247eee8bbbe1355fa2
         <div class="container-progress">
             <div class="progress-top"><p>Your Progress</p></div>
             <div class="progress-bottom">
@@ -121,12 +147,17 @@ $activePage = 'home';
                 </div>
             </div>
             <div class="login-prompt-right">
+<<<<<<< HEAD
                 <button class="game-category-btn">🎮 Games</button>
+=======
+                <button class="game-category-btn">� Games</button>
+>>>>>>> 76dd0d18bd76d8a820dce3247eee8bbbe1355fa2
             </div>
         </div>
         <?php endif; ?>
     </main>
 
+<<<<<<< HEAD
     <section class="games-carousel">
         <div class="games-header">
             <h2>Games</h2>
@@ -159,6 +190,10 @@ $activePage = 'home';
         const logoutBtn = document.getElementById('logoutBtn');
         const loginPromptBtn = document.getElementById('loginPromptBtn');
         const loginPromptBtnLogin = document.getElementById('loginPromptBtnLogin');
+=======
+
+    <script>
+>>>>>>> 76dd0d18bd76d8a820dce3247eee8bbbe1355fa2
         const loginTabs = document.querySelectorAll('.login-tab');
         const loginForms = document.querySelectorAll('.login-form');
         const loginForm = document.getElementById('loginForm');
@@ -167,14 +202,22 @@ $activePage = 'home';
         loginTabs.forEach(tab => {
             tab.addEventListener('click', () => {
                 const tabName = tab.getAttribute('data-tab');
+<<<<<<< HEAD
                 loginTabs.forEach(t => t.classList.remove('active'));
                 loginForms.forEach(f => f.classList.remove('active'));
+=======
+                
+                loginTabs.forEach(t => t.classList.remove('active'));
+                loginForms.forEach(f => f.classList.remove('active'));
+                
+>>>>>>> 76dd0d18bd76d8a820dce3247eee8bbbe1355fa2
                 tab.classList.add('active');
                 document.getElementById(tabName + 'Form').classList.add('active');
             });
         });
 
         function setProgressBar(current, total) {
+<<<<<<< HEAD
     const progressBar = document.getElementById('progressBar');
     const progressText = document.getElementById('progressText');
 
@@ -222,6 +265,88 @@ document.addEventListener('DOMContentLoaded', function () {
 
             nextBtn.addEventListener('click', () => {
                 gamesRow.scrollBy({ left: scrollAmount(), behavior: 'smooth' });
+=======
+            const progressBar = document.getElementById('progressBar');
+            const progressText = document.getElementById('progressText');
+            if (!progressBar || !progressText) {
+                return;
+            }
+            const percent = Math.min(100, Math.round((current / total) * 100));
+            progressBar.style.width = percent + '%';
+            progressText.textContent = `$${current.toFixed(2)} / $${total.toFixed(2)} Wagered (${percent}%)`;
+        }
+
+        if (document.getElementById('progressBar') && document.getElementById('progressText')) {
+            setProgressBar(<?php echo $total_wagered; ?>, 1000);
+        }
+
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new FormData(loginForm);
+            formData.append('action', 'login');
+
+            const response = await fetch('login.php', {
+                method: 'POST',
+                body: formData
+            });
+
+            const data = await response.json();
+            const messageEl = document.getElementById('loginMessage');
+            
+            if (data.success) {
+                messageEl.textContent = 'Login successful!';
+                messageEl.style.color = '#00ff00';
+                setTimeout(() => location.reload(), 1500);
+            } else {
+                messageEl.textContent = data.message;
+                messageEl.style.color = '#ff0000';
+            }
+        });
+
+        registerForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new FormData(registerForm);
+            formData.append('action', 'register');
+
+            const response = await fetch('login.php', {
+                method: 'POST',
+                body: formData
+            });
+
+            const data = await response.json();
+            const messageEl = document.getElementById('registerMessage');
+            
+            if (data.success) {
+                messageEl.textContent = 'Registration successful!';
+                messageEl.style.color = '#00ff00';
+                setTimeout(() => location.reload(), 1500);
+            } else {
+                messageEl.textContent = data.message;
+                messageEl.style.color = '#ff0000';
+            }
+        });
+
+        document.getElementById('closeLogin').addEventListener('click', () => {
+            document.getElementById('loginModal').style.display = 'none';
+        });
+
+        document.getElementById('loginPromptBtn').addEventListener('click', () => {
+            document.getElementById('loginModal').style.display = 'flex';
+            document.querySelector('[data-tab="register"]').click();
+        });
+
+        document.getElementById('loginPromptBtnLogin').addEventListener('click', () => {
+            document.getElementById('loginModal').style.display = 'flex';
+            document.querySelector('[data-tab="login"]').click();
+        });
+
+
+                return card ? card.offsetWidth + 16 : 200; // 16px gap
+            };
+
+            });
+
+>>>>>>> 76dd0d18bd76d8a820dce3247eee8bbbe1355fa2
             });
         }
     </script>
