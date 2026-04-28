@@ -51,7 +51,7 @@ class FavoriteButton {
 
     render() {
         this.container.innerHTML = `
-            <button class="favorite-btn" id="fav-btn-${this.gameId}" aria-label="Toggle favorite">
+            <button class="favorite-btn" id="fav-btn-${this.gameType}" aria-label="Toggle favorite">
                 <svg class="star-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M12 2L15.09 8.26L22 9L17 14L18.18 21L12 17.77L5.82 21L7 14L2 9L8.91 8.26L12 2Z"/>
                 </svg>

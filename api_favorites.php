@@ -40,7 +40,7 @@ switch ($method) {
         $stmt = $conn->prepare("INSERT INTO favorites (user_id, game_type)
             SELECT ?, ? FROM DUAL
             WHERE NOT EXISTS (SELECT 1 FROM favorites WHERE user_id = ? AND game_type = ?)");
-        $stmt->bind_param('issi', $user_id, $game_type, $user_id, $game_type);
+        $stmt->bind_param('isis', $user_id, $game_type, $user_id, $game_type);
         $success = $stmt->execute();
         $stmt->close();
         if ($success) {

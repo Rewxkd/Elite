@@ -596,7 +596,6 @@ body.open .menu-arrow {
     gap: 1.5rem;
 }
 
-<<<<<<< HEAD
 .game-category-btn {
     width: 120px;
     height: 120px;
@@ -622,8 +621,6 @@ body.open .menu-arrow {
     transform: scale(1.05);
     box-shadow: 0 8px 24px rgba(44, 159, 253, 0.3);
 }
-=======
->>>>>>> 76dd0d18bd76d8a820dce3247eee8bbbe1355fa2
 
 .login-modal {
     position: fixed;
@@ -810,7 +807,6 @@ body.open .menu-arrow {
     font-weight: 600;
 }
 
-<<<<<<< HEAD
 .games-carousel {
     margin: 2rem auto;
     max-width: 1200px;
@@ -885,9 +881,6 @@ body.open .menu-arrow {
     height: 120px;
     background: linear-gradient(135deg, rgba(44, 159, 253, 0.2), rgba(99, 102, 241, 0.2));
 }
-=======
-
->>>>>>> 76dd0d18bd76d8a820dce3247eee8bbbe1355fa2
 .game-title {
     padding: 0.5rem;
     font-size: 0.9rem;

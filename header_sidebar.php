@@ -1,4 +1,9 @@
-<?php $activePage = $activePage ?? ''; ?>
+<?php
+$activePage = $activePage ?? '';
+$is_logged_in = $is_logged_in ?? false;
+$balance = $balance ?? 0;
+$notification_count = $notification_count ?? 0;
+?>
 <aside class="sidebar" id="side" aria-hidden="true">
     <button class="toggle" id="toggle" aria-label="Toggle navigation" aria-expanded="false">☰</button>
     <nav class="navigation">
@@ -41,7 +46,7 @@
         </div>
         <?php if ($is_logged_in): ?>
         <div class="balance">
-            <span class="balance-amount">$<?php echo number_format($balance, 2); ?></span>
+            <span class="balance-amount" id="balanceAmount">$<?php echo number_format((float)$balance, 2); ?></span>
         </div>
         <?php endif; ?>
         <div class="header-buttons">
