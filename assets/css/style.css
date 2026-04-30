@@ -20,6 +20,8 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
 }
 
 :root {
@@ -28,6 +30,16 @@
 
 html {
     font-size: 16px;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+html::-webkit-scrollbar,
+body::-webkit-scrollbar,
+*::-webkit-scrollbar {
+    width: 0;
+    height: 0;
+    display: none;
 }
 
 body {
@@ -39,10 +51,6 @@ body {
     scrollbar-width: none;
     -ms-overflow-style: none;
     animation: page-fade-in 0.28s ease-out both;
-}
-
-body::-webkit-scrollbar {
-    display: none;
 }
 
 @keyframes page-fade-in {
