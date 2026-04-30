@@ -1,9 +1,4 @@
 <?php
-/*
-    Footer include:
-    Root pages: include 'includes/footer.php';
-    Pages in /pages: include '../includes/footer.php';
-*/
 
 if (!function_exists('elite_footer_url')) {
     function elite_footer_url($path) {

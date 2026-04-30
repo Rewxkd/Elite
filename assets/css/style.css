@@ -1,17 +1,18 @@
 .progress-bar-container {
     width: 100%;
-    background: #1a2a3a;
-    border-radius: 8px;
-    height: 18px;
-    margin-bottom: 8px;
+    background: rgba(24, 35, 73, 0.9);
+    border-radius: 999px;
+    height: 20px;
+    padding: 4px;
+    margin-bottom: 0;
     overflow: hidden;
-    box-shadow: 0 1px 4px #0002;
+    box-shadow: inset 0 1px 5px rgba(0, 0, 0, 0.28);
 }
 
 .progress-bar {
     height: 100%;
-    background: linear-gradient(90deg, #2c9ffd 0%, #90beff 100%);
-    border-radius: 8px 0 0 8px;
+    background: linear-gradient(90deg, #2465c7 0%, #42a4f4 100%);
+    border-radius: 999px;
     transition: width 0.5s cubic-bezier(.4,2,.6,1);
     width: 10;
 }
@@ -634,23 +635,125 @@ body.open .menu-arrow {
     transform: translateX(calc(var(--side-width) / 2));
 }
 
-.progress-top{
-    padding: 10px 30px;
-    background-color: rgba(44, 159, 253, 0.1);
-    border-bottom: 1px solid rgba(44, 159, 253, 0.2);
+.progress-top {
+    padding: 0.85rem 1.25rem;
+    border-bottom: 1px solid rgba(128, 151, 210, 0.12);
+    background: rgba(74, 92, 150, 0.28);
 }
 
-.progress-bottom{
-    padding: 10px 30px;
-    background-color: rgba(44, 159, 253, 0.05);
+.progress-top p {
+    color: #ffffff;
+    font-size: 0.9rem;
+    font-weight: 900;
 }
 
-.container-progress{
-    border: 2px solid rgba(44, 159, 253, 0.4);
-    border-radius: 12px;
-    max-width: 550px;
-    background: rgba(44, 159, 253, 0.05);
-    box-shadow: 0 8px 24px rgba(44, 159, 253, 0.15);
+.progress-bottom {
+    display: grid;
+    gap: 1.15rem;
+    padding: 1.15rem 1.25rem 1.25rem;
+}
+
+.container-progress {
+    width: min(100%, 560px);
+    overflow: hidden;
+    border: 1px solid rgba(128, 151, 210, 0.28);
+    border-radius: 7px;
+    background:
+        linear-gradient(120deg, rgba(62, 78, 137, 0.55), rgba(28, 40, 83, 0.84)),
+        rgba(24, 34, 74, 0.9);
+    box-shadow: 0 18px 38px rgba(0, 0, 0, 0.22);
+}
+
+.progress-meta,
+.progress-ranks {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+.progress-meta p {
+    color: #dbe5ff;
+    font-size: 0.96rem;
+    font-weight: 900;
+}
+
+#progressCurrentAmount {
+    color: #ffffff;
+}
+
+#progressTargetText {
+    color: #96a2c2;
+}
+
+.progress-meta p,
+.progress-meta span {
+    margin: 0;
+}
+
+#progressPercent {
+    color: #ffffff;
+    font-size: 0.9rem;
+    font-weight: 900;
+}
+
+.progress-rank {
+    --rank-color: #9ca8c8;
+    display: inline-flex;
+    align-items: center;
+    min-width: 0;
+    gap: 0.55rem;
+    color: var(--rank-color);
+    font-size: 0.86rem;
+    font-weight: 900;
+    text-transform: uppercase;
+}
+
+.progress-rank span:last-child {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.progress-rank-icon {
+    width: 18px;
+    height: 18px;
+    display: inline-block;
+    flex: 0 0 18px;
+    border: 2px solid var(--rank-color);
+    border-radius: 3px;
+    transform: rotate(45deg);
+    opacity: 0.75;
+    box-shadow: 0 0 12px color-mix(in srgb, var(--rank-color) 38%, transparent);
+}
+
+.rank-unranked {
+    --rank-color: #7f8aa8;
+}
+
+.rank-bronze {
+    --rank-color: #f3a66e;
+}
+
+.rank-silver {
+    --rank-color: #c7d0da;
+}
+
+.rank-gold {
+    --rank-color: #f7c85f;
+}
+
+.rank-platinum {
+    --rank-color: #48e5e9;
+}
+
+.rank-diamond {
+    --rank-color: #dbe7ff;
+}
+
+.rank-obsidian {
+    --rank-color: #9b8cff;
 }
 
 .login-prompt {
@@ -1605,6 +1708,13 @@ body.open .menu-arrow {
     .site-footer-links {
         justify-content: flex-start;
     }
+
+    .progress-meta,
+    .progress-ranks {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 0.75rem;
+    }
 }
 
 /* Rainbet-inspired dark navy theme */
@@ -1643,7 +1753,7 @@ body {
 }
 
 .container {
-    background: rgba(8, 13, 32, 0.28);
+    background: rgba(18, 27, 58, 0.36);
 }
 
 .button,
@@ -1711,7 +1821,6 @@ body {
 
 .profile-menu,
 .login-container,
-.container-progress,
 .games-carousel,
 .favourites-hero,
 .favourites-empty,
@@ -1802,27 +1911,6 @@ body {
 
 .item:hover {
     background: var(--elite-blue-soft);
-}
-
-.progress-bar-container {
-    background: rgba(7, 12, 28, 0.9);
-}
-
-.progress-bar {
-    background: linear-gradient(90deg, #1786df 0%, #62aef3 100%);
-}
-
-.progress-top,
-.progress-bottom {
-    background: rgba(42, 56, 104, 0.82);
-    border-color: var(--elite-border);
-}
-
-.container-progress {
-    background:
-        linear-gradient(180deg, rgba(47, 63, 116, 0.92), rgba(31, 43, 87, 0.9)),
-        var(--elite-panel-2);
-    border-color: rgba(128, 151, 210, 0.28);
 }
 
 .form-group input,

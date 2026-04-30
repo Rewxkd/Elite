@@ -140,10 +140,22 @@ function mask_username($username) {
             <div class="container-progress">
                 <div class="progress-top"><p>Your Progress</p></div>
                 <div class="progress-bottom">
-                    <p id="progressText">$<?php echo number_format($total_wagered, 2); ?> / $1,000.00 Wagered</p>
-                    <br>
+                    <div class="progress-meta">
+                        <p id="progressText"><span id="progressCurrentAmount">$<?php echo number_format($total_wagered, 2); ?></span> <span id="progressTargetText">/ $10,000.00 Wagered</span></p>
+                        <span id="progressPercent">0%</span>
+                    </div>
                     <div class="progress-bar-container">
                         <div class="progress-bar" id="progressBar" style="width: 0%"></div>
+                    </div>
+                    <div class="progress-ranks">
+                        <div class="progress-rank current" id="currentRankWrap">
+                            <span class="progress-rank-icon"></span>
+                            <span id="currentRank">Unranked</span>
+                        </div>
+                        <div class="progress-rank next" id="nextRankWrap">
+                            <span class="progress-rank-icon"></span>
+                            <span id="nextRank">Bronze</span>
+                        </div>
                     </div>
                 </div>
             </div>

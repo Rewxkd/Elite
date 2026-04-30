@@ -11,6 +11,24 @@ const registerForm = document.getElementById('registerForm');
 const prevBtn = document.getElementById('prevBtn');
 const nextBtn = document.getElementById('nextBtn');
 const gamesRow = document.getElementById('gamesRow');
+const wagerRanks = [
+    { name: 'Unranked', threshold: 0 },
+    { name: 'Bronze', threshold: 10000 },
+    { name: 'Silver', threshold: 50000 },
+    { name: 'Gold', threshold: 100000 },
+    { name: 'Platinum I', threshold: 250000 },
+    { name: 'Platinum II', threshold: 500000 },
+    { name: 'Platinum III', threshold: 1000000 },
+    { name: 'Platinum IV', threshold: 2500000 },
+    { name: 'Platinum V', threshold: 5000000 },
+    { name: 'Platinum VI', threshold: 10000000 },
+    { name: 'Diamond I', threshold: 25000000 },
+    { name: 'Diamond II', threshold: 50000000 },
+    { name: 'Diamond III', threshold: 100000000 },
+    { name: 'Diamond IV', threshold: 250000000 },
+    { name: 'Diamond V', threshold: 500000000 },
+    { name: 'Obsidian', threshold: 1000000000 }
+];
 
 loginTabs.forEach(tab => {
     tab.addEventListener('click', () => {
@@ -31,19 +49,83 @@ function openAuthModal(tabName = 'login') {
     if (modal) modal.style.display = 'flex';
 }
 
-function setProgressBar(current, total) {
+function formatProgressCurrency(amount) {
+    return `$${Number(amount).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+}
+
+function getWagerRank(current) {
+    const wagered = Number(current) || 0;
+    let rankIndex = 0;
+
+    for (let i = 0; i < wagerRanks.length; i++) {
+        if (wagered >= wagerRanks[i].threshold) {
+            rankIndex = i;
+        }
+    }
+
+    const currentRank = wagerRanks[rankIndex];
+    const nextRank = wagerRanks[Math.min(rankIndex + 1, wagerRanks.length - 1)];
+    const rankStart = currentRank.threshold;
+    const rankTarget = nextRank.threshold;
+    const span = Math.max(1, rankTarget - rankStart);
+    const percent = currentRank === nextRank ? 100 : Math.min(100, Math.max(0, Math.round(((wagered - rankStart) / span) * 100)));
+
+    return { currentRank, nextRank, rankTarget, percent };
+}
+
+function getRankTier(name) {
+    const rankName = String(name || '').toLowerCase();
+    if (rankName.includes('bronze')) return 'bronze';
+    if (rankName.includes('silver')) return 'silver';
+    if (rankName.includes('gold')) return 'gold';
+    if (rankName.includes('platinum')) return 'platinum';
+    if (rankName.includes('diamond')) return 'diamond';
+    if (rankName.includes('obsidian')) return 'obsidian';
+    return 'unranked';
+}
+
+function setRankTierClass(element, rankName) {
+    if (!element) return;
+    element.classList.remove('rank-unranked', 'rank-bronze', 'rank-silver', 'rank-gold', 'rank-platinum', 'rank-diamond', 'rank-obsidian');
+    element.classList.add(`rank-${getRankTier(rankName)}`);
+}
+
+function setProgressBar(current) {
     const progressBar = document.getElementById('progressBar');
     const progressText = document.getElementById('progressText');
+    const progressCurrentAmount = document.getElementById('progressCurrentAmount');
+    const progressTargetText = document.getElementById('progressTargetText');
+    const progressPercent = document.getElementById('progressPercent');
+    const currentRankWrap = document.getElementById('currentRankWrap');
+    const nextRankWrap = document.getElementById('nextRankWrap');
+    const currentRankEl = document.getElementById('currentRank');
+    const nextRankEl = document.getElementById('nextRank');
 
     if (!progressBar || !progressText) return;
 
-    const percent = Math.min(100, Math.round((Number(current) / Number(total)) * 100));
-    progressBar.style.width = percent + '%';
-    progressText.textContent = `$${Number(current).toFixed(2)} / $${Number(total).toFixed(2)} Wagered (${percent}%)`;
+    const wagered = Number(current) || 0;
+    const progress = getWagerRank(wagered);
+    const isMaxRank = progress.currentRank === progress.nextRank;
+    progressBar.style.width = progress.percent + '%';
+
+    if (progressCurrentAmount && progressTargetText) {
+        progressCurrentAmount.textContent = formatProgressCurrency(wagered);
+        progressTargetText.textContent = isMaxRank ? ' Max level reached' : ` / ${formatProgressCurrency(progress.rankTarget)} Wagered`;
+    } else {
+        progressText.textContent = isMaxRank
+            ? `${formatProgressCurrency(wagered)} Max level reached`
+            : `${formatProgressCurrency(wagered)} / ${formatProgressCurrency(progress.rankTarget)} Wagered`;
+    }
+
+    if (progressPercent) progressPercent.textContent = `${progress.percent}%`;
+    if (currentRankEl) currentRankEl.textContent = progress.currentRank.name;
+    if (nextRankEl) nextRankEl.textContent = isMaxRank ? 'Max level reached' : progress.nextRank.name;
+    setRankTierClass(currentRankWrap, progress.currentRank.name);
+    setRankTierClass(nextRankWrap, isMaxRank ? progress.currentRank.name : progress.nextRank.name);
 }
 
 document.addEventListener('DOMContentLoaded', function () {
-    setProgressBar(indexConfig.totalWagered, 1000);
+    setProgressBar(indexConfig.totalWagered);
 
     const shouldShowLogin = new URLSearchParams(window.location.search).get('login') === '1';
     if (shouldShowLogin) openAuthModal('login');
