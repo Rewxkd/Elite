@@ -17,6 +17,16 @@ $game_assets = [
         'image' => 'assets/img/cards-logo.png',
     ],
 ];
+$coming_soon_games = [
+    ['name' => 'Mines', 'code' => 'MI'],
+    ['name' => 'Plinko', 'code' => 'PL'],
+    ['name' => 'Limbo', 'code' => 'LI'],
+    ['name' => 'Tower', 'code' => 'TO'],
+    ['name' => 'Baccarat', 'code' => 'BA'],
+    ['name' => 'Crash', 'code' => 'CR'],
+    ['name' => 'Dice', 'code' => 'DI'],
+    ['name' => 'Keno', 'code' => 'KE'],
+];
 
 if ($user_id) {
     $is_logged_in = true;
@@ -163,7 +173,7 @@ function mask_username($username) {
                         $gameType = strtolower($bet['game_type']);
                         $gameAsset = $game_assets[$gameType] ?? null;
                         $gameHref = $gameAsset['href'] ?? ('pages/' . $gameType . '.php');
-                        $amount = (float)$bet['payout_amount'] > 0 ? (float)$bet['payout_amount'] : (float)$bet['wager_amount'];
+                        $amount = (float)$bet['wager_amount'];
                     ?>
                     <article class="latest-bet-card">
                         <a class="latest-bet-game <?php echo $gameAsset ? 'blackjack-game-img' : ''; ?>" href="<?php echo htmlspecialchars($gameHref, ENT_QUOTES, 'UTF-8'); ?>">
@@ -186,7 +196,10 @@ function mask_username($username) {
 
     <section class="games-carousel">
         <div class="games-header">
-            <h2>Games</h2>
+            <div class="games-title-row">
+                <h2>Games</h2>
+                <a class="games-all-link" href="pages/games.php">All games</a>
+            </div>
             <div class="carousel-controls" aria-label="Games carousel controls">
                 <button class="carousel-btn prev" id="prevBtn" type="button" aria-label="Previous games">&#8249;</button>
                 <button class="carousel-btn next" id="nextBtn" type="button" aria-label="Next games">&#8250;</button>
@@ -194,17 +207,25 @@ function mask_username($username) {
         </div>
         <div class="games-container">
             <div class="games-row" id="gamesRow">
-                <a href="<?php echo htmlspecialchars($game_assets['blackjack']['href'], ENT_QUOTES, 'UTF-8'); ?>" class="game-card" <?php echo $is_logged_in ? '' : 'data-requires-login="true"'; ?> style="text-decoration:none;">
+                <a href="<?php echo htmlspecialchars($game_assets['blackjack']['href'], ENT_QUOTES, 'UTF-8'); ?>" class="game-card" <?php echo $is_logged_in ? '' : 'data-requires-login="true"'; ?>>
                     <div class="game-img blackjack-game-img"><img src="<?php echo htmlspecialchars($game_assets['blackjack']['image'], ENT_QUOTES, 'UTF-8'); ?>" alt="<?php echo htmlspecialchars($game_assets['blackjack']['name'], ENT_QUOTES, 'UTF-8'); ?>"></div>
-                    <div class="game-title"><?php echo htmlspecialchars($game_assets['blackjack']['name'], ENT_QUOTES, 'UTF-8'); ?></div>
+                    <div class="game-card-body">
+                        <div class="game-title"><?php echo htmlspecialchars($game_assets['blackjack']['name'], ENT_QUOTES, 'UTF-8'); ?></div>
+                        <span class="game-status is-live">Play</span>
+                    </div>
                 </a>
 
-                <?php for ($i = 2; $i <= 20; $i++): ?>
-                    <div class="game-card">
-                        <div class="game-img"></div>
-                        <div class="game-title">Game <?php echo $i; ?></div>
-                    </div>
-                <?php endfor; ?>
+                <?php foreach ($coming_soon_games as $game): ?>
+                    <article class="game-card is-coming-soon">
+                        <div class="game-img">
+                            <span><?php echo htmlspecialchars($game['code'], ENT_QUOTES, 'UTF-8'); ?></span>
+                        </div>
+                        <div class="game-card-body">
+                            <div class="game-title"><?php echo htmlspecialchars($game['name'], ENT_QUOTES, 'UTF-8'); ?></div>
+                            <span class="game-status">Soon</span>
+                        </div>
+                    </article>
+                <?php endforeach; ?>
             </div>
         </div>
     </section>

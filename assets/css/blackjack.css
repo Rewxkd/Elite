@@ -323,3 +323,48 @@
     fill: #FFD700;
     filter: drop-shadow(0 0 8px rgba(255, 215, 0, 0.45));
 }
+
+/* Match the shared dark navy theme. */
+.left-panel,
+.table-panel,
+.panel,
+.dealer-panel,
+.player-panel,
+.split-hand,
+.round-status,
+.game-overlay-footer {
+    background:
+        linear-gradient(180deg, rgba(33, 45, 88, 0.78), rgba(13, 19, 43, 0.88)),
+        #151f42;
+    border-color: rgba(128, 151, 210, 0.18);
+    box-shadow: 0 18px 38px rgba(0, 0, 0, 0.34);
+}
+
+.action-grid button,
+.bet-actions button {
+    background: rgba(39, 53, 101, 0.84);
+    border-color: rgba(128, 151, 210, 0.24);
+}
+
+.action-grid button:hover:not(:disabled),
+.bet-actions button:hover:not(:disabled) {
+    background: rgba(50, 68, 125, 0.94);
+}
+
+#betBtn {
+    background: linear-gradient(180deg, #1d98ee 0%, #1786df 100%) !important;
+    border-color: rgba(98, 174, 243, 0.34);
+}
+
+#roundStatus,
+.table-info,
+#dealerValue,
+#playerValue {
+    color: #b9c4e5 !important;
+}
+
+.dealer-panel h4,
+.player-panel h4,
+.game-overlay-left {
+    color: #8ab9ff;
+}

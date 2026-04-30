@@ -27,6 +27,14 @@ $stmt->close();
 
 $balance = floatval($wallet['balance'] ?? 0);
 $total_wagered = floatval($wallet['total_wagered'] ?? 0);
+$game_assets = [
+    'blackjack' => [
+        'name' => 'Blackjack',
+        'href' => 'blackjack.php',
+        'image' => '../assets/img/cards-logo.png',
+        'tagline' => 'Beat the dealer and keep your hot streak alive.',
+    ],
+];
 
 // Get user's favorites
 $favorites = [];
@@ -38,6 +46,23 @@ while ($row = $result->fetch_assoc()) {
     $favorites[] = $row['name'];
 }
 $stmt->close();
+
+function favorite_game_meta($game, $game_assets) {
+    $key = strtolower(trim((string)$game));
+    $slug = preg_replace('/[^a-z0-9]+/', '-', $key);
+    $slug = trim($slug, '-');
+
+    if (isset($game_assets[$key])) {
+        return $game_assets[$key];
+    }
+
+    return [
+        'name' => $game,
+        'href' => ($slug === '' ? '#' : $slug . '.php'),
+        'image' => '',
+        'tagline' => 'Saved to your personal games shelf.',
+    ];
+}
 
 ?>
 <!DOCTYPE html>
@@ -51,21 +76,53 @@ $stmt->close();
 <body>
     <?php include '../includes/header_sidebar.php'; ?>
 
-    <main class="container">
-        <h1 style="margin-bottom: 2rem; color: #cfdcff;">Your Favourite Games</h1>
+    <main class="container favourites-page">
+        <section class="favourites-hero">
+            <div>
+                <span class="favourites-kicker">Elite collection</span>
+                <h1>Your Favourite Games</h1>
+                <p>Keep your go-to tables close and jump back into the action fast.</p>
+            </div>
+            <div class="favourites-summary" aria-label="Favourite games summary">
+                <span><?php echo count($favorites); ?></span>
+                <small><?php echo count($favorites) === 1 ? 'saved game' : 'saved games'; ?></small>
+            </div>
+        </section>
+
         <?php if (empty($favorites)): ?>
-            <p style="color: #888; text-align: center; margin-top: 4rem;">You haven't favourited any games yet. Go to the home page to favourite some games!</p>
-        <?php else: ?>
-            <div class="games-container" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 1rem;">
+            <section class="favourites-empty compact">
+                <div class="favourites-empty-mark">+</div>
+                <h2>No favourites yet</h2>
+                <p>Find a game you like, tap the star, and it will appear here for quick access.</p>
+                <a class="favourites-cta" href="../index.php">Browse games</a>
+            </section>
+        <?php endif; ?>
+
+        <?php if (!empty($favorites)): ?>
+            <section class="favourites-grid" aria-label="Favourite games">
                 <?php foreach ($favorites as $game): ?>
-                    <a href="<?php echo strtolower($game); ?>.php" class="game-card" style="text-decoration: none;">
-                        <div class="game-img" style="background: linear-gradient(135deg, #0d123a, #1f2d58); display: flex; align-items: center; justify-content: center; color: #fff; font-weight: 700;">
-                            <?php echo strtoupper(substr($game, 0, 2)); ?>
+                    <?php
+                        $meta = favorite_game_meta($game, $game_assets);
+                        $displayName = $meta['name'];
+                    ?>
+                    <a href="<?php echo htmlspecialchars($meta['href'], ENT_QUOTES, 'UTF-8'); ?>" class="favourite-card">
+                        <div class="favourite-card-art <?php echo $meta['image'] ? 'has-image' : ''; ?>">
+                            <?php if ($meta['image']): ?>
+                                <img src="<?php echo htmlspecialchars($meta['image'], ENT_QUOTES, 'UTF-8'); ?>" alt="<?php echo htmlspecialchars($displayName, ENT_QUOTES, 'UTF-8'); ?>">
+                            <?php else: ?>
+                                <span><?php echo htmlspecialchars(strtoupper(substr($displayName, 0, 2)), ENT_QUOTES, 'UTF-8'); ?></span>
+                            <?php endif; ?>
                         </div>
-                        <div class="game-title"><?php echo htmlspecialchars($game); ?></div>
+                        <div class="favourite-card-body">
+                            <div>
+                                <h2><?php echo htmlspecialchars($displayName, ENT_QUOTES, 'UTF-8'); ?></h2>
+                                <p><?php echo htmlspecialchars($meta['tagline'], ENT_QUOTES, 'UTF-8'); ?></p>
+                            </div>
+                            <span class="favourite-card-action">Play</span>
+                        </div>
                     </a>
                 <?php endforeach; ?>
-            </div>
+            </section>
         <?php endif; ?>
     </main>
 </body>

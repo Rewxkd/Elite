@@ -58,7 +58,7 @@ if (!function_exists('elite_url')) {
         </div>
         <?php if ($is_logged_in): ?>
         <div class="balance">
-            <span class="balance-amount" id="balanceAmount">$<?php echo number_format((float)$balance, 2); ?></span>
+            <span class="balance-amount" id="balanceAmount"><?php echo number_format((float)$balance, 2); ?> $</span>
         </div>
         <?php endif; ?>
         <div class="header-buttons">
