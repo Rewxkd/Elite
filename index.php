@@ -9,6 +9,14 @@ $total_wagered = 0.00;
 $notification_count = 0;
 $is_logged_in = false;
 $activePage = 'home';
+$latest_bets = [];
+$game_assets = [
+    'blackjack' => [
+        'name' => 'Blackjack',
+        'href' => 'pages/blackjack.php',
+        'image' => 'assets/img/cards-logo.png',
+    ],
+];
 
 if ($user_id) {
     $is_logged_in = true;
@@ -37,6 +45,29 @@ if ($user_id) {
     $notif = $stmt->get_result()->fetch_assoc();
     $stmt->close();
     $notification_count = (int)($notif['count'] ?? 0);
+}
+
+$latestBetQuery = $conn->query("
+    SELECT lb.game_type, lb.game_name, lb.wager_amount, lb.payout_amount, lb.net_result, lb.created_at, u.username
+    FROM latest_bets lb
+    JOIN users u ON u.user_id = lb.user_id
+    ORDER BY lb.created_at DESC
+    LIMIT 12
+");
+
+if ($latestBetQuery) {
+    while ($row = $latestBetQuery->fetch_assoc()) {
+        $latest_bets[] = $row;
+    }
+}
+
+function mask_username($username) {
+    $username = trim((string)$username);
+    if ($username === '') {
+        return 'Hidden';
+    }
+
+    return strlen($username) > 6 ? substr($username, 0, 6) . '...' : $username;
 }
 ?>
 <!DOCTYPE html>
@@ -119,6 +150,40 @@ if ($user_id) {
         <?php endif; ?>
     </main>
 
+    <section class="latest-bets-section">
+        <div class="latest-bets-header">
+            <h2>Latest Bets</h2>
+        </div>
+        <div class="latest-bets-row">
+            <?php if (empty($latest_bets)): ?>
+                <div class="latest-bets-empty">No bets yet.</div>
+            <?php else: ?>
+                <?php foreach ($latest_bets as $bet): ?>
+                    <?php
+                        $gameType = strtolower($bet['game_type']);
+                        $gameAsset = $game_assets[$gameType] ?? null;
+                        $gameHref = $gameAsset['href'] ?? ('pages/' . $gameType . '.php');
+                        $amount = (float)$bet['payout_amount'] > 0 ? (float)$bet['payout_amount'] : (float)$bet['wager_amount'];
+                    ?>
+                    <article class="latest-bet-card">
+                        <a class="latest-bet-game <?php echo $gameAsset ? 'blackjack-game-img' : ''; ?>" href="<?php echo htmlspecialchars($gameHref, ENT_QUOTES, 'UTF-8'); ?>">
+                            <?php if ($gameAsset): ?>
+                                <img src="<?php echo htmlspecialchars($gameAsset['image'], ENT_QUOTES, 'UTF-8'); ?>" alt="<?php echo htmlspecialchars($gameAsset['name'], ENT_QUOTES, 'UTF-8'); ?>">
+                            <?php else: ?>
+                                <span class="latest-bet-game-code"><?php echo strtoupper(substr($bet['game_name'], 0, 2)); ?></span>
+                                <span class="latest-bet-game-name"><?php echo htmlspecialchars($bet['game_name'], ENT_QUOTES, 'UTF-8'); ?></span>
+                            <?php endif; ?>
+                        </a>
+                        <div class="latest-bet-player">
+                            <span><?php echo htmlspecialchars(mask_username($bet['username']), ENT_QUOTES, 'UTF-8'); ?></span>
+                        </div>
+                        <div class="latest-bet-amount">$<?php echo number_format($amount, 2); ?></div>
+                    </article>
+                <?php endforeach; ?>
+            <?php endif; ?>
+        </div>
+    </section>
+
     <section class="games-carousel">
         <div class="games-header">
             <h2>Games</h2>
@@ -129,9 +194,9 @@ if ($user_id) {
         </div>
         <div class="games-container">
             <div class="games-row" id="gamesRow">
-                <a href="pages/blackjack.php" class="game-card" <?php echo $is_logged_in ? '' : 'data-requires-login="true"'; ?> style="text-decoration:none;">
-                    <div class="game-img" style="background: linear-gradient(135deg, #0d123a, #1f2d58); display:flex; align-items:center; justify-content:center; color:#fff; font-weight:700;">BJ</div>
-                    <div class="game-title">Blackjack</div>
+                <a href="<?php echo htmlspecialchars($game_assets['blackjack']['href'], ENT_QUOTES, 'UTF-8'); ?>" class="game-card" <?php echo $is_logged_in ? '' : 'data-requires-login="true"'; ?> style="text-decoration:none;">
+                    <div class="game-img blackjack-game-img"><img src="<?php echo htmlspecialchars($game_assets['blackjack']['image'], ENT_QUOTES, 'UTF-8'); ?>" alt="<?php echo htmlspecialchars($game_assets['blackjack']['name'], ENT_QUOTES, 'UTF-8'); ?>"></div>
+                    <div class="game-title"><?php echo htmlspecialchars($game_assets['blackjack']['name'], ENT_QUOTES, 'UTF-8'); ?></div>
                 </a>
 
                 <?php for ($i = 2; $i <= 20; $i++): ?>
@@ -144,135 +209,6 @@ if ($user_id) {
         </div>
     </section>
 
-    <script>
-        const loginTabs = document.querySelectorAll('.login-tab');
-        const loginForms = document.querySelectorAll('.login-form');
-        const loginForm = document.getElementById('loginForm');
-        const registerForm = document.getElementById('registerForm');
-        const prevBtn = document.getElementById('prevBtn');
-        const nextBtn = document.getElementById('nextBtn');
-        const gamesRow = document.getElementById('gamesRow');
-
-        loginTabs.forEach(tab => {
-            tab.addEventListener('click', () => {
-                const tabName = tab.getAttribute('data-tab');
-                loginTabs.forEach(t => t.classList.remove('active'));
-                loginForms.forEach(f => f.classList.remove('active'));
-                tab.classList.add('active');
-
-                const form = document.getElementById(tabName + 'Form');
-                if (form) form.classList.add('active');
-            });
-        });
-
-        function openAuthModal(tabName = 'login') {
-            const tab = document.querySelector(`.login-tab[data-tab="${tabName}"]`);
-            const modal = document.getElementById('loginModal');
-            if (tab) tab.click();
-            if (modal) modal.style.display = 'flex';
-        }
-
-        function setProgressBar(current, total) {
-            const progressBar = document.getElementById('progressBar');
-            const progressText = document.getElementById('progressText');
-
-            if (!progressBar || !progressText) return;
-
-            const percent = Math.min(100, Math.round((Number(current) / Number(total)) * 100));
-            progressBar.style.width = percent + '%';
-            progressText.textContent = `$${Number(current).toFixed(2)} / $${Number(total).toFixed(2)} Wagered (${percent}%)`;
-        }
-
-        document.addEventListener('DOMContentLoaded', function () {
-            setProgressBar(<?php echo json_encode($total_wagered); ?>, 1000);
-
-            const shouldShowLogin = new URLSearchParams(window.location.search).get('login') === '1';
-            if (shouldShowLogin) openAuthModal('login');
-
-            const promptRegisterButton = document.getElementById('loginPromptBtn');
-            const promptLoginButton = document.getElementById('loginPromptBtnLogin');
-
-            if (promptRegisterButton) {
-                promptRegisterButton.addEventListener('click', () => openAuthModal('register'));
-            }
-
-            if (promptLoginButton) {
-                promptLoginButton.addEventListener('click', () => openAuthModal('login'));
-            }
-        });
-
-        document.querySelectorAll('[data-requires-login="true"]').forEach(link => {
-            link.addEventListener('click', (e) => {
-                e.preventDefault();
-                openAuthModal('login');
-            });
-        });
-
-        if (prevBtn && nextBtn && gamesRow) {
-            const scrollAmount = () => {
-                const card = gamesRow.querySelector('.game-card');
-                return card ? (card.offsetWidth + 16) * 5 : 400;
-            };
-
-            const updateCarouselButtons = () => {
-                const maxScroll = gamesRow.scrollWidth - gamesRow.clientWidth;
-                const atStart = gamesRow.scrollLeft <= 1;
-                const atEnd = gamesRow.scrollLeft >= maxScroll - 1;
-
-                prevBtn.disabled = atStart;
-                nextBtn.disabled = maxScroll <= 1 || atEnd;
-            };
-
-            prevBtn.addEventListener('click', () => {
-                gamesRow.scrollBy({ left: -scrollAmount(), behavior: 'smooth' });
-            });
-
-            nextBtn.addEventListener('click', () => {
-                gamesRow.scrollBy({ left: scrollAmount(), behavior: 'smooth' });
-            });
-
-            gamesRow.addEventListener('scroll', updateCarouselButtons);
-            window.addEventListener('resize', updateCarouselButtons);
-            updateCarouselButtons();
-        }
-
-        if (loginForm) {
-            loginForm.addEventListener('submit', async (e) => {
-                e.preventDefault();
-                const formData = new FormData(loginForm);
-                formData.append('action', 'login');
-
-                const response = await fetch('api/login.php', { method: 'POST', body: formData });
-                const data = await response.json();
-                const messageEl = document.getElementById('loginMessage');
-
-                messageEl.textContent = data.message || (data.success ? 'Login successful!' : 'Login failed');
-                messageEl.style.color = data.success ? '#00ff00' : '#ff6666';
-
-                if (data.success) {
-                    setTimeout(() => location.reload(), 700);
-                }
-            });
-        }
-
-        if (registerForm) {
-            registerForm.addEventListener('submit', async (e) => {
-                e.preventDefault();
-                const formData = new FormData(registerForm);
-                formData.append('action', 'register');
-
-                const response = await fetch('api/login.php', { method: 'POST', body: formData });
-                const data = await response.json();
-                const messageEl = document.getElementById('registerMessage');
-
-                messageEl.textContent = data.message || (data.success ? 'Registration successful!' : 'Registration failed');
-                messageEl.style.color = data.success ? '#00ff00' : '#ff6666';
-
-                if (data.success) {
-                    setTimeout(() => location.reload(), 700);
-                }
-            });
-        }
-    </script>
+    <script src="assets/js/index.js" data-total-wagered="<?php echo htmlspecialchars((string)$total_wagered, ENT_QUOTES, 'UTF-8'); ?>" data-login-url="api/login.php"></script>
 </body>
 </html>

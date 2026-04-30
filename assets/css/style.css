@@ -68,8 +68,7 @@ body.open {
     gap: 2rem;
 }
 
-.header-box,
-.container-box {
+.header-box {
     transition: transform 0.25s ease;
     transform: translateX(calc(var(--side-width) / 2));
 }
@@ -578,8 +577,6 @@ body.open .menu-arrow {
     border-radius: 12px;
     max-width: 550px;
     background: rgba(44, 159, 253, 0.05);
-    transition: transform 0.25s ease;
-    transform: translateX(calc(var(--side-width) / 2));
     box-shadow: 0 8px 24px rgba(44, 159, 253, 0.15);
 }
 
@@ -830,6 +827,110 @@ body.open .menu-arrow {
     font-weight: 600;
 }
 
+.latest-bets-section {
+    margin: 2rem auto;
+    max-width: 1200px;
+    transition: transform 0.25s ease;
+    transform: translateX(calc(var(--side-width) / 2));
+}
+
+.latest-bets-header {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    padding: 0.45rem 0.65rem;
+    margin-bottom: 0.8rem;
+    background: rgba(44, 159, 253, 0.14);
+    border: 1px solid rgba(144, 190, 255, 0.18);
+    border-radius: 7px;
+    color: #ffffff;
+}
+
+.latest-bets-header h2 {
+    font-size: 0.85rem;
+    line-height: 1;
+}
+
+.latest-bets-row {
+    display: flex;
+    gap: 0.8rem;
+    overflow-x: auto;
+    padding-bottom: 0.75rem;
+    scrollbar-width: none;
+}
+
+.latest-bets-row::-webkit-scrollbar {
+    display: none;
+}
+
+.latest-bet-card {
+    width: 92px;
+    flex: 0 0 92px;
+}
+
+.latest-bet-game {
+    height: 120px;
+    padding: 0.65rem 0.45rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.45rem;
+    color: #ffffff;
+    text-decoration: none;
+    text-align: center;
+    border-radius: 7px;
+    background: linear-gradient(135deg, #0d123a, #1f2d58);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.16);
+}
+
+.latest-bet-game-code {
+    display: grid;
+    place-items: center;
+    width: auto;
+    height: auto;
+    font-weight: 800;
+    font-size: 1.4rem;
+}
+
+.latest-bet-game-name {
+    font-size: 0.72rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    line-height: 1.1;
+}
+
+.latest-bet-player {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    min-width: 0;
+    margin-top: 0.55rem;
+    color: #cbd5e1;
+    font-size: 0.78rem;
+    font-weight: 700;
+}
+
+.latest-bet-player span:last-child {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.latest-bet-amount {
+    margin-top: 0.35rem;
+    color: #6df06b;
+    font-size: 0.78rem;
+    font-weight: 600;
+}
+
+.latest-bets-empty {
+    color: #8aa3c7;
+    padding: 1rem 0;
+}
+
 .games-carousel {
     margin: 2rem auto;
     max-width: 1200px;
@@ -920,6 +1021,25 @@ body.open .menu-arrow {
     height: 120px;
     background: linear-gradient(135deg, rgba(44, 159, 253, 0.2), rgba(99, 102, 241, 0.2));
 }
+
+.blackjack-game-img {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #0d123a, #1f2d58);
+}
+
+.blackjack-game-img img {
+    width: 108px;
+    height: 108px;
+    object-fit: contain;
+}
+
+.latest-bet-game.blackjack-game-img img {
+    width: 72px;
+    height: 72px;
+}
+
 .game-title {
     padding: 0.5rem;
     font-size: 0.9rem;
