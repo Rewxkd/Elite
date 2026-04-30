@@ -1,3 +1,1 @@
 # Elite
-
-Casino-style PHP demo with login, wallet progress, favourites, and Blackjack.

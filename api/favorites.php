@@ -1,6 +1,6 @@
 <?php
 session_start();
-include 'db_connect.php';
+include '../includes/db_connect.php';
 
 if (!isset($_SESSION['user_id'])) {
     http_response_code(401);

@@ -3,12 +3,24 @@ $activePage = $activePage ?? '';
 $is_logged_in = $is_logged_in ?? false;
 $balance = $balance ?? 0;
 $notification_count = $notification_count ?? 0;
+$scriptDir = str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME'] ?? ''));
+$siteBase = preg_replace('#/pages$#', '', rtrim($scriptDir, '/'));
+if ($siteBase === '/' || $siteBase === '.') {
+    $siteBase = '';
+}
+
+if (!function_exists('elite_url')) {
+    function elite_url($path) {
+        global $siteBase;
+        return htmlspecialchars(($siteBase === '' ? '' : $siteBase) . '/' . ltrim($path, '/'), ENT_QUOTES, 'UTF-8');
+    }
+}
 ?>
 <aside class="sidebar" id="side" aria-hidden="true">
     <button class="toggle" id="toggle" aria-label="Toggle navigation" aria-expanded="false">☰</button>
     <nav class="navigation">
-        <a href="index.php" class="item" <?php echo $activePage === 'home' ? 'id="active"' : ''; ?>><span class="icon">🏠</span><span class="text">Home</span></a>
-        <a href="favorites.php" class="item" <?php echo $activePage === 'favourites' ? 'id="active"' : ''; ?>><span class="icon">❤️</span><span class="text">Favourites</span></a>
+        <a href="<?php echo elite_url('index.php'); ?>" class="item" <?php echo $activePage === 'home' ? 'id="active"' : ''; ?>><span class="icon">🏠</span><span class="text">Home</span></a>
+        <a href="<?php echo elite_url('pages/favorites.php'); ?>" class="item" <?php echo $activePage === 'favourites' ? 'id="active"' : ''; ?>><span class="icon">❤️</span><span class="text">Favourites</span></a>
         <a href="#" class="item" <?php echo $activePage === 'recent' ? 'id="active"' : ''; ?>><span class="icon">🕒</span><span class="text">Recent</span></a>
         <div class="dropdown">
             <div class="dropdown-item">
@@ -42,7 +54,7 @@ $notification_count = $notification_count ?? 0;
 <header class="header">
     <div class="header-box">
         <div class="logo">
-            <img src="Elite-logo.png" alt="">
+            <a href="<?php echo elite_url('index.php'); ?>"><img src="<?php echo elite_url('assets/img/Elite-logo.png'); ?>" alt=""></a>
         </div>
         <?php if ($is_logged_in): ?>
         <div class="balance">
@@ -50,17 +62,23 @@ $notification_count = $notification_count ?? 0;
         </div>
         <?php endif; ?>
         <div class="header-buttons">
-            <button class="button icon" id="search" aria-label="Search"><span>🔍</span></button>
+            <button class="button icon" id="search" aria-label="Search"><span>&#128269;</span></button>
             <div class="group" role="group" aria-label="Profile and notifications">
-                <button class="button icon notif" id="notif" aria-label="Notifications"><span>🔔</span><span class="badge" id="badge"><?php echo $notification_count; ?></span></button>
+                <button class="button icon notif" id="notif" aria-label="Notifications"><span>&#128276;</span><span class="badge" id="badge"><?php echo $notification_count; ?></span></button>
                 <?php if ($is_logged_in): ?>
-                    <button class="button icon" id="prof" aria-label="Profile"><span>👤</span></button>
+                    <div class="profile-menu-wrap" id="profileMenuWrap">
+                        <button class="button icon" id="prof" type="button" aria-label="Profile" aria-haspopup="true" aria-expanded="false"><span>&#128100;</span></button>
+                        <div class="profile-menu" id="profileMenu" aria-hidden="true">
+                            <button class="profile-menu-item" type="button">Placeholder</button>
+                            <button class="profile-menu-item" type="button">Placeholder</button>
+                            <button class="profile-menu-item" type="button">Placeholder</button>
+                            <button class="profile-menu-item logout" id="logoutBtn" type="button"><span>&#128682;</span><span>Logout</span></button>
+                        </div>
+                    </div>
                 <?php endif; ?>
             </div>
-            <?php if ($is_logged_in): ?>
-                <button class="auth-button" id="logoutBtn"><span class="auth-icon">🚪</span><span class="auth-text">Logout</span></button>
-            <?php else: ?>
-                <button class="auth-button" id="loginBtn"><span class="auth-icon">🔐</span><span class="auth-text">Login</span></button>
+            <?php if (!$is_logged_in): ?>
+                <button class="auth-button" id="loginBtn"><span class="auth-icon">&#128272;</span><span class="auth-text">Login</span></button>
             <?php endif; ?>
         </div>
     </div>
@@ -71,31 +89,18 @@ $notification_count = $notification_count ?? 0;
     const loginBtn = document.getElementById('loginBtn');
     const closeLogin = document.getElementById('closeLogin');
     const logoutBtn = document.getElementById('logoutBtn');
-    const loginPromptBtn = document.getElementById('loginPromptBtn');
-    const loginPromptBtnLogin = document.getElementById('loginPromptBtnLogin');
+    const profileBtn = document.getElementById('prof');
+    const profileMenuWrap = document.getElementById('profileMenuWrap');
+    const profileMenu = document.getElementById('profileMenu');
     const toggleBtn = document.getElementById('toggle');
     const sidebar = document.getElementById('side');
     const menuBtns = document.querySelectorAll('.dropdown-button');
 
     if (loginBtn) {
         loginBtn.addEventListener('click', () => {
+            const loginTab = document.querySelector('.login-tab[data-tab="login"]');
+            if (loginTab) loginTab.click();
             if (loginModal) loginModal.style.display = 'flex';
-        });
-    }
-
-    if (loginPromptBtn) {
-        loginPromptBtn.addEventListener('click', () => {
-            if (loginModal) loginModal.style.display = 'flex';
-        });
-    }
-
-    if (loginPromptBtnLogin) {
-        loginPromptBtnLogin.addEventListener('click', () => {
-            if (loginModal) {
-                loginModal.style.display = 'flex';
-                const loginTab = document.querySelector('.login-tab[data-tab="login"]');
-                if (loginTab) loginTab.click();
-            }
         });
     }
 
@@ -118,12 +123,27 @@ $notification_count = $notification_count ?? 0;
             const formData = new FormData();
             formData.append('action', 'logout');
 
-            await fetch('login.php', {
+            await fetch('<?php echo elite_url('api/login.php'); ?>', {
                 method: 'POST',
                 body: formData
             });
 
             location.reload();
+        });
+    }
+
+    if (profileBtn && profileMenu) {
+        profileBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const isOpen = profileMenu.getAttribute('aria-hidden') === 'false';
+            profileMenu.setAttribute('aria-hidden', isOpen.toString());
+            profileBtn.setAttribute('aria-expanded', (!isOpen).toString());
+        });
+    }
+
+    if (profileMenuWrap) {
+        profileMenuWrap.addEventListener('click', (e) => {
+            e.stopPropagation();
         });
     }
 
@@ -166,6 +186,11 @@ $notification_count = $notification_count ?? 0;
     });
 
     document.addEventListener('click', function(e) {
+        if (profileMenu && profileBtn && profileMenu.getAttribute('aria-hidden') === 'false') {
+            profileMenu.setAttribute('aria-hidden', 'true');
+            profileBtn.setAttribute('aria-expanded', 'false');
+        }
+
         menuBtns.forEach(btn => {
             if (!btn.contains(e.target)) {
                 const dropdown = btn.parentElement.querySelector('.dropdown-items');
@@ -175,3 +200,4 @@ $notification_count = $notification_count ?? 0;
         });
     });
 </script>
+

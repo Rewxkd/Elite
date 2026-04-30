@@ -1,6 +1,6 @@
 <?php
 session_start();
-include 'db_connect.php';
+include 'includes/db_connect.php';
 
 $user_id = isset($_SESSION['user_id']) ? (int)$_SESSION['user_id'] : null;
 $username = '';
@@ -45,7 +45,7 @@ if ($user_id) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Elite</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="assets/css/style.css">
 </head>
 <body>
     <div class="login-modal" id="loginModal" style="display: none;">
@@ -88,7 +88,7 @@ if ($user_id) {
         </div>
     </div>
 
-    <?php include 'header_sidebar.php'; ?>
+    <?php include 'includes/header_sidebar.php'; ?>
 
     <main class="container">
         <?php if ($is_logged_in): ?>
@@ -115,10 +115,6 @@ if ($user_id) {
                         <button class="btn-login" id="loginPromptBtnLogin" type="button">Login</button>
                     </div>
                 </div>
-                <div class="login-prompt-right">
-                    <button class="game-category-btn" type="button">🎮 Games</button>
-                    <button class="game-category-btn" type="button">🃏 Cards</button>
-                </div>
             </div>
         <?php endif; ?>
     </main>
@@ -126,12 +122,14 @@ if ($user_id) {
     <section class="games-carousel">
         <div class="games-header">
             <h2>Games</h2>
+            <div class="carousel-controls" aria-label="Games carousel controls">
+                <button class="carousel-btn prev" id="prevBtn" type="button" aria-label="Previous games">&#8249;</button>
+                <button class="carousel-btn next" id="nextBtn" type="button" aria-label="Next games">&#8250;</button>
+            </div>
         </div>
         <div class="games-container">
-            <button class="carousel-btn prev" id="prevBtn" type="button">&#10094;</button>
-
             <div class="games-row" id="gamesRow">
-                <a href="blackjack.php" class="game-card" <?php echo $is_logged_in ? '' : 'data-requires-login="true"'; ?> style="text-decoration:none;">
+                <a href="pages/blackjack.php" class="game-card" <?php echo $is_logged_in ? '' : 'data-requires-login="true"'; ?> style="text-decoration:none;">
                     <div class="game-img" style="background: linear-gradient(135deg, #0d123a, #1f2d58); display:flex; align-items:center; justify-content:center; color:#fff; font-weight:700;">BJ</div>
                     <div class="game-title">Blackjack</div>
                 </a>
@@ -143,8 +141,6 @@ if ($user_id) {
                     </div>
                 <?php endfor; ?>
             </div>
-
-            <button class="carousel-btn next" id="nextBtn" type="button">&#10095;</button>
         </div>
     </section>
 
@@ -169,6 +165,13 @@ if ($user_id) {
             });
         });
 
+        function openAuthModal(tabName = 'login') {
+            const tab = document.querySelector(`.login-tab[data-tab="${tabName}"]`);
+            const modal = document.getElementById('loginModal');
+            if (tab) tab.click();
+            if (modal) modal.style.display = 'flex';
+        }
+
         function setProgressBar(current, total) {
             const progressBar = document.getElementById('progressBar');
             const progressText = document.getElementById('progressText');
@@ -184,15 +187,24 @@ if ($user_id) {
             setProgressBar(<?php echo json_encode($total_wagered); ?>, 1000);
 
             const shouldShowLogin = new URLSearchParams(window.location.search).get('login') === '1';
-            if (shouldShowLogin && loginModal) {
-                loginModal.style.display = 'flex';
+            if (shouldShowLogin) openAuthModal('login');
+
+            const promptRegisterButton = document.getElementById('loginPromptBtn');
+            const promptLoginButton = document.getElementById('loginPromptBtnLogin');
+
+            if (promptRegisterButton) {
+                promptRegisterButton.addEventListener('click', () => openAuthModal('register'));
+            }
+
+            if (promptLoginButton) {
+                promptLoginButton.addEventListener('click', () => openAuthModal('login'));
             }
         });
 
         document.querySelectorAll('[data-requires-login="true"]').forEach(link => {
             link.addEventListener('click', (e) => {
                 e.preventDefault();
-                if (loginModal) loginModal.style.display = 'flex';
+                openAuthModal('login');
             });
         });
 
@@ -202,6 +214,15 @@ if ($user_id) {
                 return card ? (card.offsetWidth + 16) * 5 : 400;
             };
 
+            const updateCarouselButtons = () => {
+                const maxScroll = gamesRow.scrollWidth - gamesRow.clientWidth;
+                const atStart = gamesRow.scrollLeft <= 1;
+                const atEnd = gamesRow.scrollLeft >= maxScroll - 1;
+
+                prevBtn.disabled = atStart;
+                nextBtn.disabled = maxScroll <= 1 || atEnd;
+            };
+
             prevBtn.addEventListener('click', () => {
                 gamesRow.scrollBy({ left: -scrollAmount(), behavior: 'smooth' });
             });
@@ -209,6 +230,10 @@ if ($user_id) {
             nextBtn.addEventListener('click', () => {
                 gamesRow.scrollBy({ left: scrollAmount(), behavior: 'smooth' });
             });
+
+            gamesRow.addEventListener('scroll', updateCarouselButtons);
+            window.addEventListener('resize', updateCarouselButtons);
+            updateCarouselButtons();
         }
 
         if (loginForm) {
@@ -217,7 +242,7 @@ if ($user_id) {
                 const formData = new FormData(loginForm);
                 formData.append('action', 'login');
 
-                const response = await fetch('login.php', { method: 'POST', body: formData });
+                const response = await fetch('api/login.php', { method: 'POST', body: formData });
                 const data = await response.json();
                 const messageEl = document.getElementById('loginMessage');
 
@@ -236,7 +261,7 @@ if ($user_id) {
                 const formData = new FormData(registerForm);
                 formData.append('action', 'register');
 
-                const response = await fetch('login.php', { method: 'POST', body: formData });
+                const response = await fetch('api/login.php', { method: 'POST', body: formData });
                 const data = await response.json();
                 const messageEl = document.getElementById('registerMessage');
 

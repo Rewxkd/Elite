@@ -1,4 +1,5 @@
 // FavoriteButton component
+const favoriteApiUrl = new URL('../../api/favorites.php', document.currentScript.src).toString();
 class FavoriteButton {
     constructor(gameType, gameName, container) {
         this.gameType = gameType.toLowerCase();
@@ -16,7 +17,7 @@ class FavoriteButton {
 
     async checkFavoriteStatus() {
         try {
-            const response = await fetch('api_favorites.php', {
+            const response = await fetch(favoriteApiUrl, {
                 method: 'GET',
                 headers: { 'Content-Type': 'application/json' }
             });
@@ -32,7 +33,7 @@ class FavoriteButton {
     async toggleFavorite() {
         const method = this.isFavorited ? 'DELETE' : 'POST';
         try {
-            const response = await fetch('api_favorites.php', {
+            const response = await fetch(favoriteApiUrl, {
                 method: method,
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ game_type: this.gameType })

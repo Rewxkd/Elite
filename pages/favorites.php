@@ -1,9 +1,9 @@
 <?php
 session_start();
-include 'db_connect.php';
+include '../includes/db_connect.php';
 
 if (!isset($_SESSION['user_id'])) {
-    header('Location: index.php');
+    header('Location: ../index.php');
     exit;
 }
 
@@ -46,10 +46,10 @@ $stmt->close();
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Favourites | Elite</title>
-    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="../assets/css/style.css" />
 </head>
 <body>
-    <?php include 'header_sidebar.php'; ?>
+    <?php include '../includes/header_sidebar.php'; ?>
 
     <main class="container">
         <h1 style="margin-bottom: 2rem; color: #cfdcff;">Your Favourite Games</h1>
