@@ -17,7 +17,10 @@ if (!function_exists('elite_url')) {
 }
 ?>
 <aside class="sidebar" id="side" aria-hidden="true">
+    <div class="sidebar-top">
     <button class="toggle" id="toggle" aria-label="Toggle navigation" aria-expanded="false">☰</button>
+        <a href="<?php echo elite_url('pages/games.php'); ?>" class="sidebar-games-button" <?php echo $activePage === 'games' ? 'aria-current="page"' : ''; ?>>Games</a>
+    </div>
     <nav class="navigation">
         <a href="<?php echo elite_url('index.php'); ?>" class="item" <?php echo $activePage === 'home' ? 'id="active"' : ''; ?>><span class="icon">🏠</span><span class="text">Home</span></a>
         <a href="<?php echo elite_url('pages/favorites.php'); ?>" class="item" <?php echo $activePage === 'favourites' ? 'id="active"' : ''; ?>><span class="icon">❤️</span><span class="text">Favourites</span></a>
@@ -58,7 +61,7 @@ if (!function_exists('elite_url')) {
         </div>
         <?php if ($is_logged_in): ?>
         <div class="balance">
-            <span class="balance-amount" id="balanceAmount"><?php echo number_format((float)$balance, 2); ?> $</span>
+            <span class="balance-amount" id="balanceAmount">$<?php echo number_format((float)$balance, 2); ?></span>
         </div>
         <?php endif; ?>
         <div class="header-buttons">

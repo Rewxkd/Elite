@@ -127,40 +127,56 @@ $total_wagered = floatval($wallet['total_wagered'] ?? 0);
                 <div class="blackjack-wrapper">
                     <aside class="left-panel">
                         <div class="panel">
-                            <h3>Blackjack</h3>
-                            <p class="table-info">Dealer stands on soft 17. Blackjack pays 3:2.</p>
-                            <div style="display:flex;justify-content:space-between;align-items:center;margin:0.8rem 0 0.4rem;">
-                                <label for="betInput" style="color:#cfdcff;font-weight:600;">Bet:</label>
-                                <input id="betInput" type="number" min="1" step="1" value="10">
+                            <div class="blackjack-panel-header">
+                                <span class="blackjack-kicker">Elite table</span>
+                                <h3>Blackjack</h3>
                             </div>
-                            <div class="action-grid" style="margin-top:0.75rem;">
+                            <p class="table-info">Dealer stands on soft 17. Blackjack pays 3:2.</p>
+                            <div class="bet-widget">
+                                <div class="bet-widget-head">
+                                    <label for="betInput">Bet Amount</label>
+                                    <span id="betAmountPreview">$10.00</span>
+                                </div>
+                                <div class="bet-control">
+                                    <span class="bet-prefix">$</span>
+                                    <input id="betInput" type="number" min="1" step="1" value="10" aria-label="Bet amount">
+                                    <button class="bet-adjust" id="halfBetBtn" type="button">1/2</button>
+                                    <button class="bet-adjust" id="doubleBetBtn" type="button">2x</button>
+                                </div>
+                            </div>
+                            <div class="action-grid">
                                 <button id="hitBtn" disabled>Hit</button>
                                 <button id="standBtn" disabled>Stand</button>
                                 <button id="splitBtn" disabled>Split</button>
                                 <button id="doubleBtn" disabled>Double</button>
                             </div>
                             <div class="bet-actions">
-                                <button id="betBtn" style="background: linear-gradient(90deg, #1f6aed, #2550de);">Place Bet</button>
+                                <button id="betBtn">Place Bet</button>
                             </div>
                         </div>
                     </aside>
 
                     <section class="table-panel">
-                        <div class="round-status" style="margin-bottom:1rem;">
+                        <div class="round-status">
                             <div class="deck-preview"><img src="https://deckofcardsapi.com/static/img/back.png" alt="Card deck"></div>
                             <div id="roundStatus">Ready to play. Place your bet to start a round.</div>
                         </div>
 
-                        <div class="dealer-panel">
+                        <div class="dealer-panel hand-zone">
                             <h4>Dealer</h4>
                             <div class="card-row" id="dealerCards"></div>
-                            <p id="dealerValue" style="color:#c5d8ff;margin:0.5rem 0 0;"></p>
+                            <p id="dealerValue"></p>
                         </div>
 
-                        <div class="player-panel" id="singlePlayerPanel">
+                        <div class="table-rules">
+                            <span>Blackjack pays 3 to 2</span>
+                            <span>Dealer stands on soft 17</span>
+                        </div>
+
+                        <div class="player-panel hand-zone" id="singlePlayerPanel">
                             <h4>Player</h4>
                             <div class="card-row" id="playerCards"></div>
-                            <p id="playerValue" style="color:#c5d8ff;margin:0.5rem 0 0;"></p>
+                            <p id="playerValue"></p>
                         </div>
 
                         <div class="split-layout" id="splitHandsSection" style="display:none;"></div>
@@ -178,4 +194,3 @@ $total_wagered = floatval($wallet['total_wagered'] ?? 0);
     <script src="../assets/js/blackjack.js" data-balance="<?php echo number_format($balance, 2, '.', ''); ?>" data-total-wagered="<?php echo number_format($total_wagered, 2, '.', ''); ?>"></script>
 </body>
 </html>
-

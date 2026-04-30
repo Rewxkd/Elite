@@ -15,6 +15,9 @@ const userState = {
         const deckRanks = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K'];
 
         const betInput = document.getElementById('betInput');
+        const betAmountPreview = document.getElementById('betAmountPreview');
+        const halfBetBtn = document.getElementById('halfBetBtn');
+        const doubleBetBtn = document.getElementById('doubleBetBtn');
         const betBtn = document.getElementById('betBtn');
         const hitBtn = document.getElementById('hitBtn');
         const standBtn = document.getElementById('standBtn');
@@ -39,10 +42,29 @@ const userState = {
             return `$${amount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
         }
 
+        function getBetAmount() {
+            const bet = parseFloat(betInput?.value || 0);
+            return Number.isFinite(bet) ? Math.max(1, bet) : 1;
+        }
+
+        function setBetAmount(amount) {
+            if (!betInput) return;
+            const nextBet = Math.max(1, Math.min(Number(amount) || 1, Math.max(1, userState.balance)));
+            betInput.value = Number.isInteger(nextBet) ? String(nextBet) : nextBet.toFixed(2);
+            updateBetPreview();
+        }
+
+        function updateBetPreview() {
+            if (betAmountPreview) {
+                betAmountPreview.textContent = formatCurrency(getBetAmount());
+            }
+        }
+
         function updateUI() {
             if (displayBalance) {
                 displayBalance.textContent = formatCurrency(userState.balance);
             }
+            updateBetPreview();
         }
 
         function createDeck() {
@@ -152,10 +174,10 @@ const userState = {
             });
 
             if (dealerHand.reveal) {
-                dealerValueEl.textContent = `Dealer: ${handValue(dealerHand)}`;
+                dealerValueEl.textContent = handValue(dealerHand);
             } else if (dealerHand.length > 0) {
                 const visibleValue = handValue([dealerHand[0]]);
-                dealerValueEl.textContent = `Dealer: ${visibleValue} + ?`;
+                dealerValueEl.textContent = `${visibleValue} + ?`;
             } else {
                 dealerValueEl.textContent = '';
             }
@@ -169,7 +191,7 @@ const userState = {
                 document.getElementById('singlePlayerPanel').style.display = 'block';
                 playerCardsEl.innerHTML = '';
                 playerHands[0].cards.forEach(card => playerCardsEl.appendChild(renderCardEl(card)));
-                playerValueEl.textContent = `Value: ${handValue(playerHands[0].cards)} | Bet: ${formatCurrency(playerHands[0].bet)}`;
+                playerValueEl.textContent = handValue(playerHands[0].cards);
             } else {
                 document.getElementById('singlePlayerPanel').style.display = 'none';
                 splitHandsSection.style.display = 'flex';
@@ -208,6 +230,8 @@ const userState = {
             if (splitBtn) splitBtn.disabled = actionLocked || !isPlaying || !canSplit;
             if (betBtn) betBtn.disabled = actionLocked || isPlaying;
             if (betInput) betInput.disabled = actionLocked || isPlaying;
+            if (halfBetBtn) halfBetBtn.disabled = actionLocked || isPlaying;
+            if (doubleBetBtn) doubleBetBtn.disabled = actionLocked || isPlaying;
         }
 
         function refreshActionButtons() {
@@ -254,7 +278,7 @@ const userState = {
         async function beginRound() {
             if (inRound) return;
 
-            const bet = Math.max(1, parseFloat(betInput.value));
+            const bet = getBetAmount();
             if (!Number.isFinite(bet) || bet <= 0) {
                 updateMessage('Enter a valid bet amount.', 'outcome-negative');
                 return;
@@ -531,6 +555,9 @@ const userState = {
         }
 
         if (betBtn) betBtn.addEventListener('click', withActionLock(beginRound));
+        if (betInput) betInput.addEventListener('input', updateBetPreview);
+        if (halfBetBtn) halfBetBtn.addEventListener('click', () => setBetAmount(getBetAmount() / 2));
+        if (doubleBetBtn) doubleBetBtn.addEventListener('click', () => setBetAmount(getBetAmount() * 2));
         if (hitBtn) hitBtn.addEventListener('click', withActionLock(playerHit));
         if (standBtn) standBtn.addEventListener('click', withActionLock(playerStand));
         if (doubleBtn) doubleBtn.addEventListener('click', withActionLock(playerDouble));

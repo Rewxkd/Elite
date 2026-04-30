@@ -94,7 +94,7 @@ function favorite_game_meta($game, $game_assets) {
                 <div class="favourites-empty-mark">+</div>
                 <h2>No favourites yet</h2>
                 <p>Find a game you like, tap the star, and it will appear here for quick access.</p>
-                <a class="favourites-cta" href="../index.php">Browse games</a>
+                <a class="favourites-cta" href="games.php">Browse games</a>
             </section>
         <?php endif; ?>
 
