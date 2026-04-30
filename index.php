@@ -230,6 +230,8 @@ function mask_username($username) {
         </div>
     </section>
 
+    <?php include 'includes/footer.php'; ?>
+
     <script src="assets/js/index.js" data-total-wagered="<?php echo htmlspecialchars((string)$total_wagered, ENT_QUOTES, 'UTF-8'); ?>" data-login-url="api/login.php"></script>
 </body>
 </html>

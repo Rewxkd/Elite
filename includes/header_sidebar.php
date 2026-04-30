@@ -15,6 +15,7 @@ if (!function_exists('elite_url')) {
         return htmlspecialchars(($siteBase === '' ? '' : $siteBase) . '/' . ltrim($path, '/'), ENT_QUOTES, 'UTF-8');
     }
 }
+
 ?>
 <aside class="sidebar" id="side" aria-hidden="true">
     <div class="sidebar-top">

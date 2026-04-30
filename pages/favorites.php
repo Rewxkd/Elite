@@ -125,5 +125,7 @@ function favorite_game_meta($game, $game_assets) {
             </section>
         <?php endif; ?>
     </main>
+
+    <?php include '../includes/footer.php'; ?>
 </body>
 </html>

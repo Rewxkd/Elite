@@ -105,6 +105,8 @@ if ($user_id) {
         </section>
     </main>
 
+    <?php include '../includes/footer.php'; ?>
+
     <?php if (!$is_logged_in): ?>
         <script>
             const loginBtn = document.getElementById('loginBtn');

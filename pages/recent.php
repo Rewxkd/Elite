@@ -141,5 +141,7 @@ function format_recent_time($value) {
             </section>
         <?php endif; ?>
     </main>
+
+    <?php include '../includes/footer.php'; ?>
 </body>
 </html>

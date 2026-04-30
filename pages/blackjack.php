@@ -190,6 +190,8 @@ $total_wagered = floatval($wallet['total_wagered'] ?? 0);
         </section>
     </main>
 
+    <?php include '../includes/footer.php'; ?>
+
     <script src="../assets/js/favorite_button.js"></script>
     <script src="../assets/js/blackjack.js" data-balance="<?php echo number_format($balance, 2, '.', ''); ?>" data-total-wagered="<?php echo number_format($total_wagered, 2, '.', ''); ?>"></script>
 </body>
