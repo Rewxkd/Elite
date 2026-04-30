@@ -48,7 +48,7 @@ if ($user_id) {
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="login-modal" id="loginModal" style="display: <?php echo $is_logged_in ? 'none' : 'flex'; ?>;">
+    <div class="login-modal" id="loginModal" style="display: none;">
         <div class="login-container">
             <button class="login-close" id="closeLogin" aria-label="Close login">&times;</button>
             <div class="login-tabs">
@@ -131,7 +131,7 @@ if ($user_id) {
             <button class="carousel-btn prev" id="prevBtn" type="button">&#10094;</button>
 
             <div class="games-row" id="gamesRow">
-                <a href="blackjack.php" class="game-card" style="text-decoration:none;">
+                <a href="blackjack.php" class="game-card" <?php echo $is_logged_in ? '' : 'data-requires-login="true"'; ?> style="text-decoration:none;">
                     <div class="game-img" style="background: linear-gradient(135deg, #0d123a, #1f2d58); display:flex; align-items:center; justify-content:center; color:#fff; font-weight:700;">BJ</div>
                     <div class="game-title">Blackjack</div>
                 </a>
@@ -182,6 +182,18 @@ if ($user_id) {
 
         document.addEventListener('DOMContentLoaded', function () {
             setProgressBar(<?php echo json_encode($total_wagered); ?>, 1000);
+
+            const shouldShowLogin = new URLSearchParams(window.location.search).get('login') === '1';
+            if (shouldShowLogin && loginModal) {
+                loginModal.style.display = 'flex';
+            }
+        });
+
+        document.querySelectorAll('[data-requires-login="true"]').forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                if (loginModal) loginModal.style.display = 'flex';
+            });
         });
 
         if (prevBtn && nextBtn && gamesRow) {
