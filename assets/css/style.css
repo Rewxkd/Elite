@@ -749,7 +749,7 @@ body.open .menu-arrow {
     margin: 0 auto;
     padding: 3rem 2rem 2rem;
     padding-left: 400px;
-    background-color: rgba(20, 60, 100, 0.1);
+    background-color: rgba(32, 92, 151, 0.1);
     transition: transform 0.25s ease;
     transform: translateX(calc(var(--side-width) / 2));
 }
@@ -1489,177 +1489,6 @@ body.open .menu-arrow {
     background: rgba(99, 102, 241, 0.06);
 }
 
-.bets-stats-section {
-    max-width: 1200px;
-    margin: 2rem auto 3rem;
-    padding: 1.1rem;
-    border: 1px solid rgba(144, 190, 255, 0.14);
-    border-radius: 8px;
-    background:
-        linear-gradient(180deg, rgba(33, 45, 88, 0.78), rgba(13, 19, 43, 0.88)),
-        rgba(8, 19, 40, 0.72);
-    box-shadow: 0 18px 38px rgba(2, 8, 23, 0.26);
-    transition: transform 0.25s ease;
-    transform: translateX(calc(var(--side-width) / 2));
-}
-
-.bets-stats-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 1rem;
-    margin-bottom: 1rem;
-}
-
-.bets-stats-header h2:not(.games-kicker) {
-    color: #ffffff;
-    font-size: 1.45rem;
-    line-height: 1;
-}
-
-.bets-filter-tabs {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.25rem;
-    padding: 0.25rem;
-    border: 1px solid rgba(144, 190, 255, 0.16);
-    border-radius: 6px;
-    background: rgba(36, 49, 94, 0.78);
-}
-
-.bets-filter-tab {
-    min-width: 108px;
-    min-height: 38px;
-    padding: 0 1rem;
-    color: #94a1c4;
-    background: transparent;
-    border: 1px solid transparent;
-    border-radius: 4px;
-    font: inherit;
-    font-size: 0.86rem;
-    font-weight: 800;
-    cursor: pointer;
-}
-
-.bets-filter-tab:hover {
-    color: #ffffff;
-    background: rgba(50, 68, 125, 0.56);
-}
-
-.bets-filter-tab.active {
-    color: #ffffff;
-    background: linear-gradient(180deg, #1d98ee 0%, var(--elite-blue) 100%);
-    border-color: rgba(98, 174, 243, 0.34);
-}
-
-.bets-stats-table-wrap {
-    overflow-x: auto;
-    border: 1px solid rgba(144, 190, 255, 0.12);
-    border-radius: 8px;
-    background: rgba(12, 20, 48, 0.46);
-}
-
-.bets-stats-table {
-    width: 100%;
-    table-layout: fixed;
-    border-collapse: separate;
-    border-spacing: 0;
-    color: #ffffff;
-    font-size: 0.9rem;
-}
-
-.bets-stats-table th,
-.bets-stats-table td {
-    padding: 0.9rem 1rem;
-    text-align: left;
-    white-space: nowrap;
-}
-
-.bets-stats-table th {
-    color: #8aa2db;
-    font-size: 0.78rem;
-    font-weight: 800;
-    letter-spacing: 0.02em;
-}
-
-.bets-stats-table th:nth-child(1),
-.bets-stats-table td:nth-child(1) {
-    width: 34%;
-}
-
-.bets-stats-table th:nth-child(2),
-.bets-stats-table td:nth-child(2) {
-    width: 20%;
-}
-
-.bets-stats-table th:nth-child(3),
-.bets-stats-table td:nth-child(3),
-.bets-stats-table th:nth-child(4),
-.bets-stats-table td:nth-child(4),
-.bets-stats-table th:nth-child(5),
-.bets-stats-table td:nth-child(5) {
-    width: 15.33%;
-}
-
-.bets-stats-table tbody tr {
-    background: rgba(36, 49, 94, 0.34);
-}
-
-.bets-stats-table tbody tr:nth-child(even) {
-    background: rgba(45, 58, 108, 0.48);
-}
-
-.bets-stats-table tbody tr:hover {
-    background: rgba(56, 73, 131, 0.58);
-}
-
-.bets-stats-table .bets-empty-row,
-.bets-stats-table .bets-empty-row:hover {
-    background: transparent;
-}
-
-.bets-empty-row td {
-    color: #8aa3c7;
-    text-align: center;
-    padding: 1.25rem;
-}
-
-.bets-game-cell {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.55rem;
-    max-width: 100%;
-    min-width: 0;
-    font-weight: 800;
-}
-
-.bets-game-cell span:last-child,
-.bets-stats-table td {
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-.bets-game-mark {
-    width: 28px;
-    height: 28px;
-    display: inline-grid;
-    place-items: center;
-    flex: 0 0 28px;
-    color: #3aa7ff;
-    font-size: 0.72rem;
-    font-weight: 900;
-    border: 1px solid rgba(58, 167, 255, 0.28);
-    border-radius: 7px;
-    background: rgba(58, 167, 255, 0.1);
-}
-
-.bets-stats-table .is-positive {
-    color: #54e65e;
-}
-
-.bets-stats-table .is-muted {
-    color: #7383ad;
-}
 .games-row {
     display: flex;
     overflow-x: auto;
@@ -1748,7 +1577,7 @@ body.open .menu-arrow {
     padding-left: clamp(1.25rem, 4vw, 3rem);
     padding-right: clamp(1.25rem, 4vw, 3rem);
     padding-top: clamp(5.5rem, 10vw, 7rem);
-    min-height: calc(100vh - 82px);
+    padding-bottom: 3rem;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -2210,7 +2039,7 @@ body {
 }
 
 .container {
-    background: rgba(18, 27, 58, 0.36);
+    background: rgba(48, 73, 160, 0.308);
 }
 
 .button,

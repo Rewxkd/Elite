@@ -57,6 +57,7 @@ if ($user_id) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Games | Elite</title>
     <link rel="stylesheet" href="../assets/css/style.css" />
+    <link rel="stylesheet" href="../assets/css/live_stats.css" />
 </head>
 <body>
     <?php include '../includes/header_sidebar.php'; ?>
@@ -103,6 +104,8 @@ if ($user_id) {
                 </<?php echo $tag; ?>>
             <?php endforeach; ?>
         </section>
+
+        <?php include '../includes/live_stats.php'; ?>
     </main>
 
     <?php include '../includes/footer.php'; ?>

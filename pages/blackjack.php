@@ -116,6 +116,7 @@ $total_wagered = floatval($wallet['total_wagered'] ?? 0);
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Blackjack | Elite</title>
     <link rel="stylesheet" href="../assets/css/style.css" />
+    <link rel="stylesheet" href="../assets/css/live_stats.css" />
     <link rel="stylesheet" href="../assets/css/blackjack.css" />
 </head>
 <body>
@@ -189,6 +190,8 @@ $total_wagered = floatval($wallet['total_wagered'] ?? 0);
             </footer>
         </section>
     </main>
+
+    <?php include '../includes/live_stats.php'; ?>
 
     <?php include '../includes/footer.php'; ?>
 

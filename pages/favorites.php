@@ -72,6 +72,7 @@ function favorite_game_meta($game, $game_assets) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Favourites | Elite</title>
     <link rel="stylesheet" href="../assets/css/style.css" />
+    <link rel="stylesheet" href="../assets/css/live_stats.css" />
 </head>
 <body>
     <?php include '../includes/header_sidebar.php'; ?>
@@ -124,6 +125,8 @@ function favorite_game_meta($game, $game_assets) {
                 <?php endforeach; ?>
             </section>
         <?php endif; ?>
+
+        <?php include '../includes/live_stats.php'; ?>
     </main>
 
     <?php include '../includes/footer.php'; ?>
