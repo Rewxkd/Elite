@@ -110,6 +110,7 @@ function setProgressBar(current) {
     const progressCurrentAmount = document.getElementById('progressCurrentAmount');
     const progressTargetText = document.getElementById('progressTargetText');
     const progressPercent = document.getElementById('progressPercent');
+    const progressContainer = document.querySelector('.container');
     const currentRankWrap = document.getElementById('currentRankWrap');
     const nextRankWrap = document.getElementById('nextRankWrap');
     const currentRankEl = document.getElementById('currentRank');
@@ -134,6 +135,7 @@ function setProgressBar(current) {
     if (progressPercent) progressPercent.textContent = `${progress.percent}%`;
     if (currentRankEl) currentRankEl.textContent = progress.currentRank.name;
     if (nextRankEl) nextRankEl.textContent = isMaxRank ? 'Max level reached' : progress.nextRank.name;
+    setRankTierClass(progressContainer, progress.currentRank.name);
     setRankTierClass(currentRankWrap, progress.currentRank.name);
     setRankTierClass(nextRankWrap, isMaxRank ? progress.currentRank.name : progress.nextRank.name);
 }
