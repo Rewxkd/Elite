@@ -256,7 +256,7 @@ const userState = {
         function updateRoundStatus(text, cls = '') {
             if (!roundStatusEl) return;
             roundStatusEl.textContent = text;
-            roundStatusEl.className = 'round-status' + (cls ? ' ' + cls : '');
+            roundStatusEl.className = cls;
         }
 
         function withActionLock(action) {

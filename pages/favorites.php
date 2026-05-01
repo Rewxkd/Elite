@@ -34,16 +34,21 @@ $game_assets = [
         'image' => '../assets/img/cards-logo.png',
         'tagline' => 'Beat the dealer and keep your hot streak alive.',
     ],
+    'mines' => [
+        'name' => 'Mines',
+        'href' => 'mines.php',
+        'image' => '',
+        'tagline' => 'Reveal safe tiles and cash out before the blast.',
+    ],
 ];
 
-// Get user's favorites
 $favorites = [];
-$stmt = $conn->prepare("SELECT g.name FROM favorites f JOIN games g ON LOWER(f.game_type) = LOWER(g.name) WHERE f.user_id = ?");
+$stmt = $conn->prepare('SELECT game_type FROM favorites WHERE user_id = ? ORDER BY game_type ASC');
 $stmt->bind_param('i', $user_id);
 $stmt->execute();
 $result = $stmt->get_result();
 while ($row = $result->fetch_assoc()) {
-    $favorites[] = $row['name'];
+    $favorites[] = $row['game_type'];
 }
 $stmt->close();
 
@@ -128,7 +133,7 @@ function favorite_game_meta($game, $game_assets) {
 
         <?php include '../includes/live_stats.php'; ?>
     </main>
-
     <?php include '../includes/footer.php'; ?>
+
 </body>
 </html>
