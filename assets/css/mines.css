@@ -1,6 +1,7 @@
 .mines-page-main {
     padding: 1.5rem 1.25rem 2.5rem calc(var(--side-width) + 1.25rem) !important;
     transform: none !important;
+    transition: padding-left 0.25s ease;
     background:
         radial-gradient(circle at 50% 8%, rgba(34, 58, 120, 0.32), transparent 36%),
         linear-gradient(180deg, rgba(8, 13, 32, 0.18), rgba(8, 13, 32, 0.46));
@@ -16,6 +17,7 @@
         linear-gradient(180deg, rgba(33, 45, 88, 0.9), rgba(11, 17, 40, 0.96)),
         #151f42;
     box-shadow: 0 18px 38px rgba(0, 0, 0, 0.34);
+    transition: width 0.25s ease;
 }
 
 .mines-area {
@@ -262,6 +264,7 @@
 }
 
 .mines-board-panel {
+    position: relative;
     display: flex;
     flex-direction: column;
     gap: 1rem;
@@ -269,66 +272,6 @@
     background:
         linear-gradient(180deg, rgba(20, 53, 65, 0.5), rgba(13, 19, 43, 0.9)),
         #101936;
-}
-
-.mines-status-bar {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 1rem;
-    min-height: 70px;
-    padding: 0.85rem 1rem;
-    border: 1px solid rgba(128, 151, 210, 0.16);
-    border-radius: 8px;
-    background: rgba(18, 27, 58, 0.86);
-}
-
-.mines-status-bar span {
-    display: block;
-    margin-bottom: 0.25rem;
-    color: #8ab9ff;
-    font-size: 0.74rem;
-    font-weight: 800;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-}
-
-.mines-status-bar strong {
-    color: #c9d8f5;
-    font-size: 0.98rem;
-    line-height: 1.35;
-}
-
-#roundStatus.outcome-positive {
-    color: #54e65e;
-}
-
-#roundStatus.outcome-negative {
-    color: #ff7687;
-}
-
-.mines-count-pill {
-    flex: 0 0 auto;
-    min-width: 82px;
-    padding: 0.5rem 0.75rem;
-    border: 1px solid rgba(138, 185, 255, 0.28);
-    border-radius: 999px;
-    background:
-        linear-gradient(180deg, rgba(58, 82, 141, 0.92), rgba(25, 37, 78, 0.96)),
-        rgba(38, 52, 101, 0.9);
-    color: #ffffff;
-    font-size: 0.86rem;
-    font-weight: 900;
-    text-align: center;
-}
-
-.mines-count-pill span {
-    display: inline;
-    margin: 0;
-    color: #ffffff;
-    font-size: inherit;
-    letter-spacing: 0;
-    text-transform: none;
 }
 
 .mines-board {
@@ -342,6 +285,7 @@
 }
 
 .mines-tile {
+    position: relative;
     width: 100%;
     aspect-ratio: 1;
     display: grid;
@@ -374,23 +318,114 @@
 }
 
 .mines-tile.is-safe {
-    border-color: rgba(84, 230, 94, 0.42);
+    font-size: 0;
+    border-color: rgba(84, 230, 94, 0.28);
     background:
-        linear-gradient(180deg, rgba(54, 181, 74, 0.92), rgba(24, 111, 50, 0.96)),
-        #1f7a3a;
+        linear-gradient(180deg, rgba(22, 41, 78, 0.96), rgba(11, 23, 48, 0.98)),
+        #101936;
 }
 
 .mines-tile.is-muted-safe {
-    color: rgba(219, 234, 254, 0.38);
-    background: rgba(33, 45, 88, 0.58);
+    font-size: 0;
+    background: rgba(16, 30, 58, 0.7);
     box-shadow: none;
 }
 
 .mines-tile.is-mine {
+    font-size: 0;
     border-color: rgba(255, 118, 135, 0.5);
     background:
-        linear-gradient(180deg, rgba(237, 68, 89, 0.96), rgba(132, 33, 52, 0.98)),
-        #8c2236;
+        linear-gradient(180deg, rgba(43, 34, 78, 0.96), rgba(30, 18, 45, 0.98)),
+        #1b1938;
+}
+
+.mines-tile.is-safe::before,
+.mines-tile.is-muted-safe::before,
+.mines-gem-icon {
+    content: '';
+    position: relative;
+    width: 54%;
+    height: 48%;
+    display: block;
+    background:
+        linear-gradient(135deg, rgba(255, 255, 255, 0.46), transparent 20%),
+        linear-gradient(45deg, transparent 0 22%, rgba(10, 220, 55, 0.95) 22% 50%, transparent 50%),
+        linear-gradient(135deg, transparent 0 24%, #00ff25 24% 62%, transparent 62%),
+        linear-gradient(180deg, #24ff3f 0%, #00c528 100%);
+    clip-path: polygon(15% 0, 85% 0, 100% 28%, 50% 100%, 0 28%);
+    filter: drop-shadow(0 10px 10px rgba(0, 255, 45, 0.28)) drop-shadow(0 8px 12px rgba(0, 0, 0, 0.38));
+}
+
+.mines-tile.is-safe::after,
+.mines-tile.is-muted-safe::after,
+.mines-gem-icon::before {
+    content: '';
+    position: absolute;
+    left: 23%;
+    top: 26%;
+    width: 54%;
+    height: 48%;
+    background:
+        linear-gradient(120deg, transparent 0 35%, rgba(255, 255, 255, 0.22) 35% 50%, transparent 50%),
+        linear-gradient(75deg, transparent 0 48%, rgba(0, 105, 24, 0.32) 48% 52%, transparent 52%),
+        linear-gradient(150deg, transparent 0 50%, rgba(0, 105, 24, 0.28) 50% 54%, transparent 54%);
+    clip-path: polygon(15% 0, 85% 0, 100% 28%, 50% 100%, 0 28%);
+    pointer-events: none;
+}
+
+.mines-tile.is-muted-safe::before,
+.mines-tile.is-muted-safe::after,
+.mines-tile.is-muted-safe .mines-gem-icon {
+    opacity: 0.48;
+    filter: drop-shadow(0 8px 8px rgba(0, 0, 0, 0.28));
+}
+
+.mines-tile.is-mine::before,
+.mines-bomb-icon {
+    content: '';
+    position: relative;
+    width: 52%;
+    height: 52%;
+    display: block;
+    border-radius: 50%;
+    background:
+        radial-gradient(circle at 33% 28%, rgba(255, 255, 255, 0.24), transparent 18%),
+        linear-gradient(145deg, #d11f52 0%, #781738 72%);
+    box-shadow:
+        inset -8px -10px 14px rgba(34, 2, 18, 0.32),
+        0 10px 14px rgba(0, 0, 0, 0.35);
+}
+
+.mines-tile.is-mine .mines-bomb-icon {
+    display: none;
+}
+
+.mines-bomb-icon::before {
+    content: '';
+    position: absolute;
+    top: -8px;
+    right: 5px;
+    width: 18px;
+    height: 14px;
+    border-radius: 9px 9px 3px 3px;
+    background: linear-gradient(180deg, #57647b, #232a3d);
+    transform: rotate(28deg);
+}
+
+.mines-tile.is-mine::after,
+.mines-bomb-icon::after {
+    content: '';
+    position: absolute;
+    left: 43%;
+    top: 43%;
+    width: 30px;
+    height: 30px;
+    background:
+        radial-gradient(circle, #ffffff 0 10%, #ffd43d 11% 23%, transparent 24%),
+        conic-gradient(from 18deg, transparent 0 8%, #ffd43d 8% 13%, transparent 13% 21%, #ff6b00 21% 27%, transparent 27% 39%, #ffffff 39% 44%, transparent 44% 100%);
+    transform: translate(-50%, -50%);
+    filter: drop-shadow(0 0 5px rgba(255, 212, 61, 0.7));
+    pointer-events: none;
 }
 
 .game-overlay-footer {
@@ -444,8 +479,4 @@
         width: 100%;
     }
 
-    .mines-status-bar {
-        align-items: stretch;
-        flex-direction: column;
-    }
 }

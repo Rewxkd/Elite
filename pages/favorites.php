@@ -31,13 +31,13 @@ $game_assets = [
     'blackjack' => [
         'name' => 'Blackjack',
         'href' => 'blackjack.php',
-        'image' => '../assets/img/cards-logo.png',
+        'image' => '../assets/img/blackjack-logo.png',
         'tagline' => 'Beat the dealer and keep your hot streak alive.',
     ],
     'mines' => [
         'name' => 'Mines',
         'href' => 'mines.php',
-        'image' => '',
+        'image' => '../assets/img/mines-logo.png',
         'tagline' => 'Reveal safe tiles and cash out before the blast.',
     ],
 ];

@@ -14,11 +14,12 @@ $game_assets = [
     'blackjack' => [
         'name' => 'Blackjack',
         'href' => 'pages/blackjack.php',
-        'image' => 'assets/img/cards-logo.png',
+        'image' => 'assets/img/blackjack-logo.png',
     ],
     'mines' => [
         'name' => 'Mines',
         'href' => 'pages/mines.php',
+        'image' => 'assets/img/mines-logo.png',
         'code' => 'MI',
     ],
 ];
@@ -199,6 +200,7 @@ function mask_username($username) {
                         <a class="latest-bet-game <?php echo $gameImage ? 'blackjack-game-img' : ''; ?>" href="<?php echo htmlspecialchars($gameHref, ENT_QUOTES, 'UTF-8'); ?>">
                             <?php if ($gameImage): ?>
                                 <img src="<?php echo htmlspecialchars($gameImage, ENT_QUOTES, 'UTF-8'); ?>" alt="<?php echo htmlspecialchars($gameName, ENT_QUOTES, 'UTF-8'); ?>">
+                                <span class="latest-bet-game-name"><?php echo htmlspecialchars($gameName, ENT_QUOTES, 'UTF-8'); ?></span>
                             <?php else: ?>
                                 <span class="latest-bet-game-code"><?php echo htmlspecialchars($gameCode, ENT_QUOTES, 'UTF-8'); ?></span>
                                 <span class="latest-bet-game-name"><?php echo htmlspecialchars($gameName, ENT_QUOTES, 'UTF-8'); ?></span>
@@ -237,7 +239,7 @@ function mask_username($username) {
 
                 <a href="<?php echo htmlspecialchars($game_assets['mines']['href'], ENT_QUOTES, 'UTF-8'); ?>" class="game-card" <?php echo $is_logged_in ? '' : 'data-requires-login="true"'; ?>>
                     <div class="game-img">
-                        <span><?php echo htmlspecialchars($game_assets['mines']['code'], ENT_QUOTES, 'UTF-8'); ?></span>
+                        <img src="<?php echo htmlspecialchars($game_assets['mines']['image'], ENT_QUOTES, 'UTF-8'); ?>" alt="<?php echo htmlspecialchars($game_assets['mines']['name'], ENT_QUOTES, 'UTF-8'); ?>">
                     </div>
                     <div class="game-card-body">
                         <div class="game-title"><?php echo htmlspecialchars($game_assets['mines']['name'], ENT_QUOTES, 'UTF-8'); ?></div>

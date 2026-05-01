@@ -42,6 +42,35 @@ const userState = {
             return `$${amount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
         }
 
+        function formatMultiplier(value) {
+            return `${value.toFixed(2)}x`;
+        }
+
+        function showWinResult(multiplier, profit) {
+            const overlay = document.querySelector('.table-panel') || document.querySelector('.game-overlay');
+            if (!overlay) return;
+
+            const existing = overlay.querySelector('.win-result-popover');
+            if (existing) {
+                existing.remove();
+            }
+
+            const popup = document.createElement('div');
+            popup.className = 'win-result-popover';
+            popup.setAttribute('role', 'status');
+            popup.innerHTML = `
+                <strong>${formatMultiplier(multiplier)}</strong>
+                <span class="win-result-line"></span>
+                <span class="win-result-amount">${formatCurrency(profit)}</span>
+            `;
+            overlay.appendChild(popup);
+
+            window.setTimeout(() => {
+                popup.classList.add('is-hiding');
+                window.setTimeout(() => popup.remove(), 220);
+            }, 2600);
+        }
+
         function getBetAmount() {
             const bet = parseFloat(betInput?.value || 0);
             return Number.isFinite(bet) ? Math.max(1, bet) : 1;
@@ -526,7 +555,6 @@ const userState = {
             const resultsText = results.map((r, i) => `Hand ${i + 1}: ${r.text}`).join(' | ');
             const endText = net > 0 ? `You win $${net.toFixed(2)}!` : net < 0 ? `You lose $${Math.abs(net).toFixed(2)}.` : 'Push.';
             updateMessage(`${resultsText} ${endText}`, net > 0 ? 'outcome-positive' : net < 0 ? 'outcome-negative' : '');
-
             await syncWallet(net, totalWager);
             inRound = false;
             setButtons('idle');

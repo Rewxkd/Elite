@@ -158,11 +158,6 @@ $total_wagered = floatval($wallet['total_wagered'] ?? 0);
                     </aside>
 
                     <section class="table-panel">
-                        <div class="round-status">
-                            <div class="deck-preview"><img src="https://deckofcardsapi.com/static/img/back.png" alt="Card deck"></div>
-                            <div id="roundStatus">Ready to play. Place your bet to start a round.</div>
-                        </div>
-
                         <div class="dealer-panel hand-zone">
                             <h4>Dealer</h4>
                             <div class="card-row" id="dealerCards"></div>

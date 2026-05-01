@@ -1,6 +1,16 @@
 <?php
 $liveStatsUserId = isset($user_id) ? (int)$user_id : null;
 $liveStatsBets = [];
+$liveStatsGameAssets = [
+    'blackjack' => [
+        'name' => 'Blackjack',
+        'image' => 'assets/img/blackjack-logo.png',
+    ],
+    'mines' => [
+        'name' => 'Mines',
+        'image' => 'assets/img/mines-logo.png',
+    ],
+];
 
 if (isset($conn)) {
     $liveStatsQuery = $conn->query("
@@ -59,7 +69,11 @@ $liveStatsScript = function_exists('elite_url') ? elite_url('assets/js/live_stat
                 <tbody>
                     <?php foreach ($liveStatsBets as $bet): ?>
                         <?php
+                            $gameType = strtolower(trim((string)$bet['game_type']));
+                            $gameAsset = $liveStatsGameAssets[$gameType] ?? null;
                             $gameName = $bet['game_name'];
+                            $gameImage = $gameAsset['image'] ?? '';
+                            $gameImageUrl = $gameImage && function_exists('elite_url') ? elite_url($gameImage) : htmlspecialchars($gameImage, ENT_QUOTES, 'UTF-8');
                             $amount = (float)$bet['wager_amount'];
                             $payout = (float)$bet['payout_amount'];
                             $multiplier = $amount > 0 ? $payout / $amount : 0;
@@ -67,7 +81,13 @@ $liveStatsScript = function_exists('elite_url') ? elite_url('assets/js/live_stat
                         <tr data-bet-row data-is-mine="<?php echo $liveStatsUserId && (int)$bet['user_id'] === $liveStatsUserId ? 'true' : 'false'; ?>">
                             <td data-label="Game">
                                 <span class="bets-game-cell">
-                                    <span class="bets-game-mark"><?php echo htmlspecialchars(strtoupper(substr($gameName, 0, 2)), ENT_QUOTES, 'UTF-8'); ?></span>
+                                    <span class="bets-game-mark <?php echo $gameImage ? 'has-logo' : ''; ?>">
+                                        <?php if ($gameImage): ?>
+                                            <img src="<?php echo $gameImageUrl; ?>" alt="">
+                                        <?php else: ?>
+                                            <?php echo htmlspecialchars(strtoupper(substr($gameName, 0, 2)), ENT_QUOTES, 'UTF-8'); ?>
+                                        <?php endif; ?>
+                                    </span>
                                     <span><?php echo htmlspecialchars($gameName, ENT_QUOTES, 'UTF-8'); ?></span>
                                 </span>
                             </td>

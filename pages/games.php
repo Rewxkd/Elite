@@ -13,7 +13,7 @@ $games = [
     [
         'name' => 'Blackjack',
         'href' => 'blackjack.php',
-        'image' => '../assets/img/cards-logo.png',
+        'image' => '../assets/img/blackjack-logo.png',
         'tagline' => 'Beat the dealer and keep your hot streak alive.',
         'status' => 'Play',
         'is_live' => true,
@@ -21,6 +21,7 @@ $games = [
     [
         'name' => 'Mines',
         'href' => 'mines.php',
+        'image' => '../assets/img/mines-logo.png',
         'tagline' => 'Reveal safe tiles and cash out before the blast.',
         'code' => 'MI',
         'status' => 'Play',

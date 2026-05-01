@@ -46,6 +46,31 @@ function formatMultiplier(value) {
     return `${value.toFixed(2)}x`;
 }
 
+function showWinResult(multiplier, profit) {
+    const overlay = document.querySelector('.mines-board-panel') || document.querySelector('.game-overlay');
+    if (!overlay) return;
+
+    const existing = overlay.querySelector('.win-result-popover');
+    if (existing) {
+        existing.remove();
+    }
+
+    const popup = document.createElement('div');
+    popup.className = 'win-result-popover';
+    popup.setAttribute('role', 'status');
+    popup.innerHTML = `
+        <strong>${formatMultiplier(multiplier)}</strong>
+        <span class="win-result-line"></span>
+        <span class="win-result-amount">${formatCurrency(profit)}</span>
+    `;
+    overlay.appendChild(popup);
+
+    window.setTimeout(() => {
+        popup.classList.add('is-hiding');
+        window.setTimeout(() => popup.remove(), 220);
+    }, 2600);
+}
+
 function getBetAmount() {
     const bet = parseFloat(betInput?.value || 0);
     return Number.isFinite(bet) ? Math.max(1, bet) : 1;
@@ -164,13 +189,13 @@ function renderBoard(revealAll = false) {
 
         if (isRevealed && !isMine) {
             tile.classList.add('is-safe');
-            tile.textContent = 'S';
+            tile.textContent = '';
         } else if ((isRevealed || revealAll) && isMine) {
             tile.classList.add('is-mine');
-            tile.textContent = 'X';
+            tile.textContent = '';
         } else if (revealAll && !isMine) {
             tile.classList.add('is-muted-safe');
-            tile.textContent = 'S';
+            tile.textContent = '';
         } else {
             tile.textContent = '';
         }
@@ -241,6 +266,9 @@ async function cashOut(auto = false) {
     minesState.balance += payout;
     minesState.inRound = false;
     updateStatus(`${auto ? 'Board cleared' : 'Cashed out'} for ${formatCurrency(payout)}.`, 'outcome-positive');
+    if (net > 0) {
+        showWinResult(getCurrentMultiplier(), net);
+    }
     renderBoard(true);
     updatePanel();
     await finishRound(net);

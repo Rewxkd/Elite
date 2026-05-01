@@ -169,14 +169,6 @@ $total_wagered = floatval($wallet['total_wagered'] ?? 0);
                 </aside>
 
                 <section class="mines-board-panel">
-                    <div class="mines-status-bar">
-                        <div>
-                            <span>Round</span>
-                            <strong id="roundStatus">Set your bet and pick the number of mines.</strong>
-                        </div>
-                        <div class="mines-count-pill"><span id="safeCountText">0</span> safe</div>
-                    </div>
-
                     <div class="mines-board" id="minesBoard" aria-label="Mines board"></div>
                 </section>
             </div>
