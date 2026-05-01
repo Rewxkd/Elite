@@ -125,23 +125,56 @@ function setProgressBar(current) {
 
     if (progressCurrentAmount && progressTargetText) {
         progressCurrentAmount.textContent = formatProgressCurrency(wagered);
-        progressTargetText.textContent = isMaxRank ? ' Max level reached' : ` / ${formatProgressCurrency(progress.rankTarget)} Wagered`;
+        progressTargetText.textContent = isMaxRank ? ' Wagered' : ` / ${formatProgressCurrency(progress.rankTarget)} Wagered`;
     } else {
         progressText.textContent = isMaxRank
-            ? `${formatProgressCurrency(wagered)} Max level reached`
+            ? `${formatProgressCurrency(wagered)} Wagered`
             : `${formatProgressCurrency(wagered)} / ${formatProgressCurrency(progress.rankTarget)} Wagered`;
     }
 
     if (progressPercent) progressPercent.textContent = `${progress.percent}%`;
     if (currentRankEl) currentRankEl.textContent = progress.currentRank.name;
     if (nextRankEl) nextRankEl.textContent = isMaxRank ? 'Max level reached' : progress.nextRank.name;
+    if (nextRankWrap) nextRankWrap.classList.toggle('is-max-rank', isMaxRank);
     setRankTierClass(progressContainer, progress.currentRank.name);
     setRankTierClass(currentRankWrap, progress.currentRank.name);
     setRankTierClass(nextRankWrap, isMaxRank ? progress.currentRank.name : progress.nextRank.name);
 }
 
+function setupBetsFilters() {
+    const tabs = document.querySelectorAll('[data-bets-filter]');
+    const rows = document.querySelectorAll('[data-bet-row]');
+    const emptyMineRow = document.querySelector('[data-bets-empty="mine"]');
+
+    if (!tabs.length || !rows.length) return;
+
+    tabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+            const filter = tab.dataset.betsFilter;
+            let visibleRows = 0;
+
+            tabs.forEach(otherTab => {
+                const isActive = otherTab === tab;
+                otherTab.classList.toggle('active', isActive);
+                otherTab.setAttribute('aria-selected', isActive.toString());
+            });
+
+            rows.forEach(row => {
+                const shouldShow = filter === 'live' || row.dataset.isMine === 'true';
+                row.hidden = !shouldShow;
+                if (shouldShow) visibleRows += 1;
+            });
+
+            if (emptyMineRow) {
+                emptyMineRow.hidden = filter !== 'mine' || visibleRows > 0;
+            }
+        });
+    });
+}
+
 document.addEventListener('DOMContentLoaded', function () {
     setProgressBar(indexConfig.totalWagered);
+    setupBetsFilters();
     clearLegacyLoginPromptParam();
 
     const shouldShowLogin = window.sessionStorage.getItem('eliteOpenLoginModal') === '1';
