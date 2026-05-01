@@ -49,6 +49,20 @@ function openAuthModal(tabName = 'login') {
     if (modal) modal.style.display = 'flex';
 }
 
+function reloadWithoutLoginPrompt() {
+    const url = new URL(window.location.href);
+    url.searchParams.delete('login');
+    window.location.replace(url.toString());
+}
+
+function clearLegacyLoginPromptParam() {
+    const url = new URL(window.location.href);
+    if (!url.searchParams.has('login')) return;
+
+    url.searchParams.delete('login');
+    window.history.replaceState({}, '', url.toString());
+}
+
 function formatProgressCurrency(amount) {
     return `$${Number(amount).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 }
@@ -126,9 +140,13 @@ function setProgressBar(current) {
 
 document.addEventListener('DOMContentLoaded', function () {
     setProgressBar(indexConfig.totalWagered);
+    clearLegacyLoginPromptParam();
 
-    const shouldShowLogin = new URLSearchParams(window.location.search).get('login') === '1';
-    if (shouldShowLogin) openAuthModal('login');
+    const shouldShowLogin = window.sessionStorage.getItem('eliteOpenLoginModal') === '1';
+    if (shouldShowLogin) {
+        window.sessionStorage.removeItem('eliteOpenLoginModal');
+        openAuthModal('login');
+    }
 
     const promptRegisterButton = document.getElementById('loginPromptBtn');
     const promptLoginButton = document.getElementById('loginPromptBtnLogin');
@@ -191,7 +209,7 @@ if (loginForm) {
         messageEl.style.color = data.success ? '#00ff00' : '#ff6666';
 
         if (data.success) {
-            setTimeout(() => location.reload(), 700);
+            setTimeout(reloadWithoutLoginPrompt, 700);
         }
     });
 }
@@ -210,7 +228,7 @@ if (registerForm) {
         messageEl.style.color = data.success ? '#00ff00' : '#ff6666';
 
         if (data.success) {
-            setTimeout(() => location.reload(), 700);
+            setTimeout(reloadWithoutLoginPrompt, 700);
         }
     });
 }

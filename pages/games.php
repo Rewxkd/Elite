@@ -78,7 +78,7 @@ if ($user_id) {
             <?php foreach ($games as $game): ?>
                 <?php
                     $isLive = !empty($game['is_live']);
-                    $href = $is_logged_in ? ($game['href'] ?? '#') : '../index.php?login=1';
+                    $href = $is_logged_in ? ($game['href'] ?? '#') : '../index.php';
                     $tag = $isLive ? 'a' : 'article';
                     $class = 'favourite-card' . ($isLive ? '' : ' is-placeholder');
                 ?>
@@ -112,7 +112,8 @@ if ($user_id) {
             const loginBtn = document.getElementById('loginBtn');
             if (loginBtn) {
                 loginBtn.addEventListener('click', () => {
-                    window.location.href = '../index.php?login=1';
+                    window.sessionStorage.setItem('eliteOpenLoginModal', '1');
+                    window.location.href = '../index.php';
                 });
             }
         </script>

@@ -168,7 +168,7 @@ body.open {
 }
 
 .group .button.icon {
-    padding: 0.55rem 0.9rem;
+    padding: 0;
     border-radius: 0;
     background: transparent;
     border: none;
@@ -249,7 +249,7 @@ body.open {
     background: rgba(44, 159, 253, 0.05);
     border: 1px solid rgba(44, 159, 253, 0.2);
     border-radius: 12px;
-    padding: 0.55rem 0.9rem;
+    padding: 0;
     color: #ffffff;
     display: inline-flex;
     align-items: center;
@@ -343,9 +343,27 @@ body.open {
 }
 
 .button.icon {
-    padding: 0.75rem;
+    padding: 0;
     border-radius: 8px;
     font-size: 1.125rem;
+}
+
+.header-action {
+    width: 40px;
+    height: 40px;
+    min-width: 40px;
+    color: #8ab9ff;
+}
+
+.header-icon {
+    width: 20px;
+    height: 20px;
+    display: block;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.9;
+    stroke-linecap: round;
+    stroke-linejoin: round;
 }
 
 .button.notif {
@@ -421,27 +439,36 @@ body.open {
 
 .sidebar-games-button {
     min-height: 40px;
-    display: none;
+    display: inline-flex;
     flex: 1;
     min-width: 0;
     align-items: center;
     justify-content: center;
-    padding: 0 1.05rem;
+    max-width: 0;
+    padding: 0;
     color: #ffffff;
     font-size: 0.92rem;
     font-weight: 900;
     line-height: 1;
     text-decoration: none;
     white-space: nowrap;
+    overflow: hidden;
+    opacity: 0;
+    transform: translateX(-6px);
     border: 1px solid rgba(98, 174, 243, 0.42);
     border-radius: 7px;
     background: linear-gradient(180deg, #2aa4f4 0%, #1786df 100%);
     box-shadow: 0 10px 22px rgba(23, 134, 223, 0.22);
-    transition: transform 0.16s ease, filter 0.16s ease;
+    pointer-events: none;
+    transition: max-width 0.22s ease, padding 0.22s ease, opacity 0.16s ease 0.08s, transform 0.16s ease 0.08s, filter 0.16s ease;
 }
 
 body.open .sidebar-games-button {
-    display: inline-flex;
+    max-width: 120px;
+    padding: 0 1.05rem;
+    opacity: 1;
+    transform: translateX(0);
+    pointer-events: auto;
 }
 
 .sidebar-games-button:hover {
@@ -470,11 +497,14 @@ body.open .sidebar-games-button {
 .item {
     display: flex;
     align-items: center;
-    gap: 0.75rem;
-    padding: 0.5rem 0.75rem;
+    justify-content: center;
+    gap: 0;
+    min-height: 40px;
+    padding: 0.5rem 0;
     color: #90beff;
     text-decoration: none;
     border-radius: 8px;
+    overflow: hidden;
     transition: background 0.15s ease, color 0.15s ease, transform 0.12s ease;
 }
 
@@ -490,14 +520,27 @@ body.open .sidebar-games-button {
     transform: translateX(4px);
 }
 
-.icon {
-    font-size: 1.125rem;
+.navigation .icon {
+    width: 1.7rem;
+    height: 1.7rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.28rem;
+    line-height: 1;
     color: #6366f1;
+    flex: 0 0 1.7rem;
 }
 
 .text {
-    display: none;
+    display: inline-block;
+    max-width: 0;
+    overflow: hidden;
+    opacity: 0;
+    transform: translateX(-6px);
     font-weight: 600;
+    white-space: nowrap;
+    transition: max-width 0.22s ease, opacity 0.16s ease 0.08s, transform 0.16s ease 0.08s;
 }
 
 body.open .sidebar {
@@ -505,7 +548,15 @@ body.open .sidebar {
 }
 
 body.open .text {
-    display: inline-block;
+    max-width: 140px;
+    opacity: 1;
+    transform: translateX(0);
+}
+
+body.open .item {
+    justify-content: flex-start;
+    gap: 0.75rem;
+    padding: 0.5rem 0.75rem;
 }
 
 .dropdown {
@@ -526,8 +577,10 @@ body.open .text {
     display: flex;
     flex-direction: row;
     align-items: center;
-    gap: 0.75rem;
-    padding: 0.5rem 0.75rem;
+    justify-content: center;
+    gap: 0;
+    min-height: 40px;
+    padding: 0.5rem 0;
     color: #90beff;
     background: rgba(44, 159, 253, 0.08);
     border: 1px solid rgba(44, 159, 253, 0.2);
@@ -552,29 +605,53 @@ body.open .text {
 }
 
 .menu-icon {
-    font-size: 1.125rem;
+    width: 1.7rem;
+    height: 1.7rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.28rem;
+    line-height: 1;
     color: #6366f1;
-    flex-shrink: 0;
+    flex: 0 0 1.7rem;
 }
 
 .menu-text {
-    display: none;
+    display: inline-block;
+    max-width: 0;
+    overflow: hidden;
+    opacity: 0;
+    transform: translateX(-6px);
     font-weight: 600;
     flex: 1;
+    white-space: nowrap;
+    transition: max-width 0.22s ease, opacity 0.16s ease 0.08s, transform 0.16s ease 0.08s;
 }
 
 body.open .menu-text {
-    display: inline;
+    max-width: 130px;
+    opacity: 1;
+    transform: translateX(0);
+}
+
+body.open .dropdown-button {
+    justify-content: flex-start;
+    gap: 0.75rem;
+    padding: 0.5rem 0.75rem;
 }
 
 .menu-arrow {
     font-size: 0.625rem;
-    transition: transform 0.2s ease;
-    display: none;
+    max-width: 0;
+    overflow: hidden;
+    transition: max-width 0.22s ease, transform 0.2s ease, opacity 0.16s ease 0.08s;
+    display: inline-block;
+    opacity: 0;
 }
 
 body.open .menu-arrow {
-    display: inline;
+    max-width: 1rem;
+    opacity: 1;
 }
 
 .dropdown-button[aria-expanded="true"] .menu-arrow {
@@ -837,7 +914,7 @@ body.open .menu-arrow {
     display: flex;
     justify-content: center;
     align-items: center;
-    z-index: 1000;
+    z-index: 5000;
 }
 
 .login-container {
@@ -849,6 +926,7 @@ body.open .menu-arrow {
     max-width: 400px;
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
     position: relative;
+    z-index: 1;
 }
 
 .login-close {
@@ -980,35 +1058,56 @@ body.open .menu-arrow {
 
 .auth-button {
     position: relative;
-    display: flex;
-    flex-direction: row;
+    display: inline-flex;
     align-items: center;
-    gap: 0.75rem;
-    padding: 0.5rem 0.75rem;
-    color: #90beff;
-    background: rgba(44, 159, 253, 0.1);
-    border: 1px solid rgba(44, 159, 253, 0.3);
-    border-radius: 8px;
+    justify-content: center;
+    gap: 0.55rem;
+    min-height: 40px;
+    padding: 0 1rem 0 0.8rem;
+    color: #ffffff;
+    background: rgba(36, 49, 94, 0.78);
+    border: 1px solid var(--elite-border);
+    border-radius: 12px;
+    box-shadow: 0 10px 24px rgba(5, 12, 30, 0.24);
     cursor: pointer;
-    font-weight: 600;
-    font-size: 0.875rem;
-    transition: background 0.15s ease, color 0.15s ease, transform 0.12s ease;
+    font-size: 0.9rem;
+    font-weight: 800;
+    letter-spacing: 0.01em;
+    transition: transform 0.16s ease, filter 0.16s ease, box-shadow 0.16s ease, border-color 0.16s ease;
     font-family: inherit;
 }
 
 .auth-button:hover {
-    background: rgba(44, 159, 253, 0.2);
     color: #ffffff;
-    transform: translateX(4px);
+    transform: translateY(-2px);
+    filter: brightness(1.06);
+    border-color: var(--elite-border-strong);
+    box-shadow: 0 14px 30px rgba(5, 12, 30, 0.32);
 }
 
 .auth-icon {
-    font-size: 1.125rem;
-    flex-shrink: 0;
+    width: 22px;
+    height: 22px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: #ffffff;
+    flex: 0 0 22px;
+}
+
+.auth-icon svg {
+    width: 20px;
+    height: 20px;
+    display: block;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.9;
+    stroke-linecap: round;
+    stroke-linejoin: round;
 }
 
 .auth-text {
-    font-weight: 600;
+    font-weight: 800;
 }
 
 .latest-bets-section {
@@ -1895,9 +1994,8 @@ body {
 .item,
 .dropdown-button,
 .menu-icon,
-.icon,
+.navigation .icon,
 .btn-login,
-.auth-button,
 .progress-top p {
     color: #8ab9ff;
 }
@@ -1980,7 +2078,6 @@ body {
     color: #ffffff;
 }
 
-.menu-arrow,
-.auth-icon {
+.menu-arrow {
     color: #8ab9ff;
 }
