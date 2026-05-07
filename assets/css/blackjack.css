@@ -1,6 +1,7 @@
 .blackjack-page-main {
     padding: 1.35rem 1.25rem 2.4rem calc(var(--side-width) + 1.25rem) !important;
     transform: none !important;
+    min-width: 0;
     transition: padding-left 0.25s ease;
     background:
         radial-gradient(circle at 50% 8%, rgba(34, 58, 120, 0.32), transparent 36%),
@@ -9,6 +10,7 @@
 
 .blackjack-overlay {
     width: min(1120px, calc(100vw - var(--side-width) - 2.5rem));
+    max-width: 100%;
     margin: 0 auto;
     overflow: hidden;
     border: 1px solid rgba(128, 151, 210, 0.18);
@@ -29,6 +31,7 @@
     display: grid;
     grid-template-columns: 300px minmax(0, 1fr);
     min-height: 640px;
+    min-width: 0;
 }
 
 .left-panel {
@@ -220,6 +223,7 @@
     isolation: isolate;
     display: grid;
     grid-template-rows: 1fr auto 1.12fr;
+    min-width: 0;
     min-height: 640px;
     overflow: hidden;
     border-radius: 0 8px 8px 0;
@@ -398,6 +402,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    min-width: 0;
     padding-inline: 5.5rem;
 }
 
@@ -620,6 +625,7 @@
     font-size: 0.92rem;
     font-weight: 850;
     text-align: center;
+    line-height: 1.25;
     transform: translateX(-50%);
     backdrop-filter: blur(5px);
     box-shadow:
@@ -688,16 +694,28 @@
 }
 
 @media (max-width: 980px) {
+    .blackjack-page-main {
+        padding-top: 1rem !important;
+        padding-left: calc(var(--side-width) + 1rem) !important;
+        padding-right: 1rem !important;
+    }
+
     .blackjack-overlay {
-        width: min(100%, calc(100vw - 6rem));
+        width: 100%;
     }
 
     .blackjack-wrapper {
         grid-template-columns: 1fr;
+        min-height: 0;
     }
 
     .left-panel {
+        padding: 0.9rem;
         border-radius: 8px 8px 0 0;
+    }
+
+    .left-panel .panel {
+        gap: 0.85rem;
     }
 
     .table-panel {
@@ -711,24 +729,55 @@
 }
 
 @media (max-width: 620px) {
+    body.blackjack-game-body.open {
+        --side-width: 0px;
+    }
+
     .blackjack-page-main {
+        padding-left: calc(var(--side-width) + 0.6rem) !important;
         padding-right: 0.8rem !important;
+        padding-bottom: 1.25rem !important;
     }
 
     .blackjack-overlay {
         width: 100%;
+        border-radius: 7px;
+    }
+
+    .blackjack-area {
+        padding: 0.55rem;
     }
 
     .blackjack-wrapper {
         min-height: 0;
     }
 
+    .blackjack-panel-header h3 {
+        font-size: 1.35rem;
+    }
+
+    .table-info {
+        padding: 0.7rem 0;
+        font-size: 0.86rem;
+    }
+
+    .bet-control {
+        grid-template-columns: auto minmax(0, 1fr) 44px 44px;
+    }
+
     .table-panel {
-        min-height: 560px;
+        min-height: clamp(500px, 128vw, 560px);
     }
 
     .action-grid {
-        grid-template-columns: 1fr;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 0.5rem;
+    }
+
+    .action-grid button,
+    .bet-actions button {
+        min-height: 42px;
+        font-size: 0.88rem;
     }
 
     .deck-shoe {
@@ -739,12 +788,28 @@
     }
 
     .card-row {
-        padding-inline: 2.4rem;
+        min-height: 118px;
+        padding-inline: clamp(1.55rem, 11vw, 2.4rem);
     }
 
     .card {
-        --card-w: 62px;
-        margin-left: -16px;
+        --card-w: clamp(48px, 14vw, 62px);
+        margin-left: clamp(-16px, -4vw, -10px);
+        border-radius: 7px;
+    }
+
+    .card-face {
+        border-radius: 7px;
+    }
+
+    .card-rank {
+        top: 6px;
+        left: 7px;
+    }
+
+    .card-suit {
+        right: 7px;
+        bottom: 6px;
     }
 
     .table-rules {
@@ -755,18 +820,146 @@
     .split-layout {
         left: 0.5rem;
         right: 0.5rem;
+        bottom: 46px;
+        flex-wrap: wrap;
         gap: 0.35rem;
     }
 
     .split-hand {
-        flex-basis: 46%;
+        flex: 1 1 min(44%, 180px);
+        min-height: 138px;
+        padding-bottom: 1.9rem;
     }
 
     .split-hand .card-row {
-        padding-inline: 1.2rem;
+        min-height: 106px;
+        padding-inline: clamp(0.7rem, 5vw, 1.2rem);
     }
 
     .table-message {
+        bottom: 12px;
         font-size: 0.8rem;
+        border-radius: 14px;
+    }
+
+    .game-overlay-footer {
+        padding: 0.7rem 0.8rem;
     }
 }
+
+@media (max-width: 480px) {
+    .blackjack-page-main {
+        padding: 0.55rem 0.55rem 1rem calc(var(--side-width) + 0.45rem) !important;
+    }
+
+    .blackjack-area {
+        padding: 0.4rem;
+    }
+
+    .left-panel {
+        padding: 0.75rem;
+    }
+
+    .bet-widget-head {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 0.25rem;
+    }
+
+    .bet-widget-head label,
+    .bet-widget-head span {
+        max-width: 100%;
+    }
+
+    .bet-control {
+        height: 40px;
+        grid-template-columns: auto minmax(0, 1fr) 40px 40px;
+    }
+
+    .bet-prefix {
+        padding-left: 0.6rem;
+    }
+
+    #betInput {
+        font-size: 0.95rem;
+    }
+
+    .bet-adjust {
+        font-size: 0.76rem;
+    }
+
+    .table-panel {
+        min-height: 500px;
+    }
+
+    .table-felt {
+        inset: 14px 10px;
+        border-width: 3px;
+        border-bottom-width: 7px;
+    }
+
+    .dealer-panel {
+        padding-top: 42px;
+    }
+
+    .player-panel {
+        padding-bottom: 42px;
+    }
+
+    .dealer-panel p {
+        top: 46px;
+    }
+
+    .player-panel p {
+        bottom: 36px;
+    }
+
+    .deck-shoe {
+        left: 5px;
+        transform: translateY(-50%) rotate(-7deg) scale(0.66);
+    }
+
+    .card-row {
+        padding-inline: clamp(0.8rem, 9vw, 1.45rem);
+    }
+
+    .table-rules {
+        width: 86%;
+        gap: 0.2rem;
+        font-size: 0.58rem;
+    }
+
+    .table-rules span {
+        padding: 0.32rem 0.4rem;
+    }
+
+    .table-message {
+        max-width: calc(100% - 1rem);
+        min-height: 34px;
+        padding: 0.45rem 0.65rem;
+        font-size: 0.72rem;
+    }
+}
+
+@media (max-width: 480px) and (min-height: 760px) {
+    .blackjack-page-main {
+        padding-bottom: calc(1.25rem + env(safe-area-inset-bottom, 0px)) !important;
+    }
+
+    .table-panel {
+        min-height: clamp(560px, 70dvh, 650px);
+    }
+
+    .hand-zone {
+        min-height: 150px;
+    }
+
+    .card-row {
+        min-height: 126px;
+    }
+
+    .table-message {
+        bottom: calc(14px + env(safe-area-inset-bottom, 0px));
+    }
+}
+

@@ -1,6 +1,7 @@
 .mines-page-main {
     padding: 1.5rem 1.25rem 2.5rem calc(var(--side-width) + 1.25rem) !important;
     transform: none !important;
+    min-width: 0;
     transition: padding-left 0.25s ease;
     background:
         radial-gradient(circle at 50% 8%, rgba(34, 58, 120, 0.32), transparent 36%),
@@ -9,6 +10,7 @@
 
 .mines-overlay {
     width: min(1120px, calc(100vw - var(--side-width) - 2.5rem));
+    max-width: 100%;
     margin: 0 auto;
     overflow: hidden;
     border: 1px solid rgba(128, 151, 210, 0.18);
@@ -25,6 +27,7 @@
     grid-template-columns: 290px minmax(0, 1fr);
     gap: 0.9rem;
     min-height: 560px;
+    min-width: 0;
     padding: 0.9rem;
     background: transparent;
 }
@@ -43,6 +46,7 @@
     display: flex;
     flex-direction: column;
     gap: 1rem;
+    min-width: 0;
     padding: 1rem 0.8rem;
 }
 
@@ -268,6 +272,7 @@
     display: flex;
     flex-direction: column;
     gap: 1rem;
+    min-width: 0;
     padding: 1rem;
     background:
         linear-gradient(180deg, rgba(20, 53, 65, 0.5), rgba(13, 19, 43, 0.9)),
@@ -457,12 +462,32 @@
 }
 
 @media (max-width: 980px) {
+    .mines-page-main {
+        padding-top: 1rem !important;
+        padding-left: calc(var(--side-width) + 1rem) !important;
+        padding-right: 1rem !important;
+    }
+
     .mines-overlay {
-        width: min(100%, calc(100vw - 6rem));
+        width: 100%;
     }
 
     .mines-area {
         grid-template-columns: 1fr;
+        min-height: 0;
+    }
+
+    .mines-control-panel {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        align-items: end;
+    }
+
+    .mines-panel-header,
+    .mines-stats,
+    .mines-primary-btn,
+    .mines-cashout-btn {
+        grid-column: 1 / -1;
     }
 
     .mines-primary-btn {
@@ -472,11 +497,150 @@
 
 @media (max-width: 620px) {
     .mines-page-main {
+        padding-left: calc(var(--side-width) + 0.6rem) !important;
         padding-right: 0.8rem !important;
+        padding-bottom: 1.25rem !important;
     }
 
     .mines-overlay {
         width: 100%;
+        border-radius: 7px;
+    }
+
+    .mines-area {
+        gap: 0.55rem;
+        padding: 0.55rem;
+    }
+
+    .mines-control-panel,
+    .mines-board-panel {
+        border-radius: 7px;
+    }
+
+    .mines-control-panel {
+        grid-template-columns: 1fr;
+        gap: 0.75rem;
+        padding: 0.75rem;
+    }
+
+    .mines-panel-header h1 {
+        font-size: 1.35rem;
+    }
+
+    .bet-widget-head {
+        gap: 0.5rem;
+        font-size: 0.78rem;
+    }
+
+    .bet-control,
+    .mines-stepper {
+        height: 40px;
+    }
+
+    .mines-bet-control {
+        grid-template-columns: auto minmax(0, 1fr) 44px 44px;
+    }
+
+    #betInput {
+        min-height: 38px;
+        font-size: 0.95rem;
+    }
+
+    .mines-stats {
+        gap: 0.45rem;
+    }
+
+    .mines-stats div {
+        min-height: 38px;
+        padding: 0.55rem 0.65rem;
+    }
+
+    .mines-primary-btn,
+    .mines-cashout-btn {
+        min-height: 44px;
+    }
+
+    .mines-board-panel {
+        gap: 0.75rem;
+        padding: 0.75rem;
+    }
+
+    .mines-board {
+        width: min(100%, 440px);
+        gap: clamp(0.28rem, 2vw, 0.48rem);
+    }
+
+    .mines-tile {
+        border-radius: 7px;
+    }
+
+    .game-overlay-footer {
+        padding: 0.7rem 0.8rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .mines-page-main {
+        padding: 0.55rem 0.55rem 1rem calc(var(--side-width) + 0.45rem) !important;
+    }
+
+    .mines-area {
+        padding: 0.4rem;
+    }
+
+    .mines-control-panel,
+    .mines-board-panel {
+        padding: 0.65rem;
+    }
+
+    .bet-widget-head {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 0.25rem;
+    }
+
+    .bet-widget-head label,
+    .bet-widget-head span {
+        max-width: 100%;
+    }
+
+    .mines-bet-control {
+        grid-template-columns: auto minmax(0, 1fr) 40px 40px;
+    }
+
+    .bet-prefix {
+        padding-left: 0.6rem;
+    }
+
+    .bet-adjust {
+        font-size: 0.76rem;
+    }
+
+    .mines-stepper {
+        grid-template-columns: 38px minmax(0, 1fr) 38px;
+    }
+
+    .mines-stats span {
+        font-size: 0.72rem;
+    }
+
+    .mines-stats strong {
+        font-size: 0.84rem;
     }
 
 }
+
+@media (max-width: 480px) and (min-height: 760px) {
+    .mines-page-main {
+        padding-bottom: calc(1.25rem + env(safe-area-inset-bottom, 0px)) !important;
+    }
+
+    .mines-board-panel {
+        min-height: clamp(420px, 56dvh, 540px);
+    }
+
+    .mines-board {
+        width: min(100%, 480px);
+    }
+}
+

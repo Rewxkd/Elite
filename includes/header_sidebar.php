@@ -58,7 +58,12 @@ if (!function_exists('elite_url')) {
 <header class="header">
     <div class="header-box">
         <div class="logo">
-            <a href="<?php echo elite_url('index.php'); ?>"><img src="<?php echo elite_url('assets/img/Elite-logo.png'); ?>" alt="Elite"></a>
+            <a href="<?php echo elite_url('index.php'); ?>" aria-label="Elite home">
+                <picture>
+                    <source media="(max-width: 980px)" srcset="<?php echo elite_url('assets/img/Elite-letter_logo.png'); ?>">
+                    <img src="<?php echo elite_url('assets/img/Elite-logo.png'); ?>" alt="Elite">
+                </picture>
+            </a>
         </div>
         <?php if ($is_logged_in): ?>
         <div class="balance">
@@ -66,26 +71,20 @@ if (!function_exists('elite_url')) {
         </div>
         <?php endif; ?>
         <div class="header-buttons">
-            <button class="button icon header-action" id="search" aria-label="Search">
-                <svg class="header-icon" viewBox="0 0 24 24" aria-hidden="true">
-                    <path d="M10.75 18.5a7.75 7.75 0 1 1 0-15.5 7.75 7.75 0 0 1 0 15.5Z"></path>
-                    <path d="m16.5 16.5 4 4"></path>
-                </svg>
-            </button>
             <div class="group" role="group" aria-label="Profile and notifications">
                 <button class="button icon notif header-action" id="notif" aria-label="Notifications">
-                    <svg class="header-icon" viewBox="0 0 24 24" aria-hidden="true">
-                        <path d="M18 9.5a6 6 0 0 0-12 0c0 7-3 7-3 8.8 0 1 2.3 1.7 9 1.7s9-.7 9-1.7c0-1.8-3-1.8-3-8.8Z"></path>
-                        <path d="M9.8 21a2.35 2.35 0 0 0 4.4 0"></path>
+                    <svg class="header-icon header-icon-filled" viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="M12 22a2.75 2.75 0 0 0 2.68-2.13H9.32A2.75 2.75 0 0 0 12 22Z"></path>
+                        <path d="M19.45 16.25c-.93-.98-1.45-2.35-1.45-3.83V9.75a6 6 0 0 0-12 0v2.67c0 1.48-.52 2.85-1.45 3.83-.7.74-.18 1.95.84 1.95h13.22c1.02 0 1.54-1.21.84-1.95Z"></path>
                     </svg>
                     <span class="badge" id="badge"><?php echo $notification_count; ?></span>
                 </button>
                 <?php if ($is_logged_in): ?>
                     <div class="profile-menu-wrap" id="profileMenuWrap">
                         <button class="button icon header-action" id="prof" type="button" aria-label="Profile" aria-haspopup="true" aria-expanded="false">
-                            <svg class="header-icon" viewBox="0 0 24 24" aria-hidden="true">
-                                <path d="M12 12.25a4.25 4.25 0 1 0 0-8.5 4.25 4.25 0 0 0 0 8.5Z"></path>
-                                <path d="M4.75 20.25c.9-3.65 3.25-5.5 7.25-5.5s6.35 1.85 7.25 5.5"></path>
+                            <svg class="header-icon header-icon-filled" viewBox="0 0 24 24" aria-hidden="true">
+                                <path d="M12 12.25a4.75 4.75 0 1 0 0-9.5 4.75 4.75 0 0 0 0 9.5Z"></path>
+                                <path d="M4.2 20.1c.96-4.16 3.58-6.35 7.8-6.35s6.84 2.19 7.8 6.35c.16.7-.38 1.4-1.1 1.4H5.3c-.72 0-1.26-.7-1.1-1.4Z"></path>
                             </svg>
                         </button>
                         <div class="profile-menu" id="profileMenu" aria-hidden="true">
@@ -112,6 +111,33 @@ if (!function_exists('elite_url')) {
         </div>
     </div>
 </header>
+
+<nav class="mobile-bottom-nav" aria-label="Mobile navigation">
+    <a href="<?php echo elite_url('index.php'); ?>" class="mobile-nav-item" <?php echo $activePage === 'home' ? 'aria-current="page"' : ''; ?>>
+        <span class="mobile-nav-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><path d="M4.5 10.75 12 4l7.5 6.75"></path><path d="M6.75 9.25v9.25h10.5V9.25"></path><path d="M10 18.5v-5h4v5"></path></svg>
+        </span>
+        <span>Home</span>
+    </a>
+    <a href="<?php echo elite_url('pages/games.php'); ?>" class="mobile-nav-item" <?php echo in_array($activePage, ['games', 'blackjack', 'mines', 'plinko', 'dice'], true) ? 'aria-current="page"' : ''; ?>>
+        <span class="mobile-nav-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><path d="M7.25 5.5h9.5a2.75 2.75 0 0 1 2.75 2.75v7.5a2.75 2.75 0 0 1-2.75 2.75h-9.5a2.75 2.75 0 0 1-2.75-2.75v-7.5A2.75 2.75 0 0 1 7.25 5.5Z"></path><path d="M8.5 12h4"></path><path d="M10.5 10v4"></path><path d="M15.75 10.7h.01"></path><path d="M17.35 13.3h.01"></path></svg>
+        </span>
+        <span>Games</span>
+    </a>
+    <a href="<?php echo elite_url('pages/favorites.php'); ?>" class="mobile-nav-item" <?php echo $activePage === 'favourites' ? 'aria-current="page"' : ''; ?>>
+        <span class="mobile-nav-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><path d="M12 19.25s-7.25-4.25-7.25-9.15A3.85 3.85 0 0 1 12 8.28a3.85 3.85 0 0 1 7.25 1.82c0 4.9-7.25 9.15-7.25 9.15Z"></path></svg>
+        </span>
+        <span>Saved</span>
+    </a>
+    <a href="<?php echo elite_url('pages/recent.php'); ?>" class="mobile-nav-item" <?php echo $activePage === 'recent' ? 'aria-current="page"' : ''; ?>>
+        <span class="mobile-nav-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><path d="M5.25 12a6.75 6.75 0 1 0 2-4.8"></path><path d="M5.25 5.25V9h3.75"></path><path d="M12 8.75v3.75l2.5 1.5"></path></svg>
+        </span>
+        <span>Recent</span>
+    </a>
+</nav>
 
 <script src="<?php echo elite_url('assets/js/header_sidebar.js'); ?>" data-login-url="<?php echo elite_url('api/login.php'); ?>"></script>
 

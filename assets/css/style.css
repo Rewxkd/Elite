@@ -32,10 +32,16 @@
 
 :root {
     --side-width: 72px;
+    --content-max: 1200px;
+    --content-gutter: clamp(1rem, 3.2vw, 2.5rem);
+    --content-left: calc(var(--side-width) + max(var(--content-gutter), ((100vw - var(--side-width) - var(--content-max)) / 2)));
+    --content-width: min(var(--content-max), calc(100vw - var(--side-width) - (var(--content-gutter) * 2)));
 }
 
 html {
     font-size: 16px;
+    background: #151d3b;
+    color-scheme: dark;
     scrollbar-width: none;
     -ms-overflow-style: none;
 }
@@ -51,8 +57,10 @@ body::-webkit-scrollbar,
 body {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
     background: linear-gradient(135deg, #071028 0%, #09293b 100%);
+    background-color: #080d20;
     color: #fff;
     min-height: 100vh;
+    min-height: 100dvh;
     overflow-x: hidden;
     scrollbar-width: none;
     -ms-overflow-style: none;
@@ -130,13 +138,20 @@ body.open {
     transition: opacity 0.2s ease;
 }
 
+.logo a,
+.logo picture {
+    display: inline-flex;
+    align-items: center;
+    min-width: 0;
+}
+
 .logo:hover {
     opacity: 0.8;
 }
 
 .logo img {
     display: block;
-    height: 60px;
+    height: 64px;
     width: auto;
     max-width: 100%;
 }
@@ -188,6 +203,13 @@ body.open {
     overflow: visible;
 }
 
+.header-buttons .group {
+    gap: 0.7rem;
+    background: transparent;
+    border: 0;
+    border-radius: 0;
+}
+
 .group .button.icon {
     padding: 0;
     border-radius: 0;
@@ -196,19 +218,19 @@ body.open {
 }
 
 .group .button.notif {
-    border-radius: 11px 0 0 11px;
+    border-radius: 0;
 }
 
 .profile-menu-wrap .button.icon {
-    border-radius: 0 11px 11px 0;
+    border-radius: 0;
 }
 
 .group .button.icon:hover {
-    background: rgba(44, 159, 253, 0.12);
+    background: transparent;
 }
 
 .group .button.notif {
-    border-right: 1px solid rgba(44, 159, 253, 0.2);
+    border-right: 0;
     position: relative;
 }
 
@@ -272,23 +294,6 @@ body.open {
 .profile-menu-item.logout:hover {
     background: rgba(239, 68, 68, 0.14);
     color: #ffffff;
-}
-
-#search {
-    background: rgba(44, 159, 253, 0.05);
-    border: 1px solid rgba(44, 159, 253, 0.2);
-    border-radius: 12px;
-    padding: 0;
-    color: #ffffff;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-}
-
-#search:hover {
-    background: rgba(44, 159, 253, 0.12);
-    border-color: rgba(44, 159, 253, 0.4);
-    transform: none;
 }
 
 .button {
@@ -357,6 +362,10 @@ body.open {
     padding: 1rem 1.2rem;
     background: rgba(8, 16, 31, 0.82);
     border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.mobile-bottom-nav {
+    display: none;
 }
 
 .win-result-popover {
@@ -457,15 +466,52 @@ body.open {
 }
 
 .header-action {
-    width: 40px;
-    height: 40px;
-    min-width: 40px;
+    width: 46px;
+    height: 46px;
+    min-width: 46px;
     color: #8ab9ff;
 }
 
+.header-buttons .header-action {
+    border: 0;
+    background: transparent;
+    box-shadow: none;
+    color: #ffffff;
+    transition: color 0.16s ease;
+}
+
+.header-buttons .header-action:hover {
+    background: transparent !important;
+    border-color: transparent;
+    color: #58b4ff;
+    transform: none;
+}
+
+.header-buttons .header-action:hover,
+.header-buttons .header-action:focus-visible,
+.header-buttons .header-action[aria-expanded="true"],
+.header-buttons .group .button.icon:hover,
+.header-buttons .group .button.icon:focus-visible,
+.header-buttons .group .button.icon[aria-expanded="true"] {
+    color: #58b4ff !important;
+}
+
+.header-buttons .header-action:hover,
+.header-buttons .header-action:focus,
+.header-buttons .header-action:active,
+.header-buttons .header-action[aria-expanded="true"],
+.header-buttons .group .button.icon:hover,
+.header-buttons .group .button.icon:focus,
+.header-buttons .group .button.icon:active,
+.header-buttons .group .button.icon[aria-expanded="true"] {
+    background: transparent !important;
+    border-color: transparent !important;
+    box-shadow: none !important;
+}
+
 .header-icon {
-    width: 20px;
-    height: 20px;
+    width: 26px;
+    height: 26px;
     display: block;
     fill: none;
     stroke: currentColor;
@@ -821,11 +867,10 @@ body.open .menu-arrow {
     overflow: hidden;
     max-width: 100%;
     margin: 0 auto;
-    padding: 3rem 2rem 2rem;
-    padding-left: 400px;
+    padding: 3rem 0 2rem;
     background-color: rgba(32, 92, 151, 0.1);
     transition: transform 0.25s ease;
-    transform: translateX(calc(var(--side-width) / 2));
+    transform: none;
 }
 
 .container.rank-unranked,
@@ -1391,6 +1436,11 @@ body.open .menu-arrow {
 .latest-bet-card {
     width: 104px;
     flex: 0 0 104px;
+}
+
+.header-icon-filled {
+    fill: currentColor;
+    stroke: none;
 }
 
 .latest-bet-game {
@@ -2287,9 +2337,219 @@ body.open .menu-arrow {
 }
 
 @media (max-width: 620px) {
+    body,
+    body.open {
+        --side-width: 0px;
+    }
+
+    .header {
+        position: sticky;
+    }
+
+    .header-box {
+        transform: none;
+        gap: 0.75rem;
+        padding: 0 0.75rem;
+    }
+
+    .logo img {
+        height: 48px;
+    }
+
+    .balance {
+        position: static;
+        transform: none;
+        min-width: 0;
+        padding: 0.5rem 0.65rem;
+    }
+
+    .balance-amount {
+        max-width: 32vw;
+        overflow: hidden;
+        font-size: 0.95rem;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .header-buttons {
+        gap: 0.35rem;
+    }
+
+    .header-action {
+        width: 44px;
+        height: 44px;
+        min-width: 44px;
+    }
+
+    .auth-button {
+        min-height: 38px;
+        padding: 0 0.75rem;
+    }
+
+    .auth-text {
+        display: none;
+    }
+
+    .sidebar {
+        width: min(84vw, 280px);
+        align-items: stretch;
+        overflow: visible;
+        padding: 0.75rem;
+        transform: translateX(-100%);
+        transition: transform 0.25s ease, background 0.25s ease;
+    }
+
+    body.open .sidebar {
+        width: min(84vw, 280px);
+        transform: translateX(0);
+    }
+
+    .sidebar-top {
+        position: relative;
+        padding: 0;
+    }
+
+    .sidebar-top .toggle {
+        position: absolute;
+        top: 0;
+        right: -3.45rem;
+        margin: 0;
+        background: rgba(20, 29, 60, 0.94);
+        box-shadow: 0 10px 24px rgba(0, 0, 0, 0.34);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+    }
+
+    body.open .sidebar-top .toggle {
+        position: static;
+        box-shadow: none;
+    }
+
+    .sidebar-games-button,
+    body.open .sidebar-games-button {
+        max-width: none;
+        padding: 0 1rem;
+        opacity: 1;
+        transform: none;
+        pointer-events: auto;
+    }
+
+    .item,
+    body.open .item,
+    .dropdown-button,
+    body.open .dropdown-button {
+        justify-content: flex-start;
+        gap: 0.75rem;
+        padding: 0.5rem 0.75rem;
+    }
+
+    .text,
+    body.open .text,
+    .menu-text,
+    body.open .menu-text,
+    .menu-arrow,
+    body.open .menu-arrow {
+        max-width: 160px;
+        opacity: 1;
+        transform: none;
+    }
+
+    .dropdown-items {
+        position: static;
+        width: 100%;
+        margin-top: 0.35rem;
+    }
+
+    .container {
+        width: 100%;
+        min-width: 0;
+        padding: 1rem;
+        padding-top: 1.25rem;
+        transform: none;
+    }
+
+    .login-prompt {
+        min-height: 46vh;
+    }
+
+    .login-prompt h2 {
+        font-size: clamp(2rem, 11vw, 2.55rem);
+    }
+
+    .login-prompt-buttons {
+        align-items: stretch;
+        flex-direction: column;
+        width: min(100%, 260px);
+    }
+
+    .login-modal {
+        padding: 1rem;
+    }
+
+    .login-container {
+        max-width: 100%;
+        padding: 2rem 1rem 1.25rem;
+    }
+
+    .latest-bets-section,
+    .games-carousel {
+        width: calc(100% - 1.5rem);
+        margin-left: auto;
+        margin-right: auto;
+        transform: none;
+    }
+
+    .games-carousel {
+        padding: 0.85rem;
+    }
+
+    .games-header {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 0.85rem;
+    }
+
+    .carousel-controls {
+        align-self: stretch;
+    }
+
+    .carousel-btn {
+        flex: 1;
+    }
+
+    .game-card {
+        width: 128px;
+        min-width: 128px;
+        min-height: 172px;
+    }
+
+    .latest-bet-card {
+        width: 96px;
+        flex-basis: 96px;
+    }
+
+    .latest-bet-game {
+        height: 108px;
+    }
+
     .favourites-page {
+        width: 100%;
+        margin-left: 0;
         padding-left: 1rem;
         padding-right: 1rem;
+        padding-top: 1rem;
+    }
+
+    .favourites-hero {
+        padding: 1rem;
+    }
+
+    .favourites-hero h1 {
+        font-size: clamp(1.8rem, 11vw, 2.45rem);
+    }
+
+    .favourites-hero p {
+        font-size: 0.92rem;
     }
 
     .favourites-grid {
@@ -2298,10 +2558,16 @@ body.open .menu-arrow {
 
     .favourite-card {
         min-height: 0;
+        aspect-ratio: 0.88;
+    }
+
+    .favourites-empty {
+        min-height: 260px;
+        padding: 1.25rem;
     }
 
     .site-footer {
-        margin-left: 72px;
+        margin-left: 0;
         padding-left: 1rem;
         padding-right: 1rem;
     }
@@ -2319,6 +2585,72 @@ body.open .menu-arrow {
         align-items: flex-start;
         flex-direction: column;
         gap: 0.75rem;
+    }
+
+    .container-box,
+    .container-progress {
+        width: 100%;
+    }
+
+    .container-box h1 {
+        font-size: clamp(2rem, 10vw, 3rem);
+        line-height: 1.05;
+    }
+
+    .progress-top {
+        padding: 0.85rem 1rem;
+    }
+
+    .progress-bottom {
+        gap: 1rem;
+        padding: 1rem;
+    }
+
+    .progress-meta {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        align-items: start;
+        flex-direction: row;
+        gap: 0.75rem;
+        width: 100%;
+    }
+
+    .progress-meta p {
+        min-width: 0;
+        font-size: clamp(0.92rem, 4.2vw, 1.08rem);
+        line-height: 1.25;
+        overflow-wrap: anywhere;
+    }
+
+    #progressTargetText {
+        display: inline;
+    }
+
+    #progressPercent {
+        justify-self: end;
+        font-size: clamp(0.9rem, 4vw, 1.05rem);
+        line-height: 1.2;
+        white-space: nowrap;
+    }
+
+    .progress-bar-container {
+        height: 18px;
+        padding: 4px;
+    }
+
+    .progress-ranks {
+        display: grid;
+        grid-template-columns: 1fr;
+        width: 100%;
+    }
+
+    .progress-rank {
+        width: 100%;
+        font-size: clamp(0.86rem, 4vw, 1rem);
+    }
+
+    .progress-rank.is-max-rank {
+        justify-content: flex-start;
     }
 }
 
@@ -2343,6 +2675,7 @@ body {
     background:
         radial-gradient(circle at 34% 6%, rgba(35, 58, 120, 0.48), transparent 30%),
         linear-gradient(180deg, #151d3b 0%, var(--elite-bg) 42%, #080d20 100%);
+    background-color: #080d20;
     color: var(--elite-text);
 }
 
@@ -2366,7 +2699,6 @@ body {
 }
 
 .button,
-#search,
 .auth-button,
 .toggle,
 .group,
@@ -2380,7 +2712,6 @@ body {
 }
 
 .button:hover,
-#search:hover,
 .auth-button:hover,
 .toggle:hover,
 .group .button.icon:hover,
@@ -2582,4 +2913,281 @@ body {
 
 .menu-arrow {
     color: #8ab9ff;
+}
+
+@media (min-width: 981px) {
+    .header-box,
+    .latest-bets-section,
+    .games-carousel,
+    .bets-stats-section {
+        width: var(--content-width);
+        max-width: var(--content-max);
+        margin-left: var(--content-left);
+        margin-right: auto;
+        transform: none !important;
+    }
+
+    .header-box {
+        padding-left: 0;
+        padding-right: 0;
+    }
+
+    .container:not(.favourites-page):not(.page-game-main) {
+        padding: 3rem 0 2rem;
+        transform: none;
+    }
+
+    .container:not(.favourites-page):not(.page-game-main) .container-box,
+    .container:not(.favourites-page):not(.page-game-main) .container-progress,
+    .container:not(.favourites-page):not(.page-game-main) .login-prompt {
+        margin-left: var(--content-left);
+        margin-right: auto;
+    }
+
+    .page-game-main + .bets-stats-section {
+        width: min(1120px, var(--content-width));
+    }
+
+    .favourites-page {
+        padding-left: var(--content-gutter);
+        padding-right: var(--content-gutter);
+    }
+
+    .favourites-page .favourites-hero,
+    .favourites-page .favourites-grid,
+    .favourites-page .favourites-empty,
+    .favourites-page .bets-stats-section {
+        width: min(100%, var(--content-max));
+    }
+}
+
+@media (max-width: 980px) {
+    html,
+    body {
+        max-width: 100%;
+        overflow-x: hidden;
+    }
+
+    body,
+    body.open {
+        --side-width: 0px;
+    }
+
+    .header {
+        position: fixed;
+        left: 0;
+        right: 0;
+        padding-top: env(safe-area-inset-top, 0px);
+        top: 0;
+        z-index: 3200;
+    }
+
+    body {
+        padding-top: calc(92px + env(safe-area-inset-top, 0px));
+    }
+
+    .sidebar {
+        display: none;
+    }
+
+    .header-box,
+    .container,
+    .latest-bets-section,
+    .games-carousel {
+        transform: none !important;
+    }
+
+    .header-box {
+        max-width: 100%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 0.6rem;
+        min-height: 76px;
+        padding: 0.45rem 0.65rem;
+        position: relative;
+    }
+
+    .logo {
+        flex: 0 0 auto;
+        min-width: 0;
+        position: relative;
+        z-index: 2;
+    }
+
+    .logo img {
+        height: 48px;
+        width: 48px;
+        max-width: none;
+        object-fit: contain;
+    }
+
+    .balance {
+        position: absolute;
+        left: calc(50% - 0.8rem);
+        top: 50%;
+        width: min(46vw, 250px);
+        max-width: calc(100% - 12.25rem);
+        min-height: 42px;
+        min-width: 0;
+        padding: 0.45rem 0.65rem;
+        transform: translate(-50%, -50%);
+        z-index: 1;
+    }
+
+    .balance-amount {
+        display: block;
+        max-width: 100%;
+        overflow: hidden;
+        font-size: clamp(1rem, 4.3vw, 1.3rem);
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .header-buttons {
+        position: relative;
+        z-index: 2;
+        flex: 0 0 auto;
+        gap: 0.35rem;
+    }
+
+    .container,
+    .favourites-page,
+    .site-footer {
+        width: 100%;
+        margin-left: 0;
+    }
+
+    .container,
+    .latest-bets-section,
+    .games-carousel,
+    .favourites-page {
+        padding-bottom: calc(1rem + env(safe-area-inset-bottom, 0px));
+    }
+
+    .site-footer {
+        padding-bottom: calc(1.25rem + env(safe-area-inset-bottom, 0px));
+    }
+
+    .mobile-bottom-nav {
+        position: fixed;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        z-index: 3200;
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 0.2rem;
+        padding: 0.45rem 0.65rem calc(0.45rem + env(safe-area-inset-bottom, 0px));
+        border-top: 1px solid rgba(128, 151, 210, 0.18);
+        background:
+            linear-gradient(180deg, rgba(29, 43, 82, 0.96), rgba(13, 20, 45, 0.98)),
+            #101936;
+        box-shadow: 0 -16px 34px rgba(0, 0, 0, 0.34);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+    }
+
+    .mobile-nav-item {
+        min-width: 0;
+        min-height: 54px;
+        display: grid;
+        place-items: center;
+        gap: 0.22rem;
+        padding: 0.35rem 0.25rem;
+        border: 1px solid transparent;
+        border-radius: 8px;
+        color: #aebfe0;
+        font-size: 0.68rem;
+        font-weight: 850;
+        line-height: 1;
+        text-decoration: none;
+    }
+
+    .mobile-nav-icon {
+        width: 24px;
+        height: 24px;
+        display: grid;
+        place-items: center;
+        color: #c2dbff;
+    }
+
+    .mobile-nav-icon svg {
+        width: 23px;
+        height: 23px;
+        fill: none;
+        stroke: currentColor;
+        stroke-width: 1.9;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+    }
+
+    .mobile-nav-item[aria-current="page"] {
+        color: #ffffff;
+        border-color: rgba(98, 174, 243, 0.36);
+        background: rgba(44, 159, 253, 0.18);
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
+    }
+
+    .mobile-nav-item[aria-current="page"] .mobile-nav-icon {
+        color: #58b4ff;
+    }
+
+    body {
+        padding-bottom: calc(68px + env(safe-area-inset-bottom, 0px));
+    }
+}
+
+@media (max-width: 480px) and (min-height: 760px) {
+    .container {
+        padding-top: 1.5rem;
+    }
+
+    .login-prompt {
+        min-height: 56dvh;
+    }
+
+    .latest-bets-section,
+    .games-carousel {
+        margin-top: 1.15rem;
+        margin-bottom: 1.15rem;
+    }
+
+    .favourites-page {
+        padding-top: 1.25rem;
+    }
+
+    .favourite-card {
+        aspect-ratio: 0.82;
+    }
+}
+
+@media (max-width: 480px) {
+    body {
+        padding-top: calc(86px + env(safe-area-inset-top, 0px));
+    }
+
+    .header-box {
+        gap: 0.45rem;
+        min-height: 70px;
+    }
+
+    .logo img {
+        width: 46px;
+        height: 46px;
+    }
+
+    .balance {
+        left: calc(50% - 0.95rem);
+        width: min(42vw, 190px);
+        max-width: calc(100% - 11.75rem);
+        min-height: 40px;
+        padding: 0.42rem 0.55rem;
+    }
+
+    .balance-amount {
+        max-width: 100%;
+        font-size: clamp(0.92rem, 4.7vw, 1.18rem);
+        text-align: center;
+    }
 }

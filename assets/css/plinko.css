@@ -1,6 +1,7 @@
 .plinko-page-main {
     padding: 1.5rem 1.25rem 2.5rem calc(var(--side-width) + 1.25rem) !important;
     transform: none !important;
+    min-width: 0;
     transition: padding-left 0.25s ease;
     background:
         radial-gradient(circle at 50% 8%, rgba(34, 58, 120, 0.32), transparent 36%),
@@ -9,6 +10,7 @@
 
 .plinko-overlay {
     width: min(1120px, calc(100vw - var(--side-width) - 2.5rem));
+    max-width: 100%;
     margin: 0 auto;
     overflow: hidden;
     border: 1px solid rgba(128, 151, 210, 0.18);
@@ -25,6 +27,7 @@
     grid-template-columns: 290px minmax(0, 1fr);
     gap: 0.9rem;
     min-height: 560px;
+    min-width: 0;
     padding: 0.9rem;
     background: transparent;
 }
@@ -43,6 +46,7 @@
     display: flex;
     flex-direction: column;
     gap: 1rem;
+    min-width: 0;
     padding: 1rem 0.8rem;
 }
 
@@ -335,12 +339,30 @@
 }
 
 @media (max-width: 980px) {
+    .plinko-page-main {
+        padding-top: 1rem !important;
+        padding-left: calc(var(--side-width) + 1rem) !important;
+        padding-right: 1rem !important;
+    }
+
     .plinko-overlay {
-        width: min(100%, calc(100vw - 6rem));
+        width: 100%;
     }
 
     .plinko-area {
         grid-template-columns: 1fr;
+        min-height: 0;
+    }
+
+    .plinko-control-panel {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        align-items: end;
+    }
+
+    .plinko-result,
+    .plinko-primary-btn {
+        grid-column: 1 / -1;
     }
 
     .plinko-primary-btn {
@@ -350,18 +372,151 @@
 
 @media (max-width: 620px) {
     .plinko-page-main {
+        padding-left: calc(var(--side-width) + 0.6rem) !important;
         padding-right: 0.8rem !important;
+        padding-bottom: 1.25rem !important;
     }
 
     .plinko-overlay {
         width: 100%;
+        border-radius: 7px;
+    }
+
+    .plinko-area {
+        gap: 0.55rem;
+        padding: 0.55rem;
+    }
+
+    .plinko-control-panel,
+    .plinko-board-panel {
+        border-radius: 7px;
+    }
+
+    .plinko-control-panel {
+        grid-template-columns: 1fr;
+        gap: 0.75rem;
+        padding: 0.75rem;
+    }
+
+    .bet-widget-head {
+        gap: 0.5rem;
+        font-size: 0.78rem;
+    }
+
+    .bet-control {
+        height: 40px;
+    }
+
+    .plinko-bet-control {
+        grid-template-columns: auto minmax(0, 1fr) 44px 44px;
+    }
+
+    #betInput {
+        min-height: 38px;
+        font-size: 0.95rem;
+    }
+
+    .plinko-field select {
+        min-height: 40px;
+    }
+
+    .plinko-result {
+        gap: 0.45rem;
+    }
+
+    .plinko-result div {
+        min-height: 38px;
+        padding: 0.55rem 0.65rem;
+    }
+
+    .plinko-primary-btn {
+        min-height: 44px;
     }
 
     .plinko-board-panel {
-        padding: 0.9rem 0.55rem;
+        gap: 0.65rem;
+        padding: 0.75rem 0.5rem;
     }
 
     .plinko-board {
-        min-height: 360px;
+        min-height: clamp(300px, 88vw, 360px);
+    }
+
+    .plinko-buckets {
+        gap: 0.12rem;
+    }
+
+    .plinko-bucket {
+        min-height: 28px;
+        border-radius: 4px;
+        font-size: clamp(0.48rem, 2.5vw, 0.68rem);
+    }
+
+    .game-overlay-footer {
+        padding: 0.7rem 0.8rem;
     }
 }
+
+@media (max-width: 480px) {
+    .plinko-page-main {
+        padding: 0.55rem 0.55rem 1rem calc(var(--side-width) + 0.45rem) !important;
+    }
+
+    .plinko-area {
+        padding: 0.4rem;
+    }
+
+    .plinko-control-panel {
+        padding: 0.65rem;
+    }
+
+    .bet-widget-head {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 0.25rem;
+    }
+
+    .bet-widget-head label,
+    .bet-widget-head span {
+        max-width: 100%;
+    }
+
+    .plinko-bet-control {
+        grid-template-columns: auto minmax(0, 1fr) 40px 40px;
+    }
+
+    .bet-prefix {
+        padding-left: 0.6rem;
+    }
+
+    .bet-adjust {
+        font-size: 0.76rem;
+    }
+
+    .plinko-board-panel {
+        padding: 0.65rem 0.35rem;
+    }
+
+    .plinko-board {
+        min-height: 285px;
+    }
+
+    .plinko-bucket {
+        min-height: 24px;
+    }
+}
+
+@media (max-width: 480px) and (min-height: 760px) {
+    .plinko-page-main {
+        padding-bottom: calc(1.25rem + env(safe-area-inset-bottom, 0px)) !important;
+    }
+
+    .plinko-board {
+        min-height: clamp(340px, 48dvh, 430px);
+    }
+
+    .plinko-board-panel {
+        min-height: clamp(420px, 58dvh, 560px);
+    }
+}
+

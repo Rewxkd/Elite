@@ -78,8 +78,14 @@ if ($user_id) {
 <html lang="en">
 <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="theme-color" content="#151d3b" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="color-scheme" content="dark" />
     <title>Games | Elite</title>
+    <link rel="icon" type="image/png" href="../assets/img/Elite-letter_logo.png" />
+    <link rel="apple-touch-icon" href="../assets/img/Elite-letter_logo.png" />
     <link rel="stylesheet" href="../assets/css/style.css" />
     <link rel="stylesheet" href="../assets/css/live_stats.css" />
 </head>

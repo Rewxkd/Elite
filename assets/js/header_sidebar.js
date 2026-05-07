@@ -13,6 +13,7 @@ const profileMenu = document.getElementById('profileMenu');
 const toggleBtn = document.getElementById('toggle');
 const sidebar = document.getElementById('side');
 const menuBtns = document.querySelectorAll('.dropdown-button');
+const mobileSidebarQuery = window.matchMedia('(max-width: 980px)');
 
 if (loginBtn) {
     loginBtn.addEventListener('click', () => {
@@ -103,7 +104,13 @@ menuBtns.forEach(btn => {
     });
 });
 
-document.addEventListener('click', function() {
+document.addEventListener('click', function(event) {
+    if (mobileSidebarQuery.matches && document.body.classList.contains('open') && sidebar && !sidebar.contains(event.target)) {
+        document.body.classList.remove('open');
+        sidebar.setAttribute('aria-hidden', 'true');
+        if (toggleBtn) toggleBtn.setAttribute('aria-expanded', 'false');
+    }
+
     if (profileMenu && profileBtn && profileMenu.getAttribute('aria-hidden') === 'false') {
         profileMenu.setAttribute('aria-hidden', 'true');
         profileBtn.setAttribute('aria-expanded', 'false');

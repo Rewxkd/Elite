@@ -198,3 +198,70 @@
 .bets-stats-table .is-muted {
     color: #7383ad;
 }
+
+@media (min-width: 981px) {
+    .bets-stats-section {
+        width: var(--content-width);
+        max-width: var(--content-max);
+        margin-left: var(--content-left);
+        margin-right: auto;
+        transform: none;
+    }
+
+    .page-game-main + .bets-stats-section {
+        width: min(1120px, var(--content-width));
+    }
+
+    .favourites-page .bets-stats-section {
+        width: min(100%, var(--content-max));
+        margin-left: auto;
+        margin-right: auto;
+    }
+}
+
+@media (max-width: 980px) {
+    .bets-stats-section,
+    .page-game-main + .bets-stats-section {
+        width: calc(100% - 2rem);
+        margin-left: auto;
+        margin-right: auto;
+        transform: none;
+    }
+}
+
+@media (max-width: 620px) {
+    .bets-stats-section,
+    .page-game-main + .bets-stats-section {
+        width: calc(100% - 1.1rem);
+        margin-top: 1rem;
+        margin-bottom: 1.25rem;
+        padding: 0.65rem;
+    }
+
+    .bets-stats-header {
+        align-items: stretch;
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+
+    .bets-filter-tabs {
+        width: 100%;
+    }
+
+    .bets-filter-tab {
+        flex: 1;
+        min-width: 0;
+        padding: 0 0.55rem;
+        font-size: 0.78rem;
+    }
+
+    .bets-stats-table {
+        min-width: 640px;
+        font-size: 0.82rem;
+    }
+
+    .bets-stats-table th,
+    .bets-stats-table td {
+        padding: 0.75rem 0.8rem;
+    }
+}
