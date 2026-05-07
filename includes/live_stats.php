@@ -10,6 +10,10 @@ $liveStatsGameAssets = [
         'name' => 'Mines',
         'image' => 'assets/img/mines-logo.png',
     ],
+    'plinko' => [
+        'name' => 'Plinko',
+        'image' => 'assets/img/plinko-logo.png',
+    ],
 ];
 
 if (isset($conn)) {

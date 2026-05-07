@@ -40,6 +40,12 @@ $game_assets = [
         'image' => '../assets/img/mines-logo.png',
         'tagline' => 'Reveal safe tiles and cash out before the blast.',
     ],
+    'plinko' => [
+        'name' => 'Plinko',
+        'href' => 'plinko.php',
+        'image' => '../assets/img/plinko-logo.png',
+        'tagline' => 'Drop the ball and watch it bounce toward a multiplier.',
+    ],
 ];
 
 $favorites = [];

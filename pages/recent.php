@@ -28,6 +28,12 @@ $game_assets = [
         'image' => '../assets/img/mines-logo.png',
         'tagline' => 'Reveal safe tiles and cash out before the blast.',
     ],
+    'plinko' => [
+        'name' => 'Plinko',
+        'href' => 'plinko.php',
+        'image' => '../assets/img/plinko-logo.png',
+        'tagline' => 'Drop the ball and watch it bounce toward a multiplier.',
+    ],
 ];
 
 $stmt = $conn->prepare('SELECT balance, total_wagered FROM wallets WHERE user_id = ? LIMIT 1');

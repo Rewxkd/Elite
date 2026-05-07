@@ -22,9 +22,14 @@ $game_assets = [
         'image' => 'assets/img/mines-logo.png',
         'code' => 'MI',
     ],
+    'plinko' => [
+        'name' => 'Plinko',
+        'href' => 'pages/plinko.php',
+        'image' => 'assets/img/plinko-logo.png',
+        'code' => 'PL',
+    ],
 ];
 $coming_soon_games = [
-    ['name' => 'Plinko', 'code' => 'PL'],
     ['name' => 'Limbo', 'code' => 'LI'],
     ['name' => 'Tower', 'code' => 'TO'],
     ['name' => 'Baccarat', 'code' => 'BA'],
@@ -243,6 +248,16 @@ function mask_username($username) {
                     </div>
                     <div class="game-card-body">
                         <div class="game-title"><?php echo htmlspecialchars($game_assets['mines']['name'], ENT_QUOTES, 'UTF-8'); ?></div>
+                        <span class="game-status is-live">Play</span>
+                    </div>
+                </a>
+
+                <a href="<?php echo htmlspecialchars($game_assets['plinko']['href'], ENT_QUOTES, 'UTF-8'); ?>" class="game-card" <?php echo $is_logged_in ? '' : 'data-requires-login="true"'; ?>>
+                    <div class="game-img">
+                        <img src="<?php echo htmlspecialchars($game_assets['plinko']['image'], ENT_QUOTES, 'UTF-8'); ?>" alt="<?php echo htmlspecialchars($game_assets['plinko']['name'], ENT_QUOTES, 'UTF-8'); ?>">
+                    </div>
+                    <div class="game-card-body">
+                        <div class="game-title"><?php echo htmlspecialchars($game_assets['plinko']['name'], ENT_QUOTES, 'UTF-8'); ?></div>
                         <span class="game-status is-live">Play</span>
                     </div>
                 </a>
