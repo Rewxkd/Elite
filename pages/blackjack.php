@@ -54,6 +54,41 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
 
+    if ($api === 'load_round') {
+        $savedRound = $_SESSION['blackjack_round'][$user_id] ?? null;
+        header('Content-Type: application/json');
+        echo json_encode(['success' => true, 'round' => $savedRound]);
+        exit;
+    }
+
+    if ($api === 'save_round') {
+        $round = $payload['round'] ?? null;
+        if (!is_array($round)) {
+            header('Content-Type: application/json');
+            echo json_encode(['success' => false, 'message' => 'Invalid round state']);
+            exit;
+        }
+
+        if (!isset($_SESSION['blackjack_round']) || !is_array($_SESSION['blackjack_round'])) {
+            $_SESSION['blackjack_round'] = [];
+        }
+
+        $_SESSION['blackjack_round'][$user_id] = $round;
+        header('Content-Type: application/json');
+        echo json_encode(['success' => true]);
+        exit;
+    }
+
+    if ($api === 'clear_round') {
+        if (isset($_SESSION['blackjack_round'][$user_id])) {
+            unset($_SESSION['blackjack_round'][$user_id]);
+        }
+
+        header('Content-Type: application/json');
+        echo json_encode(['success' => true]);
+        exit;
+    }
+
     if ($api === 'update_wallet') {
         $delta = floatval($payload['delta'] ?? 0);
         $roundWager = floatval($payload['wager'] ?? 0);
@@ -157,11 +192,18 @@ $total_wagered = floatval($wallet['total_wagered'] ?? 0);
                         </div>
                     </aside>
 
-                    <section class="table-panel">
-                        <div class="dealer-panel hand-zone">
+                    <section class="table-panel" id="blackjackTable">
+                        <div class="table-felt"></div>
+                        <div class="deck-shoe" id="deckShoe" aria-hidden="true">
+                            <div class="deck-card deck-card-shadow"></div>
+                            <div class="deck-card deck-card-mid"></div>
+                            <div class="deck-card deck-card-top"></div>
+                        </div>
+
+                        <div class="dealer-panel hand-zone" id="dealerPanel">
                             <h4>Dealer</h4>
-                            <div class="card-row" id="dealerCards"></div>
                             <p id="dealerValue"></p>
+                            <div class="card-row" id="dealerCards"></div>
                         </div>
 
                         <div class="table-rules">
@@ -171,11 +213,12 @@ $total_wagered = floatval($wallet['total_wagered'] ?? 0);
 
                         <div class="player-panel hand-zone" id="singlePlayerPanel">
                             <h4>Player</h4>
-                            <div class="card-row" id="playerCards"></div>
                             <p id="playerValue"></p>
+                            <div class="card-row" id="playerCards"></div>
                         </div>
 
                         <div class="split-layout" id="splitHandsSection" style="display:none;"></div>
+                        <div class="table-message" id="roundStatus" role="status">Place a bet to join the table.</div>
                     </section>
                 </div>
             </div>
