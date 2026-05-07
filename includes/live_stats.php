@@ -25,7 +25,7 @@ if (isset($conn)) {
         SELECT lb.user_id, lb.game_type, lb.game_name, lb.wager_amount, lb.payout_amount, lb.net_result, lb.created_at, u.username
         FROM latest_bets lb
         JOIN users u ON u.user_id = lb.user_id
-        ORDER BY lb.created_at DESC
+        ORDER BY lb.created_at DESC, lb.bet_id DESC
         LIMIT 12
     ");
 

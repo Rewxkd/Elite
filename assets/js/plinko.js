@@ -11,7 +11,7 @@ const plinkoState = {
     totalWagered: Number(plinkoScript?.dataset.totalWagered || 0),
     rows: 16,
     difficulty: 'easy',
-    actionLocked: false,
+    activeBalls: 0,
     lastMultiplier: null
 };
 
@@ -34,8 +34,14 @@ const displayBalance = document.getElementById('balanceAmount');
 const lastMultiplierText = document.getElementById('lastMultiplierText');
 const profitText = document.getElementById('profitText');
 
+let pendingBoardRender = false;
+let walletSyncQueue = Promise.resolve();
+
 function formatCurrency(amount) {
-    return `$${Number(amount).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+    return `$${Number(amount).toLocaleString(undefined, {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+    })}`;
 }
 
 function formatMultiplier(value) {
@@ -63,16 +69,24 @@ function getPayouts() {
 function updatePanel() {
     if (displayBalance) displayBalance.textContent = formatCurrency(plinkoState.balance);
     if (betAmountPreview) betAmountPreview.textContent = formatCurrency(getBetAmount());
-    if (lastMultiplierText) lastMultiplierText.textContent = plinkoState.lastMultiplier ? `${formatMultiplier(plinkoState.lastMultiplier)}x` : '-';
+    if (lastMultiplierText) {
+        lastMultiplierText.textContent = plinkoState.lastMultiplier
+            ? `${formatMultiplier(plinkoState.lastMultiplier)}x`
+            : '-';
+    }
 }
 
 function setControls() {
-    const locked = plinkoState.actionLocked;
-    if (dropBtn) dropBtn.disabled = locked;
-    if (betInput) betInput.disabled = locked;
-    if (halfBetBtn) halfBetBtn.disabled = locked;
-    if (doubleBetBtn) doubleBetBtn.disabled = locked;
-    if (difficultySelect) difficultySelect.disabled = locked;
+    const hasActiveBalls = plinkoState.activeBalls > 0;
+
+    // Keep drop button enabled so users can spam/drop multiple balls.
+    if (dropBtn) dropBtn.disabled = false;
+
+    // Lock settings while balls are falling so payout/difficulty cannot change mid-drop.
+    if (betInput) betInput.disabled = false;
+    if (halfBetBtn) halfBetBtn.disabled = false;
+    if (doubleBetBtn) doubleBetBtn.disabled = false;
+    if (difficultySelect) difficultySelect.disabled = hasActiveBalls;
 }
 
 function randomBit() {
@@ -87,11 +101,13 @@ function randomBit() {
 function randomPath(rows) {
     const path = [];
     let slot = 0;
+
     for (let i = 0; i < rows; i++) {
         const right = randomBit();
         slot += right;
         path.push(slot);
     }
+
     return { path, slot };
 }
 
@@ -110,6 +126,7 @@ function getPegPoint(row, index, metrics) {
     const pegsInRow = row + 3;
     const rowWidth = (pegsInRow - 1) * metrics.horizontalStep;
     const left = (metrics.width - rowWidth) / 2;
+
     return {
         x: left + index * metrics.horizontalStep,
         y: metrics.top + row * metrics.verticalStep
@@ -119,16 +136,27 @@ function getPegPoint(row, index, metrics) {
 function renderBoard() {
     if (!boardEl || !bucketsEl || !boardPanel) return;
 
+    if (plinkoState.activeBalls > 0) {
+        pendingBoardRender = true;
+        return;
+    }
+
     const payouts = getPayouts();
     const metrics = getBoardMetrics();
+
     boardEl.innerHTML = '';
     bucketsEl.innerHTML = '';
     bucketsEl.style.setProperty('--bucket-count', String(payouts.length));
     boardPanel.dataset.risk = plinkoState.difficulty;
-    boardEl.style.setProperty('--peg-size', `${Math.max(6, Math.min(9, 11 - plinkoState.rows * 0.18))}px`);
+
+    boardEl.style.setProperty(
+        '--peg-size',
+        `${Math.max(6, Math.min(9, 11 - plinkoState.rows * 0.18))}px`
+    );
 
     for (let row = 0; row < plinkoState.rows; row++) {
         const pegsInRow = row + 3;
+
         for (let index = 0; index < pegsInRow; index++) {
             const point = getPegPoint(row, index, metrics);
             const peg = document.createElement('span');
@@ -151,9 +179,6 @@ function renderBoard() {
 function showWinResult(multiplier, profit) {
     if (!boardPanel || profit <= 0) return;
 
-    const existing = boardPanel.querySelector('.win-result-popover');
-    if (existing) existing.remove();
-
     const popup = document.createElement('div');
     popup.className = 'win-result-popover';
     popup.setAttribute('role', 'status');
@@ -162,6 +187,7 @@ function showWinResult(multiplier, profit) {
         <span class="win-result-line"></span>
         <span class="win-result-amount">${formatCurrency(profit)}</span>
     `;
+
     boardPanel.appendChild(popup);
 
     window.setTimeout(() => {
@@ -186,13 +212,18 @@ function animateBall(pathResult) {
             x: metrics.width / 2,
             y: Math.max(12, metrics.top - metrics.verticalStep * 0.75)
         };
+
         const points = [start];
 
         pathResult.path.forEach((slot, row) => {
             const centerIndex = slot + 1;
             const point = getPegPoint(row, centerIndex, metrics);
             const wobble = (randomBit() ? 1 : -1) * Math.min(7, metrics.horizontalStep * 0.16);
-            points.push({ x: point.x + wobble, y: point.y });
+
+            points.push({
+                x: point.x + wobble,
+                y: point.y
+            });
         });
 
         points.push({
@@ -211,9 +242,13 @@ function animateBall(pathResult) {
             }
 
             const point = points[current];
-            ball.style.transition = current === 0 ? 'none' : `left ${stepDuration}ms ease-in, top ${stepDuration}ms ease-in`;
+            ball.style.transition = current === 0
+                ? 'none'
+                : `left ${stepDuration}ms ease-in, top ${stepDuration}ms ease-in`;
+
             ball.style.left = `${point.x}px`;
             ball.style.top = `${point.y}px`;
+
             current += 1;
             window.setTimeout(moveNext, current === 1 ? 30 : stepDuration);
         }
@@ -227,30 +262,41 @@ async function syncWallet(netChange, wagered) {
         const response = await fetch('plinko.php', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ api: 'update_wallet', delta: netChange, wager: wagered })
+            body: JSON.stringify({
+                api: 'update_wallet',
+                delta: netChange,
+                wager: wagered
+            })
         });
+
         const data = await response.json();
+
         if (data.success) {
             plinkoState.balance = Number(data.balance);
             plinkoState.totalWagered = Number(data.total_wagered);
+            window.dispatchEvent(new CustomEvent('elite:bet-complete'));
+            window.notifyBetFeedsUpdated?.();
         }
     } catch (error) {
-        // Keep the local display if the background wallet sync fails.
+        // Keep local display if sync fails.
     }
 }
 
-async function dropBall() {
-    if (plinkoState.actionLocked) return;
+function queueWalletSync(netChange, wagered) {
+    walletSyncQueue = walletSyncQueue
+        .then(() => syncWallet(netChange, wagered))
+        .then(updatePanel)
+        .catch(() => {});
 
+    return walletSyncQueue;
+}
+
+async function dropBall() {
     const bet = getBetAmount();
+
     if (!Number.isFinite(bet) || bet <= 0 || bet > plinkoState.balance) {
         return;
     }
-
-    plinkoState.actionLocked = true;
-    plinkoState.balance -= bet;
-    setControls();
-    updatePanel();
 
     const payouts = getPayouts();
     const pathResult = randomPath(plinkoState.rows);
@@ -258,24 +304,40 @@ async function dropBall() {
     const payout = bet * multiplier;
     const net = payout - bet;
 
-    await animateBall(pathResult);
+    plinkoState.balance -= bet;
+    plinkoState.activeBalls += 1;
 
-    const bucket = bucketsEl?.querySelector(`[data-index="${pathResult.slot}"]`);
-    if (bucket) {
-        bucket.classList.add('is-hit');
-        window.setTimeout(() => bucket.classList.remove('is-hit'), 650);
-    }
-
-    plinkoState.balance += payout;
-    plinkoState.lastMultiplier = multiplier;
-    if (profitText) profitText.textContent = formatCurrency(net);
-    showWinResult(multiplier, net);
-    updatePanel();
-
-    await syncWallet(net, bet);
-    plinkoState.actionLocked = false;
     setControls();
     updatePanel();
+
+    animateBall(pathResult).then(() => {
+        const bucket = bucketsEl?.querySelector(`[data-index="${pathResult.slot}"]`);
+
+        if (bucket) {
+            bucket.classList.add('is-hit');
+            window.setTimeout(() => bucket.classList.remove('is-hit'), 650);
+        }
+
+        plinkoState.balance += payout;
+        plinkoState.lastMultiplier = multiplier;
+
+        if (profitText) profitText.textContent = formatCurrency(net);
+
+        showWinResult(multiplier, net);
+        updatePanel();
+
+        queueWalletSync(net, bet).finally(() => {
+            plinkoState.activeBalls = Math.max(0, plinkoState.activeBalls - 1);
+            setControls();
+
+            if (plinkoState.activeBalls === 0 && pendingBoardRender) {
+                pendingBoardRender = false;
+                renderBoard();
+            }
+
+            updatePanel();
+        });
+    });
 }
 
 async function refreshWallet() {
@@ -285,14 +347,16 @@ async function refreshWallet() {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ api: 'get_wallet' })
         });
+
         const data = await response.json();
+
         if (data.success) {
             plinkoState.balance = Number(data.balance);
             plinkoState.totalWagered = Number(data.total_wagered);
             updatePanel();
         }
     } catch (error) {
-        // Keep the local display if the background wallet refresh fails.
+        // Keep local display if refresh fails.
     }
 }
 
@@ -300,17 +364,25 @@ if (dropBtn) dropBtn.addEventListener('click', dropBall);
 if (betInput) betInput.addEventListener('input', updatePanel);
 if (halfBetBtn) halfBetBtn.addEventListener('click', () => setBetAmount(getBetAmount() / 2));
 if (doubleBetBtn) doubleBetBtn.addEventListener('click', () => setBetAmount(getBetAmount() * 2));
+
 if (difficultySelect) {
     difficultySelect.addEventListener('change', () => {
+        if (plinkoState.activeBalls > 0) return;
+
         plinkoState.difficulty = difficultySelect.value;
         renderBoard();
         updatePanel();
     });
 }
-window.addEventListener('resize', renderBoard);
+
+window.addEventListener('resize', () => {
+    window.clearTimeout(window.plinkoResizeTimer);
+    window.plinkoResizeTimer = window.setTimeout(renderBoard, 120);
+});
 
 plinkoState.rows = 16;
 plinkoState.difficulty = difficultySelect?.value || 'easy';
+
 renderBoard();
 setControls();
 updatePanel();

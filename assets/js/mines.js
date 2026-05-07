@@ -288,6 +288,8 @@ async function finishRound(netChange) {
         if (data.success) {
             minesState.balance = Number(data.balance);
             minesState.totalWagered = Number(data.total_wagered);
+            window.dispatchEvent(new CustomEvent('elite:bet-complete'));
+            window.notifyBetFeedsUpdated?.();
         } else {
             updateStatus(`Wallet update failed: ${data.message}`, 'outcome-negative');
         }

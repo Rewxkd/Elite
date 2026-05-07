@@ -206,6 +206,8 @@ async function syncWallet(netChange, wagered) {
         if (data.success) {
             diceState.balance = Number(data.balance);
             diceState.totalWagered = Number(data.total_wagered);
+            window.dispatchEvent(new CustomEvent('elite:bet-complete'));
+            window.notifyBetFeedsUpdated?.();
         }
     } catch (error) {
         // Keep the local display if the wallet sync fails.

@@ -261,14 +261,16 @@
 
 .plinko-ball {
     position: absolute;
-    z-index: 2;
-    width: 16px;
-    height: 16px;
+    z-index: 8;
+    width: 18px;
+    height: 18px;
     border-radius: 50%;
     background:
-        radial-gradient(circle at 33% 28%, rgba(255, 255, 255, 0.9), transparent 18%),
-        linear-gradient(145deg, #fffbf2 0%, #e9eef8 100%);
-    box-shadow: 0 8px 14px rgba(0, 0, 0, 0.36);
+        radial-gradient(circle at 33% 28%, rgba(255, 255, 255, 0.95), transparent 18%),
+        linear-gradient(145deg, #7fd4ff 0%, #278df0 58%, #1a4ebd 100%);
+    box-shadow:
+        0 0 0 3px rgba(255, 255, 255, 0.16),
+        0 8px 14px rgba(0, 0, 0, 0.42);
     transform: translate(-50%, -50%);
 }
 
@@ -351,13 +353,21 @@
 
     .plinko-area {
         grid-template-columns: 1fr;
+        gap: 0;
         min-height: 0;
     }
 
+    .plinko-board-panel {
+        order: 1;
+        border-radius: 8px 8px 0 0;
+    }
+
     .plinko-control-panel {
+        order: 2;
         display: grid;
         grid-template-columns: repeat(2, minmax(0, 1fr));
         align-items: end;
+        border-radius: 0 0 8px 8px;
     }
 
     .plinko-result,
@@ -383,13 +393,16 @@
     }
 
     .plinko-area {
-        gap: 0.55rem;
+        gap: 0;
         padding: 0.55rem;
     }
 
-    .plinko-control-panel,
     .plinko-board-panel {
-        border-radius: 7px;
+        border-radius: 7px 7px 0 0;
+    }
+
+    .plinko-control-panel {
+        border-radius: 0 0 7px 7px;
     }
 
     .plinko-control-panel {
@@ -439,7 +452,7 @@
     }
 
     .plinko-board {
-        min-height: clamp(300px, 88vw, 360px);
+        min-height: clamp(260px, 76vw, 330px);
     }
 
     .plinko-buckets {
@@ -498,7 +511,12 @@
     }
 
     .plinko-board {
-        min-height: 285px;
+        min-height: clamp(240px, 68vw, 300px);
+    }
+
+    .plinko-ball {
+        width: 20px;
+        height: 20px;
     }
 
     .plinko-bucket {
@@ -512,11 +530,11 @@
     }
 
     .plinko-board {
-        min-height: clamp(340px, 48dvh, 430px);
+        min-height: clamp(285px, 38dvh, 360px);
     }
 
     .plinko-board-panel {
-        min-height: clamp(420px, 58dvh, 560px);
+        min-height: clamp(350px, 48dvh, 455px);
     }
 }
 

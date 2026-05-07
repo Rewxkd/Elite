@@ -137,7 +137,6 @@ function serializeRoundState() {
             initialBet: userState.initialBet
         },
         message: roundStatusEl?.textContent || '',
-        messageClass: roundStatusEl?.className || 'table-message'
     };
 }
 
@@ -217,7 +216,6 @@ function restoreSavedRound(round) {
     refreshActionButtons();
 
     const savedClass = typeof round.messageClass === 'string' ? round.messageClass.replace(/\bis-hiding\b/g, '').trim() : '';
-    updateMessage(round.message || 'Round restored. Continue your hand.', savedClass.replace(/\btable-message\b/g, '').trim());
     restoringRound = false;
     return true;
 }
@@ -229,7 +227,7 @@ async function dealCardToHand(hand, faceUp = true) {
     hand.push(card);
     saveRoundState();
     renderHands();
-    await delay(faceUp ? 660 : 380);
+    await delay(faceUp ? 660 : 580);
     card.justDealt = false;
     await saveRoundState();
     return card;
@@ -387,7 +385,7 @@ function animateCardIntoPlace(card, cardEl, oldRects) {
     const dy = origin.y - target.y;
     const finalTilt = getComputedStyle(cardEl).getPropertyValue('--tilt').trim() || '0deg';
     const startTilt = oldRect ? finalTilt : `${dx > 0 ? -14 : 14}deg`;
-    const duration = oldRect ? 210 : 310;
+    const duration = oldRect ? 160 : 260;
     const settledTransform = `translate3d(0, 0, 0) rotate(${finalTilt}) scale(1)`;
 
     cardEl.style.transition = 'none';
@@ -541,7 +539,6 @@ function refreshActionButtons() {
 function updateMessage(text, cls = '') {
     if (!roundStatusEl) return;
     roundStatusEl.textContent = text;
-    roundStatusEl.className = `table-message ${cls}`.trim();
 }
 
 function withActionLock(action) {
@@ -844,6 +841,8 @@ async function syncWallet(netChange, wagered) {
             userState.balance = Number(data.balance);
             userState.totalWagered = Number(data.total_wagered);
             updateUI();
+            window.dispatchEvent(new CustomEvent('elite:bet-complete'));
+            window.notifyBetFeedsUpdated?.();
             return true;
         } else {
             updateMessage(`Wallet update failed: ${data.message}`, 'outcome-negative');

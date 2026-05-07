@@ -151,7 +151,7 @@ body.open {
 
 .logo img {
     display: block;
-    height: 64px;
+    height: 54px;
     width: auto;
     max-width: 100%;
 }
@@ -1431,6 +1431,21 @@ body.open .menu-arrow {
 
 .latest-bets-row::-webkit-scrollbar {
     display: none;
+}
+
+.latest-bet-card.feed-item-new-x {
+    animation: feed-card-in-x 0.42s cubic-bezier(0.2, 0.82, 0.2, 1) both;
+}
+
+@keyframes feed-card-in-x {
+    from {
+        opacity: 0;
+        transform: translateX(-22px) scale(0.98);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0) scale(1);
+    }
 }
 
 .latest-bet-card {
@@ -3016,8 +3031,8 @@ body {
     }
 
     .logo img {
-        height: 48px;
-        width: 48px;
+        height: 54px;
+        width: 54px;
         max-width: none;
         object-fit: contain;
     }
@@ -3138,6 +3153,140 @@ body {
     }
 }
 
+@media (min-width: 621px) and (max-width: 980px) {
+    body {
+        padding-top: calc(92px + env(safe-area-inset-top, 0px));
+        padding-bottom: calc(82px + env(safe-area-inset-bottom, 0px));
+    }
+
+    .header {
+        position: fixed;
+        left: 0;
+        right: 0;
+        top: 0;
+        padding-top: env(safe-area-inset-top, 0px);
+        z-index: 3200;
+    }
+
+    .header-box {
+        width: calc(100% - 3rem);
+        max-width: 900px;
+        min-height: 76px;
+        margin: 0 auto;
+        padding: 0;
+        gap: 1rem;
+    }
+
+    .logo img {
+        width: 56px;
+        height: 56px;
+    }
+
+    .balance {
+        left: calc(50% - 0.5rem);
+        width: min(320px, 38vw);
+        max-width: calc(100% - 15rem);
+        min-height: 44px;
+        padding: 0.45rem 0.85rem;
+    }
+
+    .balance-amount {
+        font-size: clamp(1rem, 2.8vw, 1.25rem);
+    }
+
+    .header-buttons {
+        gap: 0.65rem;
+    }
+
+    .mobile-bottom-nav {
+        left: 50%;
+        right: auto;
+        width: min(760px, calc(100% - 3rem));
+        transform: translateX(-50%);
+        border: 1px solid rgba(128, 151, 210, 0.2);
+        border-bottom: 0;
+        border-radius: 10px 10px 0 0;
+        display: grid;
+        padding-left: 0.85rem;
+        padding-right: 0.85rem;
+    }
+
+    .container:not(.favourites-page):not(.page-game-main) {
+        width: 100%;
+        padding: 2.35rem 1.5rem 2rem;
+    }
+
+    .container:not(.favourites-page):not(.page-game-main) .container-box,
+    .container:not(.favourites-page):not(.page-game-main) .container-progress,
+    .container:not(.favourites-page):not(.page-game-main) .login-prompt {
+        width: min(100%, 720px);
+        margin-left: 0;
+        margin-right: auto;
+    }
+
+    .container:not(.favourites-page):not(.page-game-main) .container-box h1 {
+        font-size: clamp(2rem, 4.6vw, 2.7rem);
+        line-height: 1.05;
+    }
+
+    .progress-meta {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        align-items: start;
+        gap: 1rem;
+        width: 100%;
+    }
+
+    .progress-meta p {
+        min-width: 0;
+        overflow-wrap: anywhere;
+    }
+
+    .latest-bets-section,
+    .games-carousel {
+        width: calc(100% - 3rem);
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .latest-bets-section {
+        margin-top: 1.75rem;
+        margin-bottom: 1.75rem;
+    }
+
+    .games-carousel {
+        margin-top: 1.75rem;
+    }
+
+    .latest-bet-card {
+        width: 112px;
+        flex-basis: 112px;
+    }
+
+    .latest-bet-game {
+        height: 128px;
+    }
+
+    .game-card {
+        width: 152px;
+        min-width: 152px;
+        min-height: 202px;
+    }
+
+    .favourites-page {
+        width: 100%;
+        margin-left: 0;
+        padding-left: 1.5rem;
+        padding-right: 1.5rem;
+        padding-top: 4rem;
+    }
+
+    .site-footer {
+        margin-left: 0;
+        padding-bottom: calc(2rem + env(safe-area-inset-bottom, 0px));
+    }
+}
+
 @media (max-width: 480px) and (min-height: 760px) {
     .container {
         padding-top: 1.5rem;
@@ -3173,8 +3322,8 @@ body {
     }
 
     .logo img {
-        width: 46px;
-        height: 46px;
+        width: 50px;
+        height: 50px;
     }
 
     .balance {

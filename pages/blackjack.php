@@ -224,7 +224,6 @@ $total_wagered = floatval($wallet['total_wagered'] ?? 0);
                         </div>
 
                         <div class="split-layout" id="splitHandsSection" style="display:none;"></div>
-                        <div class="table-message" id="roundStatus" role="status">Place a bet to join the table.</div>
                     </section>
                 </div>
             </div>
