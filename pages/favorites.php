@@ -46,6 +46,12 @@ $game_assets = [
         'image' => '../assets/img/plinko-logo.png',
         'tagline' => 'Drop the ball and watch it bounce toward a multiplier.',
     ],
+    'dice' => [
+        'name' => 'Dice',
+        'href' => 'dice.php',
+        'image' => '../assets/img/dice-logo.png',
+        'tagline' => 'Pick your odds and roll for a clean hit.',
+    ],
 ];
 
 $favorites = [];

@@ -1,0 +1,579 @@
+.dice-page-main {
+    padding: 1.5rem 1.25rem 2.5rem calc(var(--side-width) + 1.25rem) !important;
+    transform: none !important;
+    transition: padding-left 0.25s ease;
+    background:
+        radial-gradient(circle at 50% 8%, rgba(34, 58, 120, 0.32), transparent 36%),
+        linear-gradient(180deg, rgba(8, 13, 32, 0.18), rgba(8, 13, 32, 0.46));
+}
+
+.dice-overlay {
+    width: min(1120px, calc(100vw - var(--side-width) - 2.5rem));
+    margin: 0 auto;
+    overflow: hidden;
+    border: 1px solid rgba(128, 151, 210, 0.18);
+    border-radius: 8px;
+    background:
+        linear-gradient(180deg, rgba(33, 45, 88, 0.9), rgba(11, 17, 40, 0.96)),
+        #151f42;
+    box-shadow: 0 18px 38px rgba(0, 0, 0, 0.34);
+    transition: width 0.25s ease;
+}
+
+.dice-area {
+    display: grid;
+    grid-template-columns: 290px minmax(0, 1fr);
+    gap: 0.9rem;
+    min-height: 560px;
+    padding: 0.9rem;
+    background: transparent;
+}
+
+.dice-control-panel,
+.dice-board-panel {
+    border: 1px solid rgba(128, 151, 210, 0.16);
+    border-radius: 8px;
+    background:
+        linear-gradient(180deg, rgba(33, 45, 88, 0.78), rgba(13, 19, 43, 0.88)),
+        #151f42;
+    box-shadow: none;
+}
+
+.dice-control-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    padding: 1rem 0.8rem;
+}
+
+.bet-widget {
+    display: grid;
+    gap: 0.45rem;
+}
+
+.bet-widget-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    color: #9fd0ff;
+    font-size: 0.82rem;
+    font-weight: 800;
+}
+
+.bet-widget-head label,
+.bet-widget-head span {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.bet-control {
+    height: 42px;
+    display: grid;
+    align-items: center;
+    overflow: hidden;
+    border: 1px solid rgba(128, 151, 210, 0.14);
+    border-radius: 8px;
+    background: rgba(7, 12, 30, 0.82);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+
+.dice-bet-control {
+    grid-template-columns: auto minmax(0, 1fr) 48px 48px;
+}
+
+.dice-profit-control {
+    grid-template-columns: auto minmax(0, 1fr);
+}
+
+.bet-prefix {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    padding-left: 0.75rem;
+    color: #bfe3ff;
+    font-weight: 800;
+}
+
+#betInput,
+#profitInput {
+    width: 100%;
+    min-width: 0;
+    min-height: 40px;
+    padding: 0 0.45rem;
+    border: none;
+    background: transparent;
+    color: #ffffff;
+    font-size: 1.05rem;
+    font-weight: 800;
+}
+
+#betInput:focus {
+    outline: none;
+}
+
+#profitInput {
+    color: #d9eeff;
+}
+
+#betInput::-webkit-outer-spin-button,
+#betInput::-webkit-inner-spin-button {
+    margin: 0;
+    appearance: none;
+}
+
+.bet-adjust {
+    width: 100%;
+    height: 100%;
+    border: 1px solid rgba(128, 151, 210, 0.12);
+    border-top: none;
+    border-right: none;
+    border-bottom: none;
+    background: rgba(38, 52, 101, 0.76);
+    color: #ffffff;
+    font: inherit;
+    font-size: 0.84rem;
+    font-weight: 900;
+    cursor: pointer;
+    transition: background 0.16s ease, color 0.16s ease;
+}
+
+.bet-adjust:hover:not(:disabled) {
+    background: rgba(50, 68, 125, 0.94);
+}
+
+.bet-adjust:disabled {
+    color: rgba(216, 226, 248, 0.42);
+    background: rgba(30, 42, 82, 0.62);
+    cursor: not-allowed;
+}
+
+.dice-primary-btn {
+    min-height: 46px;
+    border: none;
+    border-radius: 8px;
+    background: linear-gradient(180deg, #2aa4f4 0%, #1786df 100%);
+    box-shadow: 0 10px 20px rgba(23, 134, 223, 0.18);
+    color: #ffffff;
+    font: inherit;
+    font-weight: 900;
+    cursor: pointer;
+    transition: transform 0.18s ease, filter 0.18s ease, opacity 0.18s ease;
+}
+
+.dice-primary-btn:hover:not(:disabled) {
+    transform: translateY(-2px);
+    filter: brightness(1.05);
+}
+
+.dice-primary-btn:disabled {
+    color: rgba(216, 226, 248, 0.42);
+    background: rgba(30, 42, 82, 0.62);
+    box-shadow: none;
+    cursor: not-allowed;
+}
+
+.dice-board-panel {
+    position: relative;
+    display: grid;
+    grid-template-rows: auto minmax(0, 1fr) auto;
+    gap: 1rem;
+    min-width: 0;
+    padding: 1rem;
+    background:
+        linear-gradient(180deg, rgba(20, 53, 65, 0.5), rgba(13, 19, 43, 0.9)),
+        #101936;
+}
+
+.dice-history {
+    min-height: 42px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 0.65rem;
+    overflow: hidden;
+}
+
+.dice-history-chip {
+    flex: 0 0 auto;
+    min-width: 60px;
+    min-height: 36px;
+    display: inline-grid;
+    place-items: center;
+    padding: 0 0.8rem;
+    border-radius: 999px;
+    background: rgba(70, 94, 120, 0.72);
+    color: #d9e8f3;
+    font-size: 0.74rem;
+    font-weight: 900;
+}
+
+.dice-history-chip.is-win {
+    background: #00e61f;
+    color: #001408;
+}
+
+.dice-stage {
+    display: grid;
+    place-items: center;
+    min-height: 335px;
+    padding: 1rem 1.7rem;
+}
+
+.dice-scale {
+    position: relative;
+    width: min(100%, 730px);
+    height: 112px;
+}
+
+.dice-track {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 54px;
+    height: 56px;
+    overflow: visible;
+    border: 14px solid rgba(70, 101, 122, 0.74);
+    border-radius: 999px;
+    background:
+        linear-gradient(180deg, rgba(14, 31, 49, 0.98), rgba(8, 18, 32, 0.98)),
+        rgba(10, 20, 35, 0.88);
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.08),
+        0 12px 24px rgba(0, 0, 0, 0.24);
+    cursor: pointer;
+}
+
+.dice-loss-range,
+.dice-win-range {
+    position: absolute;
+    top: 50%;
+    height: 8px;
+    border-radius: 999px;
+    transform: translateY(-50%);
+}
+
+.dice-loss-range {
+    left: 10px;
+    background: #eb174b;
+}
+
+.dice-win-range {
+    right: 10px;
+    background: #00e61f;
+}
+
+.dice-threshold-handle {
+    position: absolute;
+    top: 50%;
+    z-index: 2;
+    width: 44px;
+    height: 48px;
+    display: grid;
+    place-items: center;
+    border: 1px solid rgba(159, 208, 255, 0.24);
+    border-radius: 7px;
+    background:
+        linear-gradient(180deg, rgba(151, 211, 255, 0.2), rgba(42, 164, 244, 0.1)),
+        rgba(42, 164, 244, 0.12);
+    transform: translate(-50%, -50%);
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.18),
+        0 14px 24px rgba(0, 0, 0, 0.3),
+        0 0 16px rgba(42, 164, 244, 0.1);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    cursor: grab;
+    touch-action: none;
+    transition: filter 0.16s ease;
+}
+
+.dice-threshold-handle:active {
+    cursor: grabbing;
+    filter: brightness(1.08);
+}
+
+.dice-threshold-handle::before {
+    content: '|||';
+    color: rgba(226, 242, 255, 0.58);
+    font-size: 0.86rem;
+    font-weight: 900;
+    letter-spacing: -0.16em;
+}
+
+.dice-marker {
+    position: absolute;
+    top: 24px;
+    color: #ffffff;
+    font-size: 1rem;
+    font-weight: 900;
+    transform: translateX(-50%);
+}
+
+.dice-marker::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 24px;
+    width: 0;
+    height: 0;
+    border-right: 6px solid transparent;
+    border-bottom: 7px solid rgba(65, 95, 115, 0.84);
+    border-left: 6px solid transparent;
+    transform: translateX(-50%);
+}
+
+.marker-0 {
+    left: 4%;
+}
+
+.marker-25 {
+    left: 25%;
+}
+
+.marker-50 {
+    left: 50%;
+}
+
+.marker-75 {
+    left: 75%;
+}
+
+.marker-100 {
+    left: 96%;
+}
+
+.dice-roll-bubble {
+    position: absolute;
+    left: 50%;
+    top: 4px;
+    z-index: 4;
+    width: 70px;
+    height: 60px;
+    display: grid;
+    place-items: center;
+    padding: 0.45rem;
+    border: 1px solid rgba(196, 210, 255, 0.62);
+    border-radius: 12px;
+    clip-path: polygon(50% 0, 100% 24%, 100% 74%, 50% 100%, 0 74%, 0 24%);
+    background: linear-gradient(180deg, #eef1ff 0%, #d9def7 100%);
+    color: #17213b;
+    font-size: 0.98rem;
+    font-weight: 900;
+    transform: translateX(-50%);
+    opacity: 0;
+    transition: left 0.45s ease, opacity 0.18s ease;
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.8),
+        0 14px 24px rgba(0, 0, 0, 0.28);
+}
+
+.dice-roll-bubble::before {
+    content: '';
+    position: absolute;
+    left: 17%;
+    right: 17%;
+    bottom: 2px;
+    height: 6px;
+    border-radius: 0 0 999px 999px;
+    background: #00e61f;
+    filter: drop-shadow(0 0 5px rgba(0, 230, 31, 0.45));
+    pointer-events: none;
+}
+
+.dice-roll-bubble::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    bottom: -5px;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #00e61f;
+    transform: translateX(-50%);
+    box-shadow: 0 0 7px rgba(0, 230, 31, 0.5);
+    pointer-events: none;
+}
+
+.dice-roll-bubble span {
+    position: relative;
+    z-index: 2;
+}
+
+.dice-roll-bubble.is-visible {
+    opacity: 1;
+}
+
+.dice-roll-bubble.is-loss {
+    color: #17213b;
+}
+
+.dice-roll-bubble.is-win {
+    color: #17213b;
+}
+
+.dice-roll-bubble.is-loss::before,
+.dice-roll-bubble.is-loss::after {
+    background: #eb174b;
+    filter: drop-shadow(0 0 5px rgba(235, 23, 75, 0.45));
+    box-shadow: 0 0 7px rgba(235, 23, 75, 0.5);
+}
+
+.dice-settings {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.75rem;
+    padding: 0;
+    border: none;
+    border-radius: 0;
+    background: transparent;
+}
+
+.dice-setting {
+    display: grid;
+    gap: 0.4rem;
+    min-width: 0;
+}
+
+.dice-setting label {
+    padding-left: 0.1rem;
+    color: #9fd0ff;
+    font-size: 0.82rem;
+    font-weight: 900;
+}
+
+.dice-setting input {
+    width: 100%;
+    min-width: 0;
+    min-height: 42px;
+    border: 1px solid rgba(128, 151, 210, 0.18);
+    border-radius: 7px;
+    background:
+        linear-gradient(180deg, rgba(14, 31, 61, 0.98), rgba(7, 15, 35, 0.98)),
+        #0b1b3a;
+    color: #ffffff;
+    font: inherit;
+    font-weight: 900;
+    padding: 0 0.7rem;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+
+.dice-setting input:focus {
+    border-color: rgba(144, 190, 255, 0.62);
+    outline: none;
+}
+
+.dice-inline-field {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 42px;
+    align-items: center;
+    overflow: hidden;
+    border: 1px solid rgba(128, 151, 210, 0.18);
+    border-radius: 7px;
+    background:
+        linear-gradient(180deg, rgba(14, 31, 61, 0.98), rgba(7, 15, 35, 0.98)),
+        #0b1b3a;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+
+.dice-direction-button {
+    width: 100%;
+    min-width: 0;
+    padding: 0;
+    font: inherit;
+    cursor: pointer;
+    text-align: left;
+    transition: border-color 0.16s ease, filter 0.16s ease;
+}
+
+.dice-direction-button:hover {
+    border-color: rgba(144, 190, 255, 0.42);
+    filter: brightness(1.05);
+}
+
+.dice-inline-field input {
+    border: none;
+    border-radius: 0;
+    background: transparent;
+    pointer-events: none;
+}
+
+.dice-inline-field span {
+    width: 42px;
+    height: 42px;
+    display: grid;
+    place-items: center;
+    border: none;
+    border-left: 1px solid rgba(128, 151, 210, 0.12);
+    background: rgba(38, 52, 101, 0.76);
+    color: #bfe3ff;
+    font: inherit;
+    font-size: 1rem;
+    font-weight: 900;
+}
+
+.game-overlay-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-height: 0;
+    padding: 0.85rem 1rem;
+    border-top: 1px solid rgba(128, 151, 210, 0.16);
+    background: rgba(18, 27, 58, 0.94);
+}
+
+.favorite-btn {
+    width: 42px;
+    height: 42px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid rgba(128, 151, 210, 0.2);
+    border-radius: 8px;
+    background: rgba(38, 52, 101, 0.72);
+    cursor: pointer;
+    transition: background 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+}
+
+.favorite-btn:hover {
+    transform: translateY(-1px);
+    border-color: rgba(128, 151, 210, 0.32);
+    background: rgba(50, 68, 125, 0.92);
+}
+
+.star-icon {
+    width: 24px;
+    height: 24px;
+    stroke-width: 2;
+}
+
+@media (max-width: 980px) {
+    .dice-overlay {
+        width: min(100%, calc(100vw - 6rem));
+    }
+
+    .dice-area {
+        grid-template-columns: 1fr;
+    }
+
+    .dice-settings {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 620px) {
+    .dice-page-main {
+        padding-right: 0.8rem !important;
+    }
+
+    .dice-overlay {
+        width: 100%;
+    }
+
+    .dice-stage {
+        min-height: 260px;
+        padding: 0.7rem 0.2rem;
+    }
+}

@@ -36,11 +36,19 @@ $games = [
         'status' => 'Play',
         'is_live' => true,
     ],
+    [
+        'name' => 'Dice',
+        'href' => 'dice.php',
+        'image' => '../assets/img/dice-logo.png',
+        'tagline' => 'Pick your odds and roll for a clean hit.',
+        'code' => 'DI',
+        'status' => 'Play',
+        'is_live' => true,
+    ],
     ['name' => 'Limbo', 'tagline' => 'Pick a target multiplier and see how high it lands.', 'code' => 'LI'],
     ['name' => 'Tower', 'tagline' => 'Climb level by level and decide when to lock it in.', 'code' => 'TO'],
     ['name' => 'Baccarat', 'tagline' => 'A sleek card classic with simple choices.', 'code' => 'BA'],
     ['name' => 'Crash', 'tagline' => 'Cash out before the multiplier disappears.', 'code' => 'CR'],
-    ['name' => 'Dice', 'tagline' => 'Pick your odds and roll for a clean hit.', 'code' => 'DI'],
     ['name' => 'Keno', 'tagline' => 'Mark your numbers and watch the board light up.', 'code' => 'KE'],
 ];
 

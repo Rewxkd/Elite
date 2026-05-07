@@ -1695,8 +1695,10 @@ body.open .menu-arrow {
 .game-img img {
     position: relative;
     z-index: 1;
-    width: 132px;
-    height: 132px;
+    width: auto;
+    height: auto;
+    max-width: 132px;
+    max-height: 132px;
     object-fit: contain;
     transform: translateY(-4px);
     filter: drop-shadow(0 18px 18px rgba(0, 0, 0, 0.34));
@@ -1728,8 +1730,10 @@ body.open .menu-arrow {
 .blackjack-game-img img {
     position: relative;
     z-index: 1;
-    width: 132px;
-    height: 132px;
+    width: auto;
+    height: auto;
+    max-width: 132px;
+    max-height: 132px;
     object-fit: contain;
     transform: translateY(-4px);
     filter: drop-shadow(0 18px 18px rgba(0, 0, 0, 0.34));
@@ -1746,16 +1750,20 @@ body.open .menu-arrow {
 }
 
 .latest-bet-game.blackjack-game-img img {
-    width: 86px;
-    height: 86px;
+    width: auto;
+    height: auto;
+    max-width: 86px;
+    max-height: 86px;
     transform: translateY(-4px);
 }
 
 .latest-bet-game img {
     position: relative;
     z-index: 1;
-    width: 86px;
-    height: 86px;
+    width: auto;
+    height: auto;
+    max-width: 86px;
+    max-height: 86px;
     object-fit: contain;
     transform: translateY(-4px);
     filter: drop-shadow(0 14px 16px rgba(0, 0, 0, 0.32));
@@ -1950,7 +1958,8 @@ body.open .menu-arrow {
     position: relative;
     z-index: 1;
     width: clamp(180px, 58%, 250px);
-    aspect-ratio: 1;
+    height: auto;
+    max-height: 68%;
     object-fit: contain;
     transform: translateY(-34px);
     filter: drop-shadow(0 22px 22px rgba(0, 0, 0, 0.34));

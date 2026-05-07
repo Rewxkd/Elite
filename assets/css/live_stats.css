@@ -183,8 +183,10 @@
 }
 
 .bets-game-mark img {
-    width: 30px;
-    height: 30px;
+    width: auto;
+    height: auto;
+    max-width: 30px;
+    max-height: 30px;
     object-fit: contain;
     filter: drop-shadow(0 5px 6px rgba(0, 0, 0, 0.34));
 }
