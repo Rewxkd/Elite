@@ -1,5 +1,5 @@
 .dice-page-main {
-    padding: 1.5rem 1.25rem 2.5rem calc(var(--side-width) + 1.25rem) !important;
+    padding: 1.5rem 1.25rem 2.5rem !important;
     transform: none !important;
     min-width: 0;
     transition: padding-left 0.25s ease;
@@ -9,7 +9,7 @@
 }
 
 .dice-overlay {
-    width: min(1120px, calc(100vw - var(--side-width) - 2.5rem));
+    width: min(1120px, calc(100% - 2.5rem));
     max-width: 100%;
     margin: 0 auto;
     overflow: hidden;
@@ -60,7 +60,7 @@
     align-items: center;
     justify-content: space-between;
     gap: 0.75rem;
-    color: #9fd0ff;
+    color: #c8d4e4;
     font-size: 0.82rem;
     font-weight: 800;
 }
@@ -70,6 +70,10 @@
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+}
+
+.bet-widget-head span {
+    color: #edf3fb;
 }
 
 .bet-control {
@@ -444,7 +448,7 @@
 
 .dice-setting label {
     padding-left: 0.1rem;
-    color: #9fd0ff;
+    color: #c8d4e4;
     font-size: 0.82rem;
     font-weight: 900;
 }
@@ -573,6 +577,8 @@
 
     .dice-board-panel {
         order: 1;
+        min-height: 0 !important;
+        height: auto !important;
         border-radius: 8px 8px 0 0;
     }
 
@@ -584,8 +590,16 @@
         border-radius: 0 0 8px 8px;
     }
 
+    .bet-widget:first-child {
+        order: 1;
+    }
+
     .dice-primary-btn {
         grid-column: 1 / -1;
+        order: 2;
+    }
+
+    .dice-control-panel .bet-widget:last-child {
         order: 3;
     }
 
@@ -673,17 +687,18 @@
     }
 
     .dice-stage {
-        min-height: clamp(210px, 58vw, 270px);
+        height: clamp(125px, 34vw, 175px) !important;
+        min-height: 0;
         padding: 0.7rem 0.2rem 0.35rem;
     }
 
     .dice-scale {
-        height: 104px;
+        height: 88px;
     }
 
     .dice-track {
-        top: 52px;
-        height: 48px;
+        top: 46px;
+        height: 40px;
         border-width: 11px;
     }
 
@@ -773,17 +788,18 @@
     }
 
     .dice-stage {
-        min-height: clamp(180px, 52vw, 230px);
+        height: clamp(112px, 32vw, 150px) !important;
+        min-height: 0;
         padding-inline: 0;
     }
 
     .dice-scale {
-        height: 96px;
+        height: 82px;
     }
 
     .dice-track {
-        top: 50px;
-        height: 42px;
+        top: 42px;
+        height: 36px;
         border-width: 9px;
     }
 
@@ -827,11 +843,13 @@
     }
 
     .dice-stage {
-        min-height: clamp(220px, 28dvh, 285px);
+        height: clamp(125px, 17dvh, 175px) !important;
+        min-height: 0;
     }
 
     .dice-board-panel {
-        min-height: clamp(340px, 46dvh, 430px);
+        min-height: 0 !important;
+        height: auto !important;
     }
 }
 

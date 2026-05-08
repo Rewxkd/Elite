@@ -152,14 +152,9 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     const promptRegisterButton = document.getElementById('loginPromptBtn');
-    const promptLoginButton = document.getElementById('loginPromptBtnLogin');
 
     if (promptRegisterButton) {
         promptRegisterButton.addEventListener('click', () => openAuthModal('register'));
-    }
-
-    if (promptLoginButton) {
-        promptLoginButton.addEventListener('click', () => openAuthModal('login'));
     }
 });
 

@@ -1,5 +1,5 @@
 .mines-page-main {
-    padding: 1.5rem 1.25rem 2.5rem calc(var(--side-width) + 1.25rem) !important;
+    padding: 1.5rem 1.25rem 2.5rem !important;
     transform: none !important;
     min-width: 0;
     transition: padding-left 0.25s ease;
@@ -9,7 +9,7 @@
 }
 
 .mines-overlay {
-    width: min(1120px, calc(100vw - var(--side-width) - 2.5rem));
+    width: min(1120px, calc(100% - 2.5rem));
     max-width: 100%;
     margin: 0 auto;
     overflow: hidden;
@@ -63,7 +63,7 @@
 .mines-kicker {
     display: block;
     margin-bottom: 0.45rem;
-    color: #8ab9ff;
+    color: #c8d4e4;
     font-size: 0.72rem;
     font-weight: 800;
     letter-spacing: 0.08em;
@@ -81,7 +81,7 @@
 
 .mines-field label,
 .bet-widget-head {
-    color: #9fd0ff;
+    color: #c8d4e4;
     font-size: 0.82rem;
     font-weight: 800;
 }
@@ -96,6 +96,10 @@
     align-items: center;
     justify-content: space-between;
     gap: 0.75rem;
+}
+
+.bet-widget-head span {
+    color: #edf3fb;
 }
 
 .bet-control {
@@ -484,6 +488,8 @@
 
     .mines-board-panel {
         order: 1;
+        min-height: 0 !important;
+        height: auto !important;
         border-radius: 8px 8px 0 0;
     }
 
@@ -495,15 +501,36 @@
         border-radius: 0 0 8px 8px;
     }
 
+    .bet-widget {
+        order: 1;
+    }
+
+    .mines-primary-btn {
+        order: 2;
+        margin-top: 0;
+    }
+
+    .mines-cashout-btn {
+        order: 3;
+    }
+
+    .mines-field {
+        order: 4;
+    }
+
+    .mines-stats {
+        order: 5;
+    }
+
+    .mines-panel-header {
+        order: 0;
+    }
+
     .mines-panel-header,
     .mines-stats,
     .mines-primary-btn,
     .mines-cashout-btn {
         grid-column: 1 / -1;
-    }
-
-    .mines-primary-btn {
-        margin-top: 0;
     }
 }
 
@@ -581,7 +608,7 @@
     }
 
     .mines-board {
-        width: min(100%, 400px);
+        width: min(100%, 285px);
         gap: clamp(0.28rem, 2vw, 0.48rem);
     }
 
@@ -644,7 +671,7 @@
     }
 
     .mines-board {
-        width: min(100%, 350px);
+        width: min(100%, 250px);
     }
 
 }
@@ -655,11 +682,12 @@
     }
 
     .mines-board-panel {
-        min-height: clamp(340px, 46dvh, 430px);
+        min-height: 0 !important;
+        height: auto !important;
     }
 
     .mines-board {
-        width: min(100%, 380px);
+        width: min(100%, 265px);
     }
 }
 

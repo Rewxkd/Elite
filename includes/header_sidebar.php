@@ -19,7 +19,13 @@ if (!function_exists('elite_url')) {
 ?>
 <aside class="sidebar" id="side" aria-hidden="true">
     <div class="sidebar-top">
-        <button class="toggle" id="toggle" aria-label="Toggle navigation" aria-expanded="false">&#9776;</button>
+        <button class="toggle" id="toggle" aria-label="Toggle navigation" aria-expanded="false">
+            <span class="burger-icon" aria-hidden="true">
+                <span></span>
+                <span></span>
+                <span></span>
+            </span>
+        </button>
         <a href="<?php echo elite_url('pages/games.php'); ?>" class="sidebar-games-button" <?php echo $activePage === 'games' ? 'aria-current="page"' : ''; ?>>Games</a>
     </div>
     <nav class="navigation">
@@ -55,6 +61,7 @@ if (!function_exists('elite_url')) {
     </nav>
 </aside>
 
+<div class="app-content sidebar-closed" id="appContent">
 <header class="header">
     <div class="header-box">
         <div class="logo">
@@ -71,6 +78,7 @@ if (!function_exists('elite_url')) {
         </div>
         <?php endif; ?>
         <div class="header-buttons">
+            <?php if ($is_logged_in): ?>
             <div class="group" role="group" aria-label="Profile and notifications">
                 <button class="button icon notif header-action" id="notif" aria-label="Notifications">
                     <svg class="header-icon header-icon-filled" viewBox="0 0 24 24" aria-hidden="true">
@@ -79,33 +87,28 @@ if (!function_exists('elite_url')) {
                     </svg>
                     <span class="badge" id="badge"><?php echo $notification_count; ?></span>
                 </button>
-                <?php if ($is_logged_in): ?>
-                    <div class="profile-menu-wrap" id="profileMenuWrap">
-                        <button class="button icon header-action" id="prof" type="button" aria-label="Profile" aria-haspopup="true" aria-expanded="false">
-                            <svg class="header-icon header-icon-filled" viewBox="0 0 24 24" aria-hidden="true">
-                                <path d="M12 12.25a4.75 4.75 0 1 0 0-9.5 4.75 4.75 0 0 0 0 9.5Z"></path>
-                                <path d="M4.2 20.1c.96-4.16 3.58-6.35 7.8-6.35s6.84 2.19 7.8 6.35c.16.7-.38 1.4-1.1 1.4H5.3c-.72 0-1.26-.7-1.1-1.4Z"></path>
-                            </svg>
-                        </button>
-                        <div class="profile-menu" id="profileMenu" aria-hidden="true">
-                            <button class="profile-menu-item" type="button">Placeholder</button>
-                            <button class="profile-menu-item" type="button">Placeholder</button>
-                            <button class="profile-menu-item" type="button">Placeholder</button>
-                            <button class="profile-menu-item logout" id="logoutBtn" type="button"><span>&#128682;</span><span>Logout</span></button>
-                        </div>
-                    </div>
-                <?php endif; ?>
-            </div>
-            <?php if (!$is_logged_in): ?>
-                <button class="auth-button" id="loginBtn">
-                    <span class="auth-icon" aria-hidden="true">
-                        <svg viewBox="0 0 24 24">
-                            <path d="M8 10V7.75a4 4 0 0 1 8 0V10"></path>
-                            <path d="M6.75 10h10.5A1.75 1.75 0 0 1 19 11.75v6.5A1.75 1.75 0 0 1 17.25 20H6.75A1.75 1.75 0 0 1 5 18.25v-6.5A1.75 1.75 0 0 1 6.75 10Z"></path>
-                            <path d="M12 14v2"></path>
+                <div class="profile-menu-wrap" id="profileMenuWrap">
+                    <button class="button icon header-action" id="prof" type="button" aria-label="Profile" aria-haspopup="true" aria-expanded="false">
+                        <svg class="header-icon header-icon-filled" viewBox="0 0 24 24" aria-hidden="true">
+                            <path d="M12 12.25a4.75 4.75 0 1 0 0-9.5 4.75 4.75 0 0 0 0 9.5Z"></path>
+                            <path d="M4.2 20.1c.96-4.16 3.58-6.35 7.8-6.35s6.84 2.19 7.8 6.35c.16.7-.38 1.4-1.1 1.4H5.3c-.72 0-1.26-.7-1.1-1.4Z"></path>
                         </svg>
-                    </span>
+                    </button>
+                    <div class="profile-menu" id="profileMenu" aria-hidden="true">
+                        <button class="profile-menu-item" type="button">Placeholder</button>
+                        <button class="profile-menu-item" type="button">Placeholder</button>
+                        <button class="profile-menu-item" type="button">Placeholder</button>
+                        <button class="profile-menu-item logout" id="logoutBtn" type="button"><span>&#128682;</span><span>Logout</span></button>
+                    </div>
+                </div>
+            </div>
+            <?php endif; ?>
+            <?php if (!$is_logged_in): ?>
+                <button class="auth-button auth-login" id="loginBtn" type="button">
                     <span class="auth-text">Login</span>
+                </button>
+                <button class="auth-button auth-register" id="registerBtn" type="button">
+                    <span class="auth-text">Register</span>
                 </button>
             <?php endif; ?>
         </div>

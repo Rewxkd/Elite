@@ -215,6 +215,21 @@
 }
 
 @media (min-width: 981px) {
+    .app-content .bets-stats-section {
+        width: min(1200px, calc(100% - (var(--content-gutter) * 2)));
+        max-width: 1200px;
+        margin-left: auto;
+        margin-right: auto;
+        transform: none;
+    }
+
+    .app-content .page-game-main + .bets-stats-section {
+        width: min(1120px, calc(100% - (var(--content-gutter) * 2)));
+        margin-left: auto;
+        margin-right: auto;
+        transform: none;
+    }
+
     .bets-stats-section {
         width: var(--content-width);
         max-width: var(--content-max);

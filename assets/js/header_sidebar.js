@@ -5,6 +5,7 @@ const headerConfig = {
 
 const loginModal = document.getElementById('loginModal');
 const loginBtn = document.getElementById('loginBtn');
+const registerBtn = document.getElementById('registerBtn');
 const closeLogin = document.getElementById('closeLogin');
 const logoutBtn = document.getElementById('logoutBtn');
 const profileBtn = document.getElementById('prof');
@@ -12,13 +13,36 @@ const profileMenuWrap = document.getElementById('profileMenuWrap');
 const profileMenu = document.getElementById('profileMenu');
 const toggleBtn = document.getElementById('toggle');
 const sidebar = document.getElementById('side');
+const appContent = document.getElementById('appContent');
 const menuBtns = document.querySelectorAll('.dropdown-button');
 const mobileSidebarQuery = window.matchMedia('(max-width: 980px)');
+
+function syncSidebarState(isOpen) {
+    if (sidebar) sidebar.setAttribute('aria-hidden', (!isOpen).toString());
+    if (toggleBtn) toggleBtn.setAttribute('aria-expanded', isOpen.toString());
+    if (appContent) {
+        appContent.classList.toggle('sidebar-open', isOpen);
+        appContent.classList.toggle('sidebar-closed', !isOpen);
+    }
+}
+
+function toggleSidebar() {
+    const isOpen = document.body.classList.toggle('open');
+    syncSidebarState(isOpen);
+}
 
 if (loginBtn) {
     loginBtn.addEventListener('click', () => {
         const loginTab = document.querySelector('.login-tab[data-tab="login"]');
         if (loginTab) loginTab.click();
+        if (loginModal) loginModal.style.display = 'flex';
+    });
+}
+
+if (registerBtn) {
+    registerBtn.addEventListener('click', () => {
+        const registerTab = document.querySelector('.login-tab[data-tab="register"]');
+        if (registerTab) registerTab.click();
         if (loginModal) loginModal.style.display = 'flex';
     });
 }
@@ -68,9 +92,7 @@ if (profileMenuWrap) {
 
 if (toggleBtn) {
     toggleBtn.addEventListener('click', function() {
-        const isOpen = document.body.classList.toggle('open');
-        if (sidebar) sidebar.setAttribute('aria-hidden', (!isOpen).toString());
-        this.setAttribute('aria-expanded', isOpen.toString());
+        toggleSidebar();
     });
 }
 
@@ -78,7 +100,7 @@ menuBtns.forEach(btn => {
     btn.addEventListener('click', function(e) {
         if (!document.body.classList.contains('open')) {
             document.body.classList.add('open');
-            if (sidebar) sidebar.setAttribute('aria-hidden', 'false');
+            syncSidebarState(true);
             this.setAttribute('aria-expanded', 'true');
             setTimeout(() => {
                 const dropdown = this.parentElement.querySelector('.dropdown-items');
@@ -107,8 +129,7 @@ menuBtns.forEach(btn => {
 document.addEventListener('click', function(event) {
     if (mobileSidebarQuery.matches && document.body.classList.contains('open') && sidebar && !sidebar.contains(event.target)) {
         document.body.classList.remove('open');
-        sidebar.setAttribute('aria-hidden', 'true');
-        if (toggleBtn) toggleBtn.setAttribute('aria-expanded', 'false');
+        syncSidebarState(false);
     }
 
     if (profileMenu && profileBtn && profileMenu.getAttribute('aria-hidden') === 'false') {

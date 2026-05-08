@@ -36,6 +36,14 @@ const playerValueEl = document.getElementById('playerValue');
 const dealerValueEl = document.getElementById('dealerValue');
 const splitHandsSection = document.getElementById('splitHandsSection');
 
+const INITIAL_DEAL_DELAY = 660;
+const INITIAL_HOLE_CARD_DELAY = 580;
+const ACTION_DEAL_DELAY = 760;
+const ACTION_DEAL_DURATION = 420;
+const DEALER_REVEAL_DELAY = 520;
+const DEFAULT_DEAL_DURATION = 460;
+const DEAL_EASING = 'cubic-bezier(0.18, 0.86, 0.2, 1)';
+
 let deck = [];
 let dealerHand = [];
 let playerHands = [];
@@ -220,15 +228,17 @@ function restoreSavedRound(round) {
     return true;
 }
 
-async function dealCardToHand(hand, faceUp = true) {
+async function dealCardToHand(hand, faceUp = true, options = {}) {
     const card = drawCard();
     card.faceUp = faceUp;
     card.justDealt = true;
+    card.dealDuration = options.durationMs || DEFAULT_DEAL_DURATION;
     hand.push(card);
     saveRoundState();
     renderHands();
-    await delay(faceUp ? 660 : 580);
+    await delay(options.delayMs || (faceUp ? INITIAL_DEAL_DELAY : INITIAL_HOLE_CARD_DELAY));
     card.justDealt = false;
+    card.dealDuration = null;
     await saveRoundState();
     return card;
 }
@@ -291,9 +301,13 @@ function getCardEl(card) {
     cardEl.innerHTML = `
         <div class="card-inner">
             <div class="card-face card-front">
-                <span class="card-rank"></span>
+                <span class="card-corner card-corner-top">
+                    <span class="card-rank"></span>
+                </span>
                 <span class="card-pip"></span>
-                <span class="card-suit"></span>
+                <span class="card-corner card-corner-bottom">
+                    <span class="card-rank"></span>
+                </span>
             </div>
             <div class="card-face card-back"></div>
         </div>
@@ -305,13 +319,13 @@ function getCardEl(card) {
 
 function updateCardFace(card, cardEl) {
     const suitEntity = getSuitEntity(card.suit);
-    const rankEl = cardEl.querySelector('.card-rank');
+    const rankEls = cardEl.querySelectorAll('.card-rank');
     const pipEl = cardEl.querySelector('.card-pip');
-    const suitEl = cardEl.querySelector('.card-suit');
 
-    rankEl.textContent = card.rank;
+    rankEls.forEach(rankEl => {
+        rankEl.textContent = card.rank;
+    });
     pipEl.innerHTML = suitEntity;
-    suitEl.innerHTML = suitEntity;
     cardEl.classList.toggle('is-red', card.suit === 'H' || card.suit === 'D');
 
     if (card.faceUp) {
@@ -370,6 +384,10 @@ function animateCardIntoPlace(card, cardEl, oldRects) {
     if (cardEl.dealTimer) {
         window.clearTimeout(cardEl.dealTimer);
     }
+    if (cardEl.flipTimer) {
+        window.clearTimeout(cardEl.flipTimer);
+        cardEl.flipTimer = null;
+    }
 
     const newRect = cardEl.getBoundingClientRect();
     const oldRect = oldRects.get(card.id);
@@ -384,8 +402,8 @@ function animateCardIntoPlace(card, cardEl, oldRects) {
     const dx = origin.x - target.x;
     const dy = origin.y - target.y;
     const finalTilt = getComputedStyle(cardEl).getPropertyValue('--tilt').trim() || '0deg';
-    const startTilt = oldRect ? finalTilt : `${dx > 0 ? -14 : 14}deg`;
-    const duration = oldRect ? 160 : 260;
+    const startTilt = oldRect ? finalTilt : '90deg';
+    const duration = oldRect ? 160 : (card.dealDuration || DEFAULT_DEAL_DURATION);
     const settledTransform = `translate3d(0, 0, 0) rotate(${finalTilt}) scale(1)`;
 
     cardEl.style.transition = 'none';
@@ -393,23 +411,60 @@ function animateCardIntoPlace(card, cardEl, oldRects) {
     cardEl.style.transform = `translate3d(${dx}px, ${dy}px, 0) rotate(${startTilt}) scale(0.94)`;
     cardEl.getBoundingClientRect();
 
-    requestAnimationFrame(() => {
-        if (cardEl.dataset.dealToken !== animationToken) return;
+    if (!oldRect && cardEl.animate) {
+        const turnTilt = dx > 0 ? '18deg' : '-18deg';
+        const animation = cardEl.animate([
+            {
+                transform: `translate3d(${dx}px, ${dy}px, 0) rotate(90deg) scale(0.94)`,
+                filter: 'drop-shadow(0 16px 16px rgba(0, 0, 0, 0.34))',
+                offset: 0
+            },
+            {
+                transform: `translate3d(${dx * 0.52}px, ${dy * 0.52}px, 0) rotate(${turnTilt}) scale(1.02)`,
+                filter: 'drop-shadow(0 24px 24px rgba(0, 0, 0, 0.32))',
+                offset: 0.62
+            },
+            {
+                transform: settledTransform,
+                filter: 'drop-shadow(0 14px 14px rgba(0, 0, 0, 0.26))'
+            }
+        ], {
+            duration,
+            easing: DEAL_EASING,
+            fill: 'forwards'
+        });
+        cardEl.dealAnimation = animation;
+    } else {
         requestAnimationFrame(() => {
             if (cardEl.dataset.dealToken !== animationToken) return;
-            cardEl.style.transition = `transform ${duration}ms cubic-bezier(0.18, 0.82, 0.22, 1), opacity 120ms ease, filter 160ms ease`;
-            cardEl.style.transform = settledTransform;
+            requestAnimationFrame(() => {
+                if (cardEl.dataset.dealToken !== animationToken) return;
+                cardEl.style.transition = `transform ${duration}ms ${DEAL_EASING}, opacity 120ms ease, filter 160ms ease`;
+                cardEl.style.transform = settledTransform;
+            });
         });
-    });
+    }
+
+    if (!oldRect && card.faceUp && card.justDealt) {
+        cardEl.flipTimer = window.setTimeout(() => {
+            if (cardEl.dataset.dealToken !== animationToken) return;
+            flipCardFaceUp(cardEl);
+            cardEl.flipTimer = null;
+        }, Math.round(duration * 0.74));
+    }
 
     cardEl.dealTimer = window.setTimeout(() => {
         if (cardEl.dataset.dealToken !== animationToken) return;
+        if (cardEl.dealAnimation) {
+            cardEl.dealAnimation.cancel();
+            cardEl.dealAnimation = null;
+        }
         cardEl.classList.add('is-dealt');
         cardEl.style.transition = '';
         cardEl.style.opacity = '';
         cardEl.style.transform = settledTransform;
-        if (card.faceUp && card.justDealt) {
-            flipCardFaceUp(cardEl, 60);
+        if (card.faceUp && card.justDealt && cardEl.classList.contains('is-face-down')) {
+            flipCardFaceUp(cardEl, 20);
         }
         cardEl.dealTimer = null;
     }, duration + 40);
@@ -634,7 +689,10 @@ async function playerHit() {
     const current = playerHands[currentHandIndex];
     if (current.isStand || current.isBust) return;
 
-    await dealCardToHand(current.cards, true);
+    await dealCardToHand(current.cards, true, {
+        delayMs: ACTION_DEAL_DELAY,
+        durationMs: ACTION_DEAL_DURATION
+    });
     const currentValue = handValue(current.cards);
 
     if (currentValue > 21) {
@@ -684,7 +742,10 @@ async function playerDouble() {
     userState.balance -= current.bet;
     current.bet *= 2;
     updateUI();
-    await dealCardToHand(current.cards, true);
+    await dealCardToHand(current.cards, true, {
+        delayMs: ACTION_DEAL_DELAY,
+        durationMs: ACTION_DEAL_DURATION
+    });
 
     const currentValue = handValue(current.cards);
     current.isStand = true;
@@ -730,8 +791,14 @@ async function playerSplit() {
     await delay(260);
     splitCard.justSplit = false;
 
-    await dealCardToHand(current.cards, true);
-    await dealCardToHand(nextHand.cards, true);
+    await dealCardToHand(current.cards, true, {
+        delayMs: ACTION_DEAL_DELAY,
+        durationMs: ACTION_DEAL_DURATION
+    });
+    await dealCardToHand(nextHand.cards, true, {
+        delayMs: ACTION_DEAL_DELAY,
+        durationMs: ACTION_DEAL_DURATION
+    });
 
     updateMessage(`Playing hand ${currentHandIndex + 1}.`);
     renderHands();
@@ -751,12 +818,15 @@ function revealDealerHoleCard() {
 async function finalizeDealer() {
     setButtons('idle');
     revealDealerHoleCard();
-    await delay(260);
+    await delay(DEALER_REVEAL_DELAY);
 
     const liveHands = playerHands.filter(hand => !hand.isBust);
     while (liveHands.length > 0 && handValue(dealerHand) < 17) {
-        await dealCardToHand(dealerHand, true);
-        await delay(60);
+        await dealCardToHand(dealerHand, true, {
+            delayMs: ACTION_DEAL_DELAY,
+            durationMs: ACTION_DEAL_DURATION
+        });
+        await delay(180);
     }
 
     let totalPayout = 0;

@@ -116,8 +116,8 @@ function getBoardMetrics() {
     const height = boardEl?.clientHeight || 445;
     const rows = plinkoState.rows;
     const horizontalStep = width / (rows + 2);
-    const verticalStep = height / (rows + 1.35);
-    const top = verticalStep * 0.85;
+    const verticalStep = height / (rows + 0.45);
+    const top = verticalStep * 0.58;
 
     return { width, height, rows, horizontalStep, verticalStep, top };
 }
@@ -149,10 +149,7 @@ function renderBoard() {
     bucketsEl.style.setProperty('--bucket-count', String(payouts.length));
     boardPanel.dataset.risk = plinkoState.difficulty;
 
-    boardEl.style.setProperty(
-        '--peg-size',
-        `${Math.max(6, Math.min(9, 11 - plinkoState.rows * 0.18))}px`
-    );
+    boardEl.style.setProperty('--peg-size', `${Math.max(5.2, Math.min(8.2, metrics.width / 58))}px`);
 
     for (let row = 0; row < plinkoState.rows; row++) {
         const pegsInRow = row + 3;
@@ -161,6 +158,8 @@ function renderBoard() {
             const point = getPegPoint(row, index, metrics);
             const peg = document.createElement('span');
             peg.className = 'plinko-peg';
+            peg.dataset.row = String(row);
+            peg.dataset.index = String(index);
             peg.style.left = `${point.x}px`;
             peg.style.top = `${point.y}px`;
             boardEl.appendChild(peg);
@@ -176,24 +175,17 @@ function renderBoard() {
     });
 }
 
-function showWinResult(multiplier, profit) {
-    if (!boardPanel || profit <= 0) return;
+function showPegHit(row, index) {
+    const peg = boardEl?.querySelector(`.plinko-peg[data-row="${row}"][data-index="${index}"]`);
+    if (!peg) return;
 
-    const popup = document.createElement('div');
-    popup.className = 'win-result-popover';
-    popup.setAttribute('role', 'status');
-    popup.innerHTML = `
-        <strong>${multiplier.toFixed(2)}x</strong>
-        <span class="win-result-line"></span>
-        <span class="win-result-amount">${formatCurrency(profit)}</span>
-    `;
-
-    boardPanel.appendChild(popup);
+    peg.classList.remove('is-hit');
+    void peg.offsetWidth;
+    peg.classList.add('is-hit');
 
     window.setTimeout(() => {
-        popup.classList.add('is-hiding');
-        window.setTimeout(() => popup.remove(), 220);
-    }, 2200);
+        peg.classList.remove('is-hit');
+    }, 420);
 }
 
 function animateBall(pathResult) {
@@ -222,7 +214,9 @@ function animateBall(pathResult) {
 
             points.push({
                 x: point.x + wobble,
-                y: point.y
+                y: point.y,
+                pegRow: row,
+                pegIndex: centerIndex
             });
         });
 
@@ -248,6 +242,10 @@ function animateBall(pathResult) {
 
             ball.style.left = `${point.x}px`;
             ball.style.top = `${point.y}px`;
+
+            if (Number.isInteger(point.pegRow) && Number.isInteger(point.pegIndex)) {
+                window.setTimeout(() => showPegHit(point.pegRow, point.pegIndex), Math.max(20, stepDuration - 24));
+            }
 
             current += 1;
             window.setTimeout(moveNext, current === 1 ? 30 : stepDuration);
@@ -323,7 +321,6 @@ async function dropBall() {
 
         if (profitText) profitText.textContent = formatCurrency(net);
 
-        showWinResult(multiplier, net);
         updatePanel();
 
         queueWalletSync(net, bet).finally(() => {

@@ -28,3 +28,4 @@ if (!function_exists('elite_footer_url')) {
     </div>
     <div class="site-footer-bottom">Copyright &copy; 2026 Elite. All Rights Reserved.</div>
 </footer>
+</div>

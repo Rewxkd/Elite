@@ -153,43 +153,62 @@ function mask_username($username) {
 
     <?php include 'includes/header_sidebar.php'; ?>
 
-    <main class="container">
+    <main class="container <?php echo $is_logged_in ? '' : 'rank-obsidian'; ?>">
         <?php if ($is_logged_in): ?>
             <div class="container-box">
                 <h1>Welcome <span style="color: #90beff;"><?php echo htmlspecialchars($username, ENT_QUOTES, 'UTF-8'); ?></span>!</h1>
             </div>
 
-            <div class="container-progress">
-                <div class="progress-top"><p>Your Progress</p></div>
-                <div class="progress-bottom">
-                    <div class="progress-meta">
-                        <p id="progressText"><span id="progressCurrentAmount">$<?php echo number_format($total_wagered, 2); ?></span> <span id="progressTargetText">/ $10,000.00 Wagered</span></p>
-                        <span id="progressPercent">0%</span>
-                    </div>
-                    <div class="progress-bar-container">
-                        <div class="progress-bar" id="progressBar" style="width: 0%"></div>
-                    </div>
-                    <div class="progress-ranks">
-                        <div class="progress-rank current" id="currentRankWrap">
-                            <span class="progress-rank-icon"></span>
-                            <span id="currentRank">Unranked</span>
+            <div class="home-hero-row">
+                <div class="container-progress">
+                    <div class="progress-top"><p>Your Progress</p></div>
+                    <div class="progress-bottom">
+                        <div class="progress-meta">
+                            <p id="progressText"><span id="progressCurrentAmount">$<?php echo number_format($total_wagered, 2); ?></span> <span id="progressTargetText">/ $10,000.00 Wagered</span></p>
+                            <span id="progressPercent">0%</span>
                         </div>
-                        <div class="progress-rank next" id="nextRankWrap">
-                            <span class="progress-rank-icon"></span>
-                            <span id="nextRank">Bronze</span>
+                        <div class="progress-bar-container">
+                            <div class="progress-bar" id="progressBar" style="width: 0%"></div>
+                        </div>
+                        <div class="progress-ranks">
+                            <div class="progress-rank current" id="currentRankWrap">
+                                <span class="progress-rank-icon"></span>
+                                <span id="currentRank">Unranked</span>
+                            </div>
+                            <div class="progress-rank next" id="nextRankWrap">
+                                <span class="progress-rank-icon"></span>
+                                <span id="nextRank">Bronze</span>
+                            </div>
                         </div>
                     </div>
                 </div>
+                <a class="home-games-cta" href="pages/games.php" aria-label="Browse all games">
+                    <div class="home-games-collage" aria-hidden="true"></div>
+                    <div class="home-games-cta-bar">
+                        <span class="home-games-icon">&#9670;</span>
+                        <span>Games</span>
+                        <span class="home-games-arrow">&#8594;</span>
+                    </div>
+                </a>
             </div>
         <?php else: ?>
-            <div class="login-prompt">
-                <div class="login-prompt-left">
-                    <h2>Play casino games<br>and track your progress</h2>
-                    <div class="login-prompt-buttons">
-                        <button class="btn-register" id="loginPromptBtn" type="button">Register</button>
-                        <button class="btn-login" id="loginPromptBtnLogin" type="button">Login</button>
+            <div class="home-hero-row">
+                <div class="login-prompt">
+                    <div class="login-prompt-left">
+                        <h2>Play casino games<br>and track your progress</h2>
+                        <div class="login-prompt-buttons">
+                            <button class="btn-register" id="loginPromptBtn" type="button">Register <span aria-hidden="true">&#8594;</span></button>
+                        </div>
                     </div>
                 </div>
+                <a class="home-games-cta" href="pages/games.php" aria-label="Browse all games">
+                    <div class="home-games-collage" aria-hidden="true"></div>
+                    <div class="home-games-cta-bar">
+                        <span class="home-games-icon">&#9670;</span>
+                        <span>Games</span>
+                        <span class="home-games-arrow">&#8594;</span>
+                    </div>
+                </a>
             </div>
         <?php endif; ?>
     </main>
