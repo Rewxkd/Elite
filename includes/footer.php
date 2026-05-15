@@ -24,6 +24,13 @@ if (!function_exists('elite_footer_url')) {
                 <a href="<?php echo elite_footer_url('pages/favorites.php'); ?>">Favourites</a>
                 <a href="<?php echo elite_footer_url('pages/recent.php'); ?>">Recent</a>
             </div>
+            <div>
+                <h2>Trust</h2>
+                <a href="#">Support</a>
+                <a href="#">Fairness</a>
+                <a href="#">Terms</a>
+                <a href="#">Privacy</a>
+            </div>
         </nav>
     </div>
     <div class="site-footer-bottom">Copyright &copy; 2026 Elite. All Rights Reserved.</div>

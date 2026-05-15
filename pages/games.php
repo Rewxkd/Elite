@@ -52,6 +52,18 @@ $games = [
     ['name' => 'Keno', 'tagline' => 'Mark your numbers and watch the board light up.', 'code' => 'KE'],
 ];
 
+$live_games = [];
+$upcoming_games = [];
+
+foreach ($games as $game) {
+    if (!empty($game['is_live'])) {
+        $live_games[] = $game;
+        continue;
+    }
+
+    $upcoming_games[] = $game;
+}
+
 if ($user_id) {
     $is_logged_in = true;
 
@@ -105,15 +117,17 @@ if ($user_id) {
             </div>
         </section>
 
-        <section class="favourites-grid" aria-label="All games">
-            <?php foreach ($games as $game): ?>
+        <section class="games-library-section" aria-labelledby="live-games-heading">
+            <div class="games-library-heading">
+                <h2 id="live-games-heading">Live Games</h2>
+                <span><?php echo count($live_games); ?> available</span>
+            </div>
+            <div class="favourites-grid live-games-grid">
+            <?php foreach ($live_games as $game): ?>
                 <?php
-                    $isLive = !empty($game['is_live']);
                     $href = $is_logged_in ? ($game['href'] ?? '#') : '../index.php';
-                    $tag = $isLive ? 'a' : 'article';
-                    $class = 'favourite-card' . ($isLive ? '' : ' is-placeholder');
                 ?>
-                <<?php echo $tag; ?> <?php echo $isLive ? 'href="' . htmlspecialchars($href, ENT_QUOTES, 'UTF-8') . '"' : ''; ?> class="<?php echo $class; ?>">
+                <a href="<?php echo htmlspecialchars($href, ENT_QUOTES, 'UTF-8'); ?>" class="favourite-card is-live-game">
                     <div class="favourite-card-art <?php echo !empty($game['image']) ? 'has-image' : ''; ?>">
                         <?php if (!empty($game['image'])): ?>
                             <img src="<?php echo htmlspecialchars($game['image'], ENT_QUOTES, 'UTF-8'); ?>" alt="<?php echo htmlspecialchars($game['name'], ENT_QUOTES, 'UTF-8'); ?>">
@@ -123,16 +137,42 @@ if ($user_id) {
                     </div>
                     <div class="favourite-card-body">
                         <div>
-                            <?php if (!$isLive): ?>
-                                <div class="favourite-card-label">Coming soon</div>
-                            <?php endif; ?>
                             <h2><?php echo htmlspecialchars($game['name'], ENT_QUOTES, 'UTF-8'); ?></h2>
                             <p><?php echo htmlspecialchars($game['tagline'], ENT_QUOTES, 'UTF-8'); ?></p>
                         </div>
-                        <span class="favourite-card-action <?php echo $isLive ? '' : 'muted'; ?>"><?php echo $isLive ? 'Play' : 'Coming soon'; ?></span>
+                        <span class="favourite-card-action">Play</span>
                     </div>
-                </<?php echo $tag; ?>>
+                </a>
             <?php endforeach; ?>
+            </div>
+        </section>
+
+        <section class="games-library-section upcoming-games-section" aria-labelledby="upcoming-games-heading">
+            <div class="games-library-heading">
+                <h2 id="upcoming-games-heading">Coming Soon</h2>
+                <span><?php echo count($upcoming_games); ?> upcoming</span>
+            </div>
+            <div class="favourites-grid upcoming-games-grid">
+            <?php foreach ($upcoming_games as $game): ?>
+                <article class="favourite-card is-placeholder is-upcoming-game">
+                    <div class="favourite-card-art <?php echo !empty($game['image']) ? 'has-image' : ''; ?>">
+                        <?php if (!empty($game['image'])): ?>
+                            <img src="<?php echo htmlspecialchars($game['image'], ENT_QUOTES, 'UTF-8'); ?>" alt="<?php echo htmlspecialchars($game['name'], ENT_QUOTES, 'UTF-8'); ?>">
+                        <?php else: ?>
+                            <span><?php echo htmlspecialchars($game['code'], ENT_QUOTES, 'UTF-8'); ?></span>
+                        <?php endif; ?>
+                    </div>
+                    <div class="favourite-card-body">
+                        <div>
+                            <div class="favourite-card-label">Coming soon</div>
+                            <h2><?php echo htmlspecialchars($game['name'], ENT_QUOTES, 'UTF-8'); ?></h2>
+                            <p><?php echo htmlspecialchars($game['tagline'], ENT_QUOTES, 'UTF-8'); ?></p>
+                        </div>
+                        <span class="favourite-card-action muted">Coming soon</span>
+                    </div>
+                </article>
+            <?php endforeach; ?>
+            </div>
         </section>
 
         <?php include '../includes/live_stats.php'; ?>

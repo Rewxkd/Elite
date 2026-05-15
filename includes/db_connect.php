@@ -27,4 +27,15 @@ $conn->query("
         INDEX idx_latest_bets_user_id (user_id)
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
 ");
+
+$conn->query("
+    CREATE TABLE IF NOT EXISTS vip_claims (
+        claim_id INT AUTO_INCREMENT PRIMARY KEY,
+        user_id INT NOT NULL,
+        claim_type VARCHAR(32) NOT NULL,
+        amount DECIMAL(10,2) NOT NULL DEFAULT 0.00,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        INDEX idx_vip_claims_user_type_created (user_id, claim_type, created_at)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
+");
 ?>

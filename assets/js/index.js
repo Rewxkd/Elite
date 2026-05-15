@@ -13,20 +13,21 @@ const nextBtn = document.getElementById('nextBtn');
 const gamesRow = document.getElementById('gamesRow');
 const wagerRanks = [
     { name: 'Unranked', threshold: 0 },
-    { name: 'Bronze', threshold: 10000 },
-    { name: 'Silver', threshold: 50000 },
-    { name: 'Gold', threshold: 100000 },
+    { name: 'Bronze I', threshold: 10000 },
+    { name: 'Bronze II', threshold: 25000 },
+    { name: 'Bronze III', threshold: 40000 },
+    { name: 'Silver I', threshold: 50000 },
+    { name: 'Silver II', threshold: 70000 },
+    { name: 'Silver III', threshold: 90000 },
+    { name: 'Gold I', threshold: 100000 },
+    { name: 'Gold II', threshold: 150000 },
+    { name: 'Gold III', threshold: 200000 },
     { name: 'Platinum I', threshold: 250000 },
     { name: 'Platinum II', threshold: 500000 },
     { name: 'Platinum III', threshold: 1000000 },
-    { name: 'Platinum IV', threshold: 2500000 },
-    { name: 'Platinum V', threshold: 5000000 },
-    { name: 'Platinum VI', threshold: 10000000 },
     { name: 'Diamond I', threshold: 25000000 },
     { name: 'Diamond II', threshold: 50000000 },
     { name: 'Diamond III', threshold: 100000000 },
-    { name: 'Diamond IV', threshold: 250000000 },
-    { name: 'Diamond V', threshold: 500000000 },
     { name: 'Obsidian', threshold: 1000000000 }
 ];
 
