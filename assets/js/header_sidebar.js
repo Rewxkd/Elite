@@ -34,6 +34,74 @@ const accountPanelCopy = {
 let accountSummary = null;
 let accountFetchPromise = null;
 let hourlyCountdownTimer = null;
+const modalTransitionMs = 180;
+
+function syncModalBodyState() {
+    const hasOpenModal = [loginModal, accountModal].some(modal => modal?.classList.contains('is-open'));
+    document.body.classList.toggle('modal-open', hasOpenModal);
+}
+
+function showModal(modal) {
+    if (!modal) return;
+
+    if (modal.eliteCloseTimer) {
+        window.clearTimeout(modal.eliteCloseTimer);
+        modal.eliteCloseTimer = null;
+    }
+
+    modal.style.display = 'flex';
+    modal.setAttribute('aria-hidden', 'false');
+    document.body.classList.add('modal-open');
+
+    window.requestAnimationFrame(() => {
+        modal.classList.add('is-open');
+        syncModalBodyState();
+    });
+}
+
+function hideModal(modal) {
+    if (!modal) return;
+
+    if (modal.eliteCloseTimer) {
+        window.clearTimeout(modal.eliteCloseTimer);
+    }
+
+    modal.classList.remove('is-open');
+    modal.setAttribute('aria-hidden', 'true');
+
+    const finishClose = () => {
+        if (!modal.classList.contains('is-open')) {
+            modal.style.display = 'none';
+        }
+        modal.eliteCloseTimer = null;
+        syncModalBodyState();
+    };
+
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        finishClose();
+        return;
+    }
+
+    modal.eliteCloseTimer = window.setTimeout(finishClose, modalTransitionMs);
+}
+
+function setLoginModalTab(tabName = 'login') {
+    const nextTab = ['login', 'register'].includes(tabName) ? tabName : 'login';
+    const tab = loginModal?.querySelector(`.login-tab[data-tab="${nextTab}"]`);
+    if (tab) tab.click();
+}
+
+function openLoginModal(tabName = 'login') {
+    setLoginModalTab(tabName);
+    showModal(loginModal);
+}
+
+function closeLoginModal() {
+    hideModal(loginModal);
+}
+
+window.openEliteAuthModal = openLoginModal;
+window.closeEliteAuthModal = closeLoginModal;
 
 function syncSidebarState(isOpen) {
     if (sidebar) sidebar.setAttribute('aria-hidden', (!isOpen).toString());
@@ -132,16 +200,12 @@ function openAccountModal(panelName = 'profile') {
 
     closeProfileMenu();
     setAccountPanel(panelName);
-    accountModal.style.display = 'flex';
-    accountModal.setAttribute('aria-hidden', 'false');
+    showModal(accountModal);
     fetchAccountSummary();
 }
 
 function closeAccountModal() {
-    if (!accountModal) return;
-
-    accountModal.style.display = 'none';
-    accountModal.setAttribute('aria-hidden', 'true');
+    hideModal(accountModal);
 }
 
 async function fetchAccountSummary(force = false) {
@@ -340,30 +404,26 @@ async function claimVipReward(type) {
 
 if (loginBtn) {
     loginBtn.addEventListener('click', () => {
-        const loginTab = document.querySelector('.login-tab[data-tab="login"]');
-        if (loginTab) loginTab.click();
-        if (loginModal) loginModal.style.display = 'flex';
+        openLoginModal('login');
     });
 }
 
 if (registerBtn) {
     registerBtn.addEventListener('click', () => {
-        const registerTab = document.querySelector('.login-tab[data-tab="register"]');
-        if (registerTab) registerTab.click();
-        if (loginModal) loginModal.style.display = 'flex';
+        openLoginModal('register');
     });
 }
 
 if (closeLogin) {
     closeLogin.addEventListener('click', () => {
-        if (loginModal) loginModal.style.display = 'none';
+        closeLoginModal();
     });
 }
 
 if (loginModal) {
     loginModal.addEventListener('click', (e) => {
         if (e.target === loginModal) {
-            loginModal.style.display = 'none';
+            closeLoginModal();
         }
     });
 }

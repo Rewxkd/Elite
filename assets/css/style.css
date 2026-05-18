@@ -212,6 +212,7 @@ body.open {
 .logo {
     display: flex;
     align-items: center;
+    grid-column: 1;
     justify-self: start;
     min-width: 0;
     gap: 0.75rem;
@@ -246,6 +247,7 @@ body.open {
     display: flex;
     flex-direction: column;
     align-items: center;
+    grid-column: 2;
     justify-self: center;
     gap: 0.25rem;
     background: rgba(44, 159, 253, 0.1);
@@ -273,6 +275,7 @@ body.open {
 .header-buttons {
     display: flex;
     align-items: center;
+    grid-column: 3;
     justify-self: end;
     gap: 0.5rem;
     margin-left: 0;
@@ -1189,6 +1192,14 @@ body.open .menu-arrow {
     .container::after {
         animation: none;
     }
+
+    .login-modal,
+    .login-container,
+    .login-form.active,
+    .account-panel.active {
+        animation: none;
+        transition: none;
+    }
 }
 
 .progress-meta,
@@ -1322,51 +1333,89 @@ body.open .menu-arrow {
 }
 
 .login-prompt-buttons {
-    display: flex;
-    gap: 1rem;
+    display: inline-flex;
     align-items: center;
+    gap: 0.65rem;
+    margin-top: -0.25rem;
+    padding: 0.35rem;
+    border: 1px solid rgba(128, 151, 210, 0.16);
+    border-radius: 10px;
+    background: rgba(12, 22, 52, 0.28);
 }
 
 .btn-register {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    gap: 0.55rem;
-    min-height: 50px;
-    padding: 0 1.45rem;
-    background: linear-gradient(180deg, #45c95a 0%, #36b54a 100%);
-    border: 1px solid rgba(115, 226, 132, 0.42);
+    min-height: 48px;
+    min-width: 124px;
+    padding: 0 1.35rem;
+    background: linear-gradient(180deg, #2aa4ff 0%, var(--elite-blue) 100%);
+    border: 1px solid rgba(116, 190, 255, 0.46);
     border-radius: 8px;
-    color: #fff;
+    color: #ffffff;
     font-size: 0.95rem;
     font-weight: 900;
     cursor: pointer;
-    box-shadow: 0 14px 30px rgba(54, 181, 74, 0.25);
-    transition: transform 0.18s ease, box-shadow 0.18s ease, filter 0.18s ease;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.22);
+    transition: transform 0.18s ease, filter 0.18s ease, border-color 0.18s ease;
 }
 
 .btn-register:hover {
-    transform: translateY(-2px);
-    filter: brightness(1.05);
-    box-shadow: 0 18px 34px rgba(54, 181, 74, 0.34);
+    transform: translateY(-1px);
+    filter: brightness(1.06);
+    border-color: rgba(151, 207, 255, 0.66);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+
+.btn-register:active {
+    transform: translateY(0);
+    filter: brightness(0.98);
+}
+
+.btn-register:focus-visible {
+    outline: 2px solid rgba(88, 180, 255, 0.7);
+    outline-offset: 3px;
+}
+
+.login-prompt-separator {
+    color: #8fa5cf;
+    font-size: 0.82rem;
+    font-weight: 800;
+    letter-spacing: 0.01em;
 }
 
 .btn-login {
-    padding: 0.75rem 1.5rem;
-    background: rgba(99, 102, 241, 0.15);
-    border: 1px solid rgba(99, 102, 241, 0.3);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 48px;
+    min-width: 104px;
+    padding: 0 1.25rem;
+    background: rgba(39, 53, 101, 0.72);
+    border: 1px solid rgba(128, 151, 210, 0.2);
     border-radius: 8px;
-    color: #90beff;
+    color: #c2dbff;
     font-size: 0.95rem;
-    font-weight: 600;
+    font-weight: 850;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: transform 0.18s ease, background 0.18s ease, border-color 0.18s ease, color 0.18s ease;
 }
 
 .btn-login:hover {
-    background: rgba(99, 102, 241, 0.25);
-    border-color: rgba(99, 102, 241, 0.6);
-    transform: translateY(-2px);
+    background: rgba(50, 68, 125, 0.9);
+    border-color: rgba(109, 144, 220, 0.35);
+    color: #ffffff;
+    transform: translateY(-1px);
+}
+
+.btn-login:active {
+    transform: translateY(0);
+}
+
+.btn-login:focus-visible {
+    outline: 2px solid rgba(88, 180, 255, 0.55);
+    outline-offset: 3px;
 }
 
 .home-games-cta {
@@ -1447,16 +1496,27 @@ body.open .menu-arrow {
 
 .login-modal {
     position: fixed;
-    top: 0;
-    left: 0;
+    inset: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.5);
-    backdrop-filter: blur(8px);
+    /* Full-screen backdrop blur repaints the animated page underneath, so keep this composited. */
+    background: rgba(3, 7, 20, 0.72);
     display: flex;
     justify-content: center;
     align-items: center;
     z-index: 5000;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: opacity 180ms ease, visibility 0s linear 180ms;
+    contain: layout paint style;
+}
+
+.login-modal.is-open {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+    transition-delay: 0s;
 }
 
 .login-container {
@@ -1469,6 +1529,25 @@ body.open .menu-arrow {
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
     position: relative;
     z-index: 1;
+    opacity: 0.96;
+    transform: translateY(12px) scale(0.985);
+    transition: transform 180ms ease, opacity 180ms ease;
+    will-change: transform;
+    contain: layout paint;
+}
+
+.login-modal.is-open .login-container {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+}
+
+body.modal-open {
+    overflow: hidden;
+}
+
+body.modal-open .container::before,
+body.modal-open .container::after {
+    animation-play-state: paused;
 }
 
 .login-close {
@@ -1485,7 +1564,7 @@ body.open .menu-arrow {
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: all 0.3s ease;
+    transition: color 0.2s ease, transform 0.2s ease;
 }
 
 .login-close:hover {
@@ -1510,7 +1589,7 @@ body.open .menu-arrow {
     font-size: 16px;
     font-weight: 500;
     border-bottom: 3px solid transparent;
-    transition: all 0.3s ease;
+    transition: color 0.2s ease, border-color 0.2s ease;
 }
 
 .login-tab:hover {
@@ -1559,7 +1638,7 @@ body.open .menu-arrow {
     border-radius: 8px;
     color: #fff;
     font-size: 16px;
-    transition: all 0.3s ease;
+    transition: border-color 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
 }
 
 .form-group input:focus {
@@ -1583,7 +1662,7 @@ body.open .menu-arrow {
     font-size: 16px;
     font-weight: 600;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
 }
 
 .submit-btn:hover {
@@ -2142,7 +2221,7 @@ body.open .menu-arrow {
 .auth-register {
     background: linear-gradient(180deg, #1d98ee 0%, #1786df 100%);
     border-color: rgba(98, 174, 243, 0.36);
-    box-shadow: 0 12px 26px rgba(23, 134, 223, 0.24);
+    box-shadow: none;
 }
 
 .auth-login {
@@ -3384,9 +3463,22 @@ body.open .menu-arrow {
     }
 
     .login-prompt-buttons {
-        align-items: stretch;
-        flex-direction: column;
-        width: min(100%, 260px);
+        align-items: center;
+        flex-direction: row;
+        width: min(100%, 340px);
+        gap: 0.45rem;
+    }
+
+    .btn-register,
+    .btn-login {
+        flex: 1 1 0;
+        min-width: 0;
+        padding-left: 0.85rem;
+        padding-right: 0.85rem;
+    }
+
+    .login-prompt-separator {
+        flex: 0 0 auto;
     }
 
     .login-modal {
@@ -3712,6 +3804,7 @@ body {
     background: linear-gradient(180deg, #1d98ee 0%, var(--elite-blue) 100%) !important;
     border-color: rgba(98, 174, 243, 0.36);
     color: #ffffff;
+    box-shadow: none;
 }
 
 .auth-login,
@@ -3730,8 +3823,10 @@ body {
 }
 
 .btn-register {
-    background: linear-gradient(180deg, #45c95a 0%, var(--elite-green) 100%);
-    box-shadow: 0 10px 22px rgba(54, 181, 74, 0.22);
+    background: linear-gradient(180deg, #2aa4ff 0%, var(--elite-blue) 100%);
+    border-color: rgba(116, 190, 255, 0.46);
+    color: #ffffff;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.22);
 }
 
 .btn-login,

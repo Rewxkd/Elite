@@ -4,8 +4,9 @@ const indexConfig = {
     loginUrl: indexScript?.dataset.loginUrl || 'api/login.php'
 };
 
-const loginTabs = document.querySelectorAll('.login-tab');
-const loginForms = document.querySelectorAll('.login-form');
+const authModalRoot = document.getElementById('loginModal');
+const loginTabs = authModalRoot ? authModalRoot.querySelectorAll('.login-tab[data-tab]') : [];
+const loginForms = authModalRoot ? authModalRoot.querySelectorAll('.login-form') : [];
 const loginForm = document.getElementById('loginForm');
 const registerForm = document.getElementById('registerForm');
 const prevBtn = document.getElementById('prevBtn');
@@ -44,11 +45,29 @@ loginTabs.forEach(tab => {
 });
 
 function openAuthModal(tabName = 'login') {
-    const tab = document.querySelector(`.login-tab[data-tab="${tabName}"]`);
-    const modal = document.getElementById('loginModal');
+    const nextTab = ['login', 'register'].includes(tabName) ? tabName : 'login';
+    if (typeof window.openEliteAuthModal === 'function') {
+        window.openEliteAuthModal(nextTab);
+        return;
+    }
+
+    const tab = authModalRoot?.querySelector(`.login-tab[data-tab="${nextTab}"]`);
     if (tab) tab.click();
-    if (modal) modal.style.display = 'flex';
+    if (authModalRoot) {
+        authModalRoot.style.display = 'flex';
+        authModalRoot.setAttribute('aria-hidden', 'false');
+        authModalRoot.classList.add('is-open');
+        document.body.classList.add('modal-open');
+    }
 }
+
+document.addEventListener('click', (e) => {
+    const authTrigger = e.target.closest('[data-auth-tab]');
+    if (!authTrigger) return;
+
+    e.preventDefault();
+    openAuthModal(authTrigger.dataset.authTab || 'login');
+});
 
 function reloadWithoutLoginPrompt() {
     const url = new URL(window.location.href);
@@ -152,11 +171,6 @@ document.addEventListener('DOMContentLoaded', function () {
         openAuthModal('login');
     }
 
-    const promptRegisterButton = document.getElementById('loginPromptBtn');
-
-    if (promptRegisterButton) {
-        promptRegisterButton.addEventListener('click', () => openAuthModal('register'));
-    }
 });
 
 document.querySelectorAll('[data-requires-login="true"]').forEach(link => {

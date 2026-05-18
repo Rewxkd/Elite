@@ -111,7 +111,7 @@ function mask_username($username) {
     <link rel="stylesheet" href="assets/css/live_stats.css">
 </head>
 <body>
-    <div class="login-modal" id="loginModal" style="display: none;">
+    <div class="login-modal" id="loginModal" style="display: none;" aria-hidden="true">
         <div class="login-container">
             <button class="login-close" id="closeLogin" aria-label="Close login">&times;</button>
             <div class="login-tabs">
@@ -197,7 +197,9 @@ function mask_username($username) {
                     <div class="login-prompt-left">
                         <h2>Play casino games<br>and track your progress</h2>
                         <div class="login-prompt-buttons">
-                            <button class="btn-register" id="loginPromptBtn" type="button">Register <span aria-hidden="true">&#8594;</span></button>
+                            <button class="btn-register" id="loginPromptBtn" type="button" data-auth-tab="register">Register</button>
+                            <span class="login-prompt-separator">or</span>
+                            <button class="btn-login" id="loginPromptLoginBtn" type="button" data-auth-tab="login">Login</button>
                         </div>
                     </div>
                 </div>
@@ -321,6 +323,6 @@ function mask_username($username) {
 
     <?php include 'includes/footer.php'; ?>
 
-    <script src="assets/js/index.js" data-total-wagered="<?php echo htmlspecialchars((string)$total_wagered, ENT_QUOTES, 'UTF-8'); ?>" data-login-url="api/login.php"></script>
+    <script src="assets/js/index.js?v=<?php echo filemtime(__DIR__ . '/assets/js/index.js'); ?>" data-total-wagered="<?php echo htmlspecialchars((string)$total_wagered, ENT_QUOTES, 'UTF-8'); ?>" data-login-url="api/login.php"></script>
 </body>
 </html>
