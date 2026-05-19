@@ -1,7 +1,8 @@
 const headerScript = document.currentScript;
 const headerConfig = {
     loginUrl: headerScript?.dataset.loginUrl || 'api/login.php',
-    profileUrl: headerScript?.dataset.profileUrl || 'api/profile.php'
+    profileUrl: headerScript?.dataset.profileUrl || 'api/profile.php',
+    notificationsUrl: headerScript?.dataset.notificationsUrl || 'api/notifications.php'
 };
 
 const loginModal = document.getElementById('loginModal');
@@ -13,6 +14,13 @@ const loginForms = loginModal ? loginModal.querySelectorAll('.login-form') : [];
 const loginForm = document.getElementById('loginForm');
 const registerForm = document.getElementById('registerForm');
 const logoutBtn = document.getElementById('logoutBtn');
+const notifBtn = document.getElementById('notif');
+const notificationBadge = document.getElementById('badge');
+const notificationsWrap = document.getElementById('notificationsWrap');
+const notificationsPanel = document.getElementById('notificationsPanel');
+const notificationsList = document.getElementById('notificationsList');
+const notificationsCountText = document.getElementById('notificationsCountText');
+const markNotificationsReadBtn = document.getElementById('markNotificationsRead');
 const profileBtn = document.getElementById('prof');
 const profileMenuWrap = document.getElementById('profileMenuWrap');
 const profileMenu = document.getElementById('profileMenu');
@@ -37,6 +45,7 @@ const accountPanelCopy = {
 };
 let accountSummary = null;
 let accountFetchPromise = null;
+let notificationsFetchPromise = null;
 let hourlyCountdownTimer = null;
 const modalTransitionMs = 180;
 
@@ -101,6 +110,9 @@ function setLoginModalTab(tabName = 'login') {
         const isActive = form.id === `${nextTab}Form`;
         form.classList.toggle('active', isActive);
     });
+
+    setStatusMessage(document.getElementById('loginMessage'));
+    setStatusMessage(document.getElementById('registerMessage'));
 }
 
 function openLoginModal(tabName = 'login') {
@@ -136,6 +148,21 @@ function closeProfileMenu() {
     }
 }
 
+function closeNotificationsPanel() {
+    if (notificationsPanel && notifBtn) {
+        notificationsPanel.setAttribute('aria-hidden', 'true');
+        notifBtn.setAttribute('aria-expanded', 'false');
+    }
+}
+
+function setNotificationBadge(count) {
+    if (!notificationBadge) return;
+
+    const nextCount = Math.max(0, Number(count) || 0);
+    notificationBadge.textContent = nextCount > 99 ? '99+' : String(nextCount);
+    notificationBadge.classList.toggle('is-empty', nextCount === 0);
+}
+
 function formatAccountCurrency(amount) {
     return `$${Number(amount || 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 }
@@ -166,6 +193,163 @@ function escapeHtml(value) {
     const div = document.createElement('div');
     div.textContent = value ?? '';
     return div.innerHTML;
+}
+
+function setStatusMessage(messageEl, message = '', state = 'neutral') {
+    if (!messageEl) return;
+
+    const nextMessage = String(message || '').trim();
+    messageEl.textContent = nextMessage;
+    messageEl.classList.remove('is-visible', 'is-success', 'is-error', 'is-neutral');
+
+    if (!nextMessage) return;
+
+    messageEl.classList.add('is-visible', `is-${state}`);
+}
+
+function getNotificationMark(type) {
+    const normalized = String(type || '').toLowerCase();
+    if (normalized.includes('rakeback')) return '%';
+    if (normalized.includes('welcome')) return '+';
+    if (normalized.includes('vip')) return '$';
+    return '!';
+}
+
+function getNotificationActionLabel(actionKey) {
+    if (actionKey === 'vip' || actionKey === 'rakeback') return 'Open VIP';
+    if (actionKey === 'wallet') return 'Wallet';
+    return '';
+}
+
+function renderNotifications(data) {
+    if (!notificationsList) return;
+
+    const notifications = Array.isArray(data?.notifications) ? data.notifications : [];
+    const unreadCount = Number(data?.unread_count || 0);
+
+    setNotificationBadge(unreadCount);
+
+    if (notificationsCountText) {
+        notificationsCountText.textContent = unreadCount > 0 ? `${unreadCount} unread` : 'All caught up';
+    }
+
+    if (markNotificationsReadBtn) {
+        markNotificationsReadBtn.disabled = unreadCount === 0;
+    }
+
+    if (notifications.length === 0) {
+        notificationsList.innerHTML = '<div class="notifications-empty">No notifications yet.</div>';
+        return;
+    }
+
+    notificationsList.innerHTML = notifications.map(notification => {
+        const id = Number(notification.notification_id || 0);
+        const actionKey = String(notification.action_key || '');
+        const actionLabel = getNotificationActionLabel(actionKey);
+        const amount = notification.amount !== null && notification.amount !== undefined
+            ? `<span class="notification-amount">${formatAccountCurrency(notification.amount)}</span>`
+            : '';
+        const actionButton = actionLabel
+            ? `<button class="notification-action" type="button" data-notification-action="${escapeHtml(actionKey)}">${escapeHtml(actionLabel)}</button>`
+            : '';
+
+        return `
+            <div class="notification-item${notification.is_read ? '' : ' is-unread'}" data-notification-id="${id}" role="button" tabindex="0">
+                <span class="notification-mark" aria-hidden="true">${escapeHtml(getNotificationMark(notification.type))}</span>
+                <div class="notification-body">
+                    <div class="notification-title-row">
+                        <strong>${escapeHtml(notification.title || 'Notification')}</strong>
+                        ${amount}
+                    </div>
+                    <p>${escapeHtml(notification.message || '')}</p>
+                    <div class="notification-meta">
+                        <span>${escapeHtml(formatAccountDate(notification.created_at))}</span>
+                        ${actionButton}
+                    </div>
+                </div>
+            </div>
+        `;
+    }).join('');
+}
+
+async function fetchNotifications(force = false) {
+    if (!notificationsList) return null;
+    if (notificationsFetchPromise && !force) return notificationsFetchPromise;
+
+    notificationsFetchPromise = fetch(`${headerConfig.notificationsUrl}?t=${Date.now()}`, {
+        credentials: 'same-origin'
+    })
+        .then(response => response.json())
+        .then(data => {
+            if (!data.success) throw new Error(data.message || 'Could not load notifications');
+            renderNotifications(data);
+            return data;
+        })
+        .catch(error => {
+            notificationsList.innerHTML = `<div class="notifications-empty">${escapeHtml(error.message || 'Could not load notifications.')}</div>`;
+            return null;
+        })
+        .finally(() => {
+            notificationsFetchPromise = null;
+        });
+
+    return notificationsFetchPromise;
+}
+
+async function postNotificationAction(action, values = {}) {
+    if (!notificationsList) return null;
+
+    const formData = new FormData();
+    formData.append('action', action);
+
+    Object.entries(values).forEach(([key, value]) => {
+        formData.append(key, value);
+    });
+
+    try {
+        const response = await fetch(headerConfig.notificationsUrl, {
+            method: 'POST',
+            body: formData,
+            credentials: 'same-origin'
+        });
+        const data = await response.json();
+        if (data.success) renderNotifications(data);
+        return data;
+    } catch (error) {
+        return null;
+    }
+}
+
+function openNotificationsPanel() {
+    if (!notificationsPanel || !notifBtn) return;
+
+    closeProfileMenu();
+    notificationsPanel.setAttribute('aria-hidden', 'false');
+    notifBtn.setAttribute('aria-expanded', 'true');
+    fetchNotifications(true);
+}
+
+function toggleNotificationsPanel() {
+    if (!notificationsPanel) return;
+
+    const isOpen = notificationsPanel.getAttribute('aria-hidden') === 'false';
+
+    if (isOpen) {
+        closeNotificationsPanel();
+    } else {
+        openNotificationsPanel();
+    }
+}
+
+function openNotificationAction(actionKey) {
+    if (actionKey === 'vip' || actionKey === 'rakeback') {
+        openAccountModal('vip');
+        return;
+    }
+
+    if (actionKey === 'wallet') {
+        openAccountModal('profile');
+    }
 }
 
 function getAccountField(name) {
@@ -211,6 +395,7 @@ function openAccountModal(panelName = 'profile') {
     if (!accountModal) return;
 
     closeProfileMenu();
+    closeNotificationsPanel();
     setAccountPanel(panelName);
     showModal(accountModal);
     fetchAccountSummary();
@@ -240,8 +425,7 @@ async function fetchAccountSummary(force = false) {
         })
         .catch(error => {
             if (accountMessage) {
-                accountMessage.textContent = error.message || 'Could not load profile.';
-                accountMessage.style.color = '#ff8888';
+                setStatusMessage(accountMessage, error.message || 'Could not load profile.', 'error');
             }
             return null;
         })
@@ -381,10 +565,7 @@ async function claimVipReward(type) {
     formData.append('action', action);
 
     if (button) button.disabled = true;
-    if (accountMessage) {
-        accountMessage.textContent = '';
-        accountMessage.style.color = '';
-    }
+    setStatusMessage(accountMessage);
 
     try {
         const response = await fetch(headerConfig.profileUrl, {
@@ -401,15 +582,13 @@ async function claimVipReward(type) {
             await fetchAccountSummary(true);
         }
 
-        if (accountMessage) {
-            accountMessage.textContent = data.message || (data.success ? 'Claimed.' : 'Could not claim.');
-            accountMessage.style.color = data.success ? '#6df06b' : '#ff8888';
+        setStatusMessage(accountMessage, data.message || (data.success ? 'Claimed.' : 'Could not claim.'), data.success ? 'success' : 'error');
+
+        if (data.success) {
+            fetchNotifications(true);
         }
     } catch (error) {
-        if (accountMessage) {
-            accountMessage.textContent = 'Could not claim right now.';
-            accountMessage.style.color = '#ff8888';
-        }
+        setStatusMessage(accountMessage, 'Could not claim right now.', 'error');
         await fetchAccountSummary(true);
     }
 }
@@ -419,9 +598,7 @@ function reloadAfterAuth() {
 }
 
 function setAuthMessage(messageEl, message, isSuccess) {
-    if (!messageEl) return;
-    messageEl.textContent = message;
-    messageEl.style.color = isSuccess ? '#00ff00' : '#ff6666';
+    setStatusMessage(messageEl, message, isSuccess ? 'success' : 'error');
 }
 
 async function submitAuthForm(form, action, messageId) {
@@ -525,9 +702,56 @@ if (logoutBtn) {
     });
 }
 
+if (notifBtn) {
+    notifBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        toggleNotificationsPanel();
+    });
+}
+
+if (notificationsWrap) {
+    notificationsWrap.addEventListener('click', (e) => {
+        e.stopPropagation();
+    });
+}
+
+if (notificationsList) {
+    notificationsList.addEventListener('click', async (e) => {
+        const item = e.target.closest('[data-notification-id]');
+        if (!item) return;
+
+        const actionButton = e.target.closest('[data-notification-action]');
+        const notificationId = item.dataset.notificationId;
+
+        await postNotificationAction('mark_read', { notification_id: notificationId });
+
+        if (actionButton) {
+            closeNotificationsPanel();
+            openNotificationAction(actionButton.dataset.notificationAction || '');
+        }
+    });
+
+    notificationsList.addEventListener('keydown', (e) => {
+        if (e.key !== 'Enter' && e.key !== ' ') return;
+
+        const item = e.target.closest('[data-notification-id]');
+        if (!item) return;
+
+        e.preventDefault();
+        postNotificationAction('mark_read', { notification_id: item.dataset.notificationId });
+    });
+}
+
+if (markNotificationsReadBtn) {
+    markNotificationsReadBtn.addEventListener('click', () => {
+        postNotificationAction('mark_all_read');
+    });
+}
+
 if (profileBtn && profileMenu) {
     profileBtn.addEventListener('click', (e) => {
         e.stopPropagation();
+        closeNotificationsPanel();
         const isOpen = profileMenu.getAttribute('aria-hidden') === 'false';
         profileMenu.setAttribute('aria-hidden', isOpen.toString());
         profileBtn.setAttribute('aria-expanded', (!isOpen).toString());
@@ -569,6 +793,12 @@ document.querySelectorAll('[data-vip-claim]').forEach(button => {
         claimVipReward(button.dataset.vipClaim);
     });
 });
+
+if (notifBtn) {
+    fetchNotifications(true);
+    window.setInterval(() => fetchNotifications(true), 60000);
+    window.addEventListener('elite:bet-complete', () => fetchNotifications(true));
+}
 
 if (toggleBtn) {
     toggleBtn.addEventListener('click', function() {
@@ -613,6 +843,7 @@ document.addEventListener('click', function(event) {
     }
 
     if (profileMenu && profileBtn && profileMenu.getAttribute('aria-hidden') === 'false') closeProfileMenu();
+    if (notificationsPanel && notifBtn && notificationsPanel.getAttribute('aria-hidden') === 'false') closeNotificationsPanel();
 
     menuBtns.forEach(btn => {
         const dropdown = btn.parentElement.querySelector('.dropdown-items');
@@ -624,5 +855,10 @@ document.addEventListener('click', function(event) {
 document.addEventListener('keydown', function(event) {
     if (event.key === 'Escape' && accountModal && accountModal.getAttribute('aria-hidden') === 'false') {
         closeAccountModal();
+    }
+
+    if (event.key === 'Escape') {
+        closeProfileMenu();
+        closeNotificationsPanel();
     }
 });

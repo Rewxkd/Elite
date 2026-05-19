@@ -82,13 +82,27 @@ if (!function_exists('elite_icon')) {
         <div class="header-buttons">
             <?php if ($is_logged_in): ?>
             <div class="group" role="group" aria-label="Profile and notifications">
-                <button class="button icon notif header-action" id="notif" aria-label="Notifications">
-                    <svg class="header-icon header-icon-filled" viewBox="0 0 24 24" aria-hidden="true">
-                        <path d="M12 22a2.75 2.75 0 0 0 2.68-2.13H9.32A2.75 2.75 0 0 0 12 22Z"></path>
-                        <path d="M19.45 16.25c-.93-.98-1.45-2.35-1.45-3.83V9.75a6 6 0 0 0-12 0v2.67c0 1.48-.52 2.85-1.45 3.83-.7.74-.18 1.95.84 1.95h13.22c1.02 0 1.54-1.21.84-1.95Z"></path>
-                    </svg>
-                    <span class="badge" id="badge"><?php echo $notification_count; ?></span>
-                </button>
+                <div class="notifications-wrap" id="notificationsWrap">
+                    <button class="button icon notif header-action" id="notif" type="button" aria-label="Notifications" aria-haspopup="true" aria-expanded="false">
+                        <svg class="header-icon header-icon-filled" viewBox="0 0 24 24" aria-hidden="true">
+                            <path d="M12 22a2.75 2.75 0 0 0 2.68-2.13H9.32A2.75 2.75 0 0 0 12 22Z"></path>
+                            <path d="M19.45 16.25c-.93-.98-1.45-2.35-1.45-3.83V9.75a6 6 0 0 0-12 0v2.67c0 1.48-.52 2.85-1.45 3.83-.7.74-.18 1.95.84 1.95h13.22c1.02 0 1.54-1.21.84-1.95Z"></path>
+                        </svg>
+                        <span class="badge<?php echo (int)$notification_count > 0 ? '' : ' is-empty'; ?>" id="badge"><?php echo (int)$notification_count; ?></span>
+                    </button>
+                    <div class="notifications-panel" id="notificationsPanel" aria-hidden="true">
+                        <div class="notifications-head">
+                            <div>
+                                <strong>Notifications</strong>
+                                <span id="notificationsCountText">Loading...</span>
+                            </div>
+                            <button class="notifications-mark-read" id="markNotificationsRead" type="button">Mark read</button>
+                        </div>
+                        <div class="notifications-list" id="notificationsList">
+                            <div class="notifications-empty">Loading notifications...</div>
+                        </div>
+                    </div>
+                </div>
                 <div class="profile-menu-wrap" id="profileMenuWrap">
                     <button class="button icon header-action" id="prof" type="button" aria-label="Profile" aria-haspopup="true" aria-expanded="false">
                         <svg class="header-icon header-icon-filled" viewBox="0 0 24 24" aria-hidden="true">
@@ -136,7 +150,7 @@ if (!function_exists('elite_icon')) {
                 <input type="password" placeholder="Password" name="password" autocomplete="current-password" required>
             </div>
             <button type="submit" class="submit-btn">Login</button>
-            <p class="form-message" id="loginMessage"></p>
+            <p class="form-message" id="loginMessage" aria-live="polite"></p>
         </form>
 
         <form id="registerForm" class="login-form">
@@ -154,7 +168,7 @@ if (!function_exists('elite_icon')) {
                 <input type="password" placeholder="Confirm Password" name="confirm_password" autocomplete="new-password" required>
             </div>
             <button type="submit" class="submit-btn">Register</button>
-            <p class="form-message" id="registerMessage"></p>
+            <p class="form-message" id="registerMessage" aria-live="polite"></p>
         </form>
     </div>
 </div>
@@ -261,7 +275,7 @@ if (!function_exists('elite_icon')) {
                 </div>
             </div>
 
-            <p class="form-message account-message" data-account-message></p>
+            <p class="form-message account-message" data-account-message aria-live="polite"></p>
         </div>
 
         <div class="account-panel" data-account-panel="settings">
@@ -307,4 +321,4 @@ if (!function_exists('elite_icon')) {
     </a>
 </nav>
 
-<script src="<?php echo elite_url('assets/js/header_sidebar.js'); ?>" data-login-url="<?php echo elite_url('api/login.php'); ?>" data-profile-url="<?php echo elite_url('api/profile.php'); ?>"></script>
+<script src="<?php echo elite_url('assets/js/header_sidebar.js'); ?>" data-login-url="<?php echo elite_url('api/login.php'); ?>" data-profile-url="<?php echo elite_url('api/profile.php'); ?>" data-notifications-url="<?php echo elite_url('api/notifications.php'); ?>"></script>

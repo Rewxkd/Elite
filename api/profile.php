@@ -235,6 +235,28 @@ function profile_add_wallet_amount($conn, $user_id, $amount) {
     }
 }
 
+function profile_money($amount) {
+    return '$' . number_format((float)$amount, 2);
+}
+
+function profile_add_notification($conn, $user_id, $type, $title, $message, $action_key, $amount) {
+    $amountValue = (float)$amount;
+    $stmt = $conn->prepare('
+        INSERT INTO notifications (user_id, type, title, message, action_key, amount)
+        VALUES (?, ?, ?, ?, ?, ?)
+    ');
+    $stmt->bind_param('issssd', $user_id, $type, $title, $message, $action_key, $amountValue);
+    $stmt->execute();
+    $stmt->close();
+}
+
+function profile_mark_notifications_read($conn, $user_id, $type) {
+    $stmt = $conn->prepare('UPDATE notifications SET is_read = 1 WHERE user_id = ? AND type = ? AND is_read = 0');
+    $stmt->bind_param('is', $user_id, $type);
+    $stmt->execute();
+    $stmt->close();
+}
+
 if (!$user_id) {
     profile_respond(['success' => false, 'message' => 'Please log in first.']);
 }
@@ -263,6 +285,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $action === 'claim_hourly') {
         $stmt->bind_param('isd', $user_id, $claimType, $amount);
         $stmt->execute();
         $stmt->close();
+
+        profile_mark_notifications_read($conn, $user_id, 'vip_hourly_available');
+        profile_add_notification(
+            $conn,
+            $user_id,
+            'vip_hourly_claimed',
+            'VIP bonus claimed',
+            profile_money(VIP_HOURLY_AMOUNT) . ' added to your balance.',
+            'vip',
+            VIP_HOURLY_AMOUNT
+        );
 
         $conn->commit();
     } catch (Throwable $e) {
@@ -298,6 +331,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $action === 'claim_rakeback') {
         $stmt->bind_param('isd', $user_id, $claimType, $available);
         $stmt->execute();
         $stmt->close();
+
+        profile_mark_notifications_read($conn, $user_id, 'rakeback_available');
+        profile_add_notification(
+            $conn,
+            $user_id,
+            'rakeback_claimed',
+            'Rakeback claimed',
+            profile_money($available) . ' added to your balance.',
+            'rakeback',
+            $available
+        );
 
         $conn->commit();
     } catch (Throwable $e) {

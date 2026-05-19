@@ -59,6 +59,19 @@ if ($action === 'register') {
         $stmt->execute();
         $stmt->close();
 
+        $welcomeType = 'welcome_bonus';
+        $welcomeTitle = 'Welcome bonus added';
+        $welcomeMessage = '$10,000.00 added to your balance.';
+        $welcomeAction = 'wallet';
+        $welcomeAmount = 10000.00;
+        $stmt = $conn->prepare('
+            INSERT INTO notifications (user_id, type, title, message, action_key, amount)
+            VALUES (?, ?, ?, ?, ?, ?)
+        ');
+        $stmt->bind_param('issssd', $user_id, $welcomeType, $welcomeTitle, $welcomeMessage, $welcomeAction, $welcomeAmount);
+        $stmt->execute();
+        $stmt->close();
+
         $conn->commit();
         $_SESSION['user_id'] = $user_id;
         echo json_encode(['success' => true, 'message' => 'Registration successful']);
