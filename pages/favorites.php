@@ -2,31 +2,14 @@
 session_start();
 include '../includes/db_connect.php';
 
-if (!isset($_SESSION['user_id'])) {
-    header('Location: ../index.php');
-    exit;
-}
-
-$user_id = intval($_SESSION['user_id']);
-$is_logged_in = true;
+$user_id = isset($_SESSION['user_id']) ? intval($_SESSION['user_id']) : null;
+$is_logged_in = $user_id !== null;
 $activePage = 'favourites';
 $notification_count = 0;
+$balance = 0.00;
+$total_wagered = 0.00;
+$favorites = [];
 
-$notif_count_query = $conn->query("SELECT COUNT(*) as count FROM notifications WHERE user_id = $user_id AND is_read = FALSE");
-if ($notif_count_query && $notif_count_query->num_rows > 0) {
-    $notif = $notif_count_query->fetch_assoc();
-    $notification_count = $notif['count'];
-}
-
-$stmt = $conn->prepare('SELECT balance, total_wagered FROM wallets WHERE user_id = ?');
-$stmt->bind_param('i', $user_id);
-$stmt->execute();
-$result = $stmt->get_result();
-$wallet = $result->fetch_assoc();
-$stmt->close();
-
-$balance = floatval($wallet['balance'] ?? 0);
-$total_wagered = floatval($wallet['total_wagered'] ?? 0);
 $game_assets = [
     'blackjack' => [
         'name' => 'Blackjack',
@@ -54,15 +37,32 @@ $game_assets = [
     ],
 ];
 
-$favorites = [];
-$stmt = $conn->prepare('SELECT game_type FROM favorites WHERE user_id = ? ORDER BY game_type ASC');
-$stmt->bind_param('i', $user_id);
-$stmt->execute();
-$result = $stmt->get_result();
-while ($row = $result->fetch_assoc()) {
-    $favorites[] = $row['game_type'];
+if ($is_logged_in) {
+    $notif_count_query = $conn->query("SELECT COUNT(*) as count FROM notifications WHERE user_id = $user_id AND is_read = FALSE");
+    if ($notif_count_query && $notif_count_query->num_rows > 0) {
+        $notif = $notif_count_query->fetch_assoc();
+        $notification_count = $notif['count'];
+    }
+
+    $stmt = $conn->prepare('SELECT balance, total_wagered FROM wallets WHERE user_id = ?');
+    $stmt->bind_param('i', $user_id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $wallet = $result->fetch_assoc();
+    $stmt->close();
+
+    $balance = floatval($wallet['balance'] ?? 0);
+    $total_wagered = floatval($wallet['total_wagered'] ?? 0);
+
+    $stmt = $conn->prepare('SELECT game_type FROM favorites WHERE user_id = ? ORDER BY game_type ASC');
+    $stmt->bind_param('i', $user_id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    while ($row = $result->fetch_assoc()) {
+        $favorites[] = $row['game_type'];
+    }
+    $stmt->close();
 }
-$stmt->close();
 
 function favorite_game_meta($game, $game_assets) {
     $key = strtolower(trim((string)$game));
@@ -105,7 +105,7 @@ function favorite_game_meta($game, $game_assets) {
             <div>
                 <span class="favourites-kicker">Elite collection</span>
                 <h1>Your Favourite Games</h1>
-                <p>Keep your go-to tables close and jump back into the action fast.</p>
+                <p><?php echo $is_logged_in ? 'Keep your go-to tables close and jump back into the action fast.' : 'Login or register to save games here. You can still try every live game in demo mode.'; ?></p>
             </div>
             <div class="favourites-summary" aria-label="Favourite games summary">
                 <span><?php echo count($favorites); ?></span>
@@ -116,9 +116,16 @@ function favorite_game_meta($game, $game_assets) {
         <?php if (empty($favorites)): ?>
             <section class="favourites-empty compact">
                 <div class="favourites-empty-mark">+</div>
-                <h2>No favourites yet</h2>
-                <p>Find a game you like, tap the star, and it will appear here for quick access.</p>
-                <a class="favourites-cta" href="games.php">Browse games</a>
+                <h2><?php echo $is_logged_in ? 'No favourites yet' : 'Save favourites after login'; ?></h2>
+                <p><?php echo $is_logged_in ? 'Find a game you like, tap the star, and it will appear here for quick access.' : 'Demo play is open now. Create an account when you want favourites, balance play, and recent history.'; ?></p>
+                <?php if ($is_logged_in): ?>
+                    <a class="favourites-cta" href="games.php">Browse games</a>
+                <?php else: ?>
+                    <div class="favourites-empty-actions">
+                        <a class="favourites-cta" href="games.php">Play demos</a>
+                        <button class="favourites-cta is-secondary" type="button" data-auth-tab="register">Register</button>
+                    </div>
+                <?php endif; ?>
             </section>
         <?php endif; ?>
 

@@ -109,7 +109,7 @@ if ($user_id) {
             <div>
                 <span class="favourites-kicker">Elite library</span>
                 <h1>All Games</h1>
-                <p>Browse every Elite game in one place, from live tables to upcoming releases.</p>
+                <p><?php echo $is_logged_in ? 'Browse every Elite game in one place, from live tables to upcoming releases.' : 'Try live games in demo mode, then register or login when you want to play with balance.'; ?></p>
             </div>
             <div class="favourites-summary" aria-label="Games summary">
                 <span><?php echo count($games); ?></span>
@@ -125,7 +125,7 @@ if ($user_id) {
             <div class="favourites-grid live-games-grid">
             <?php foreach ($live_games as $game): ?>
                 <?php
-                    $href = $is_logged_in ? ($game['href'] ?? '#') : '../index.php';
+                    $href = $game['href'] ?? '#';
                 ?>
                 <a href="<?php echo htmlspecialchars($href, ENT_QUOTES, 'UTF-8'); ?>" class="favourite-card is-live-game">
                     <div class="favourite-card-art <?php echo !empty($game['image']) ? 'has-image' : ''; ?>">
@@ -140,7 +140,7 @@ if ($user_id) {
                             <h2><?php echo htmlspecialchars($game['name'], ENT_QUOTES, 'UTF-8'); ?></h2>
                             <p><?php echo htmlspecialchars($game['tagline'], ENT_QUOTES, 'UTF-8'); ?></p>
                         </div>
-                        <span class="favourite-card-action">Play</span>
+                        <span class="favourite-card-action"><?php echo $is_logged_in ? 'Play' : 'Play demo'; ?></span>
                     </div>
                 </a>
             <?php endforeach; ?>
@@ -179,17 +179,5 @@ if ($user_id) {
     </main>
 
     <?php include '../includes/footer.php'; ?>
-
-    <?php if (!$is_logged_in): ?>
-        <script>
-            const loginBtn = document.getElementById('loginBtn');
-            if (loginBtn) {
-                loginBtn.addEventListener('click', () => {
-                    window.sessionStorage.setItem('eliteOpenLoginModal', '1');
-                    window.location.href = '../index.php';
-                });
-            }
-        </script>
-    <?php endif; ?>
 </body>
 </html>

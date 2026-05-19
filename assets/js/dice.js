@@ -6,8 +6,10 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 const diceScript = document.currentScript;
+const diceDemoMode = diceScript?.dataset.demo === 'true';
 const diceState = {
-    balance: Number(diceScript?.dataset.balance || 0),
+    isDemo: diceDemoMode,
+    balance: diceDemoMode ? 1000000 : Number(diceScript?.dataset.balance || 0),
     totalWagered: Number(diceScript?.dataset.totalWagered || 0),
     winChance: 61,
     isOver: true,
@@ -53,7 +55,8 @@ function getBetAmount() {
 
 function setBetAmount(amount) {
     if (!betInput) return;
-    const nextBet = Math.max(1, Math.min(Number(amount) || 1, Math.max(1, diceState.balance)));
+    const maxBet = diceState.isDemo ? 1000000 : Math.max(1, diceState.balance);
+    const nextBet = Math.max(1, Math.min(Number(amount) || 1, maxBet));
     betInput.value = Number.isInteger(nextBet) ? String(nextBet) : nextBet.toFixed(2);
     updatePanel();
 }
@@ -131,9 +134,9 @@ function renderHistory() {
 function setControls() {
     const locked = diceState.actionLocked;
     if (rollBtn) rollBtn.disabled = locked;
-    if (betInput) betInput.disabled = locked;
-    if (halfBetBtn) halfBetBtn.disabled = locked;
-    if (doubleBetBtn) doubleBetBtn.disabled = locked;
+    if (betInput) betInput.disabled = diceState.isDemo || locked;
+    if (halfBetBtn) halfBetBtn.disabled = diceState.isDemo || locked;
+    if (doubleBetBtn) doubleBetBtn.disabled = diceState.isDemo || locked;
     if (winChanceInput) winChanceInput.disabled = locked;
     if (directionToggle) directionToggle.disabled = locked;
 }
@@ -196,6 +199,8 @@ function startThresholdDrag(event) {
 }
 
 async function syncWallet(netChange, wagered) {
+    if (diceState.isDemo) return;
+
     try {
         const response = await fetch('dice.php', {
             method: 'POST',
@@ -218,12 +223,14 @@ async function rollDice() {
     if (diceState.actionLocked) return;
 
     const bet = getBetAmount();
-    if (!Number.isFinite(bet) || bet <= 0 || bet > diceState.balance) {
+    if (!Number.isFinite(bet) || bet <= 0 || (!diceState.isDemo && bet > diceState.balance)) {
         return;
     }
 
     diceState.actionLocked = true;
-    diceState.balance -= bet;
+    if (!diceState.isDemo) {
+        diceState.balance -= bet;
+    }
     setControls();
     updatePanel();
 
@@ -235,7 +242,9 @@ async function rollDice() {
     window.setTimeout(() => setRollBubble(roll, true, didWin), 40);
     await new Promise(resolve => window.setTimeout(resolve, 520));
 
-    diceState.balance += payout;
+    if (!diceState.isDemo) {
+        diceState.balance += payout;
+    }
     diceState.history.push({ roll, win: didWin });
     diceState.history = diceState.history.slice(-13);
     renderHistory();
@@ -248,6 +257,8 @@ async function rollDice() {
 }
 
 async function refreshWallet() {
+    if (diceState.isDemo) return;
+
     try {
         const response = await fetch('dice.php', {
             method: 'POST',

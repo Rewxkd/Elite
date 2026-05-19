@@ -6,8 +6,10 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 const plinkoScript = document.currentScript;
+const plinkoDemoMode = plinkoScript?.dataset.demo === 'true';
 const plinkoState = {
-    balance: Number(plinkoScript?.dataset.balance || 0),
+    isDemo: plinkoDemoMode,
+    balance: plinkoDemoMode ? 1000000 : Number(plinkoScript?.dataset.balance || 0),
     totalWagered: Number(plinkoScript?.dataset.totalWagered || 0),
     rows: 16,
     difficulty: 'easy',
@@ -57,7 +59,8 @@ function getBetAmount() {
 
 function setBetAmount(amount) {
     if (!betInput) return;
-    const nextBet = Math.max(1, Math.min(Number(amount) || 1, Math.max(1, plinkoState.balance)));
+    const maxBet = plinkoState.isDemo ? 1000000 : Math.max(1, plinkoState.balance);
+    const nextBet = Math.max(1, Math.min(Number(amount) || 1, maxBet));
     betInput.value = Number.isInteger(nextBet) ? String(nextBet) : nextBet.toFixed(2);
     updatePanel();
 }
@@ -83,9 +86,9 @@ function setControls() {
     if (dropBtn) dropBtn.disabled = false;
 
     // Lock settings while balls are falling so payout/difficulty cannot change mid-drop.
-    if (betInput) betInput.disabled = false;
-    if (halfBetBtn) halfBetBtn.disabled = false;
-    if (doubleBetBtn) doubleBetBtn.disabled = false;
+    if (betInput) betInput.disabled = plinkoState.isDemo;
+    if (halfBetBtn) halfBetBtn.disabled = plinkoState.isDemo;
+    if (doubleBetBtn) doubleBetBtn.disabled = plinkoState.isDemo;
     if (difficultySelect) difficultySelect.disabled = hasActiveBalls;
 }
 
@@ -256,6 +259,8 @@ function animateBall(pathResult) {
 }
 
 async function syncWallet(netChange, wagered) {
+    if (plinkoState.isDemo) return;
+
     try {
         const response = await fetch('plinko.php', {
             method: 'POST',
@@ -292,7 +297,7 @@ function queueWalletSync(netChange, wagered) {
 async function dropBall() {
     const bet = getBetAmount();
 
-    if (!Number.isFinite(bet) || bet <= 0 || bet > plinkoState.balance) {
+    if (!Number.isFinite(bet) || bet <= 0 || (!plinkoState.isDemo && bet > plinkoState.balance)) {
         return;
     }
 
@@ -302,7 +307,9 @@ async function dropBall() {
     const payout = bet * multiplier;
     const net = payout - bet;
 
-    plinkoState.balance -= bet;
+    if (!plinkoState.isDemo) {
+        plinkoState.balance -= bet;
+    }
     plinkoState.activeBalls += 1;
 
     setControls();
@@ -316,7 +323,9 @@ async function dropBall() {
             window.setTimeout(() => bucket.classList.remove('is-hit'), 650);
         }
 
-        plinkoState.balance += payout;
+        if (!plinkoState.isDemo) {
+            plinkoState.balance += payout;
+        }
         plinkoState.lastMultiplier = multiplier;
 
         if (profitText) profitText.textContent = formatCurrency(net);
@@ -338,6 +347,8 @@ async function dropBall() {
 }
 
 async function refreshWallet() {
+    if (plinkoState.isDemo) return;
+
     try {
         const response = await fetch('plinko.php', {
             method: 'POST',

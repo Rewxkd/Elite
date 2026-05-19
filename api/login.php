@@ -54,7 +54,7 @@ if ($action === 'register') {
         $user_id = $conn->insert_id;
         $stmt->close();
 
-        $stmt = $conn->prepare('INSERT INTO wallets (user_id, balance, total_wagered) VALUES (?, 0.00, 0.00)');
+        $stmt = $conn->prepare('INSERT INTO wallets (user_id, balance, total_wagered) VALUES (?, 10000.00, 0.00)');
         $stmt->bind_param('i', $user_id);
         $stmt->execute();
         $stmt->close();

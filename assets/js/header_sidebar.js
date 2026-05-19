@@ -8,6 +8,10 @@ const loginModal = document.getElementById('loginModal');
 const loginBtn = document.getElementById('loginBtn');
 const registerBtn = document.getElementById('registerBtn');
 const closeLogin = document.getElementById('closeLogin');
+const loginTabs = loginModal ? loginModal.querySelectorAll('.login-tab[data-tab]') : [];
+const loginForms = loginModal ? loginModal.querySelectorAll('.login-form') : [];
+const loginForm = document.getElementById('loginForm');
+const registerForm = document.getElementById('registerForm');
 const logoutBtn = document.getElementById('logoutBtn');
 const profileBtn = document.getElementById('prof');
 const profileMenuWrap = document.getElementById('profileMenuWrap');
@@ -87,8 +91,16 @@ function hideModal(modal) {
 
 function setLoginModalTab(tabName = 'login') {
     const nextTab = ['login', 'register'].includes(tabName) ? tabName : 'login';
-    const tab = loginModal?.querySelector(`.login-tab[data-tab="${nextTab}"]`);
-    if (tab) tab.click();
+    loginTabs.forEach(tab => {
+        const isActive = tab.dataset.tab === nextTab;
+        tab.classList.toggle('active', isActive);
+        tab.setAttribute('aria-selected', isActive.toString());
+    });
+
+    loginForms.forEach(form => {
+        const isActive = form.id === `${nextTab}Form`;
+        form.classList.toggle('active', isActive);
+    });
 }
 
 function openLoginModal(tabName = 'login') {
@@ -401,6 +413,77 @@ async function claimVipReward(type) {
         await fetchAccountSummary(true);
     }
 }
+
+function reloadAfterAuth() {
+    location.reload();
+}
+
+function setAuthMessage(messageEl, message, isSuccess) {
+    if (!messageEl) return;
+    messageEl.textContent = message;
+    messageEl.style.color = isSuccess ? '#00ff00' : '#ff6666';
+}
+
+async function submitAuthForm(form, action, messageId) {
+    if (!form) return;
+
+    const messageEl = document.getElementById(messageId);
+    const submitBtn = form.querySelector('button[type="submit"]');
+    const formData = new FormData(form);
+    formData.append('action', action);
+
+    if (submitBtn) submitBtn.disabled = true;
+    setAuthMessage(messageEl, '', false);
+
+    try {
+        const response = await fetch(headerConfig.loginUrl, {
+            method: 'POST',
+            body: formData,
+            credentials: 'same-origin'
+        });
+        const data = await response.json();
+        const successMessage = action === 'register' ? 'Registration successful!' : 'Login successful!';
+        const failureMessage = action === 'register' ? 'Registration failed' : 'Login failed';
+
+        setAuthMessage(messageEl, data.message || (data.success ? successMessage : failureMessage), Boolean(data.success));
+
+        if (data.success) {
+            window.setTimeout(reloadAfterAuth, 700);
+        }
+    } catch (error) {
+        setAuthMessage(messageEl, 'Could not connect right now.', false);
+    } finally {
+        if (submitBtn) submitBtn.disabled = false;
+    }
+}
+
+loginTabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+        setLoginModalTab(tab.dataset.tab || 'login');
+    });
+});
+
+if (loginForm) {
+    loginForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        submitAuthForm(loginForm, 'login', 'loginMessage');
+    });
+}
+
+if (registerForm) {
+    registerForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        submitAuthForm(registerForm, 'register', 'registerMessage');
+    });
+}
+
+document.addEventListener('click', (e) => {
+    const authTrigger = e.target.closest('[data-auth-tab]');
+    if (!authTrigger) return;
+
+    e.preventDefault();
+    openLoginModal(authTrigger.dataset.authTab || 'login');
+});
 
 if (loginBtn) {
     loginBtn.addEventListener('click', () => {

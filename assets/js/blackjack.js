@@ -6,8 +6,10 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 const blackjackScript = document.currentScript;
+const blackjackDemoMode = blackjackScript?.dataset.demo === 'true';
 const userState = {
-    balance: Number(blackjackScript?.dataset.balance || 0),
+    isDemo: blackjackDemoMode,
+    balance: blackjackDemoMode ? 1000000 : Number(blackjackScript?.dataset.balance || 0),
     totalWagered: Number(blackjackScript?.dataset.totalWagered || 0),
     initialBet: 0
 };
@@ -65,7 +67,8 @@ function getBetAmount() {
 
 function setBetAmount(amount) {
     if (!betInput) return;
-    const nextBet = Math.max(1, Math.min(Number(amount) || 1, Math.max(1, userState.balance)));
+    const maxBet = userState.isDemo ? 1000000 : Math.max(1, userState.balance);
+    const nextBet = Math.max(1, Math.min(Number(amount) || 1, maxBet));
     betInput.value = Number.isInteger(nextBet) ? String(nextBet) : nextBet.toFixed(2);
     updateBetPreview();
 }
@@ -149,6 +152,7 @@ function serializeRoundState() {
 }
 
 async function saveRoundState() {
+    if (userState.isDemo) return;
     if (!inRound || restoringRound) return;
 
     try {
@@ -163,6 +167,8 @@ async function saveRoundState() {
 }
 
 async function clearSavedRound() {
+    if (userState.isDemo) return;
+
     try {
         await fetch('blackjack.php', {
             method: 'POST',
@@ -175,6 +181,8 @@ async function clearSavedRound() {
 }
 
 async function loadSavedRound() {
+    if (userState.isDemo) return null;
+
     try {
         const resp = await fetch('blackjack.php', {
             method: 'POST',
@@ -569,9 +577,9 @@ function setButtons(state, options = {}) {
     if (doubleBtn) doubleBtn.disabled = actionLocked || !isPlaying || !canDouble;
     if (splitBtn) splitBtn.disabled = actionLocked || !isPlaying || !canSplit;
     if (betBtn) betBtn.disabled = actionLocked || isPlaying;
-    if (betInput) betInput.disabled = actionLocked || isPlaying;
-    if (halfBetBtn) halfBetBtn.disabled = actionLocked || isPlaying;
-    if (doubleBetBtn) doubleBetBtn.disabled = actionLocked || isPlaying;
+    if (betInput) betInput.disabled = userState.isDemo || actionLocked || isPlaying;
+    if (halfBetBtn) halfBetBtn.disabled = userState.isDemo || actionLocked || isPlaying;
+    if (doubleBetBtn) doubleBetBtn.disabled = userState.isDemo || actionLocked || isPlaying;
 }
 
 function refreshActionButtons() {
@@ -586,8 +594,9 @@ function refreshActionButtons() {
         return;
     }
 
-    const canDouble = current.cards.length === 2 && userState.balance >= current.bet && !current.isBust && !current.isStand;
-    const canSplit = canCardsSplit(current.cards) && userState.balance >= current.bet && playerHands.length < 4 && !current.isStand && !current.isBust;
+    const hasFundsForAction = userState.isDemo || userState.balance >= current.bet;
+    const canDouble = current.cards.length === 2 && hasFundsForAction && !current.isBust && !current.isStand;
+    const canSplit = canCardsSplit(current.cards) && hasFundsForAction && playerHands.length < 4 && !current.isStand && !current.isBust;
     setButtons('playing', { canSplit, canDouble });
 }
 
@@ -621,14 +630,18 @@ async function beginRound() {
         return;
     }
 
-    if (bet > userState.balance) {
+    if (!userState.isDemo && bet > userState.balance) {
         updateMessage('Not enough balance for that bet.', 'outcome-negative');
         return;
     }
 
-    userState.balance -= bet;
+    if (!userState.isDemo) {
+        userState.balance -= bet;
+    }
     userState.initialBet = bet;
-    userState.totalWagered += bet;
+    if (!userState.isDemo) {
+        userState.totalWagered += bet;
+    }
     updateUI();
 
     cardElements.clear();
@@ -652,8 +665,8 @@ async function beginRound() {
     firstHand.blackjack = isBlackjack(firstHand.cards);
     firstHand.isStand = firstHand.blackjack;
 
-    const canSplit = canCardsSplit(firstHand.cards) && userState.balance >= bet;
-    const canDouble = userState.balance >= bet;
+    const canSplit = canCardsSplit(firstHand.cards) && (userState.isDemo || userState.balance >= bet);
+    const canDouble = userState.isDemo || userState.balance >= bet;
 
     if (firstHand.blackjack) {
         updateMessage('Blackjack. Dealer reveals.', 'outcome-positive');
@@ -737,9 +750,11 @@ async function playerStand() {
 async function playerDouble() {
     if (!inRound) return;
     const current = playerHands[currentHandIndex];
-    if (current.cards.length !== 2 || userState.balance < current.bet) return;
+    if (current.cards.length !== 2 || (!userState.isDemo && userState.balance < current.bet)) return;
 
-    userState.balance -= current.bet;
+    if (!userState.isDemo) {
+        userState.balance -= current.bet;
+    }
     current.bet *= 2;
     updateUI();
     await dealCardToHand(current.cards, true, {
@@ -771,11 +786,13 @@ async function playerDouble() {
 async function playerSplit() {
     if (!inRound) return;
     const current = playerHands[currentHandIndex];
-    if (!canCardsSplit(current.cards) || userState.balance < current.bet) {
+    if (!canCardsSplit(current.cards) || (!userState.isDemo && userState.balance < current.bet)) {
         return;
     }
 
-    userState.balance -= current.bet;
+    if (!userState.isDemo) {
+        userState.balance -= current.bet;
+    }
     updateUI();
 
     const splitCard = current.cards.pop();
@@ -881,8 +898,10 @@ async function finalizeDealer() {
     });
 
     const net = totalPayout;
-    userState.balance += (totalWager + net);
-    userState.totalWagered += totalWager;
+    if (!userState.isDemo) {
+        userState.balance += (totalWager + net);
+        userState.totalWagered += totalWager;
+    }
     inRound = false;
     currentHandIndex = -1;
     renderHands();
@@ -900,6 +919,10 @@ async function finalizeDealer() {
 }
 
 async function syncWallet(netChange, wagered) {
+    if (userState.isDemo) {
+        return true;
+    }
+
     try {
         const resp = await fetch('blackjack.php', {
             method: 'POST',
@@ -932,6 +955,7 @@ if (standBtn) standBtn.addEventListener('click', withActionLock(playerStand));
 if (doubleBtn) doubleBtn.addEventListener('click', withActionLock(playerDouble));
 if (splitBtn) splitBtn.addEventListener('click', withActionLock(playerSplit));
 window.addEventListener('beforeunload', () => {
+    if (userState.isDemo) return;
     if (!inRound || restoringRound) return;
     const payload = JSON.stringify({ api: 'save_round', round: serializeRoundState() });
     if (navigator.sendBeacon) {
@@ -947,6 +971,8 @@ window.addEventListener('beforeunload', () => {
 });
 
 async function refreshWallet() {
+    if (userState.isDemo) return;
+
     try {
         const resp = await fetch('blackjack.php', {
             method: 'POST',

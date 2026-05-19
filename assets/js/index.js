@@ -1,14 +1,8 @@
 const indexScript = document.currentScript;
 const indexConfig = {
-    totalWagered: Number(indexScript?.dataset.totalWagered || 0),
-    loginUrl: indexScript?.dataset.loginUrl || 'api/login.php'
+    totalWagered: Number(indexScript?.dataset.totalWagered || 0)
 };
 
-const authModalRoot = document.getElementById('loginModal');
-const loginTabs = authModalRoot ? authModalRoot.querySelectorAll('.login-tab[data-tab]') : [];
-const loginForms = authModalRoot ? authModalRoot.querySelectorAll('.login-form') : [];
-const loginForm = document.getElementById('loginForm');
-const registerForm = document.getElementById('registerForm');
 const prevBtn = document.getElementById('prevBtn');
 const nextBtn = document.getElementById('nextBtn');
 const gamesRow = document.getElementById('gamesRow');
@@ -32,47 +26,11 @@ const wagerRanks = [
     { name: 'Obsidian', threshold: 1000000000 }
 ];
 
-loginTabs.forEach(tab => {
-    tab.addEventListener('click', () => {
-        const tabName = tab.getAttribute('data-tab');
-        loginTabs.forEach(t => t.classList.remove('active'));
-        loginForms.forEach(f => f.classList.remove('active'));
-        tab.classList.add('active');
-
-        const form = document.getElementById(tabName + 'Form');
-        if (form) form.classList.add('active');
-    });
-});
-
 function openAuthModal(tabName = 'login') {
     const nextTab = ['login', 'register'].includes(tabName) ? tabName : 'login';
     if (typeof window.openEliteAuthModal === 'function') {
         window.openEliteAuthModal(nextTab);
-        return;
     }
-
-    const tab = authModalRoot?.querySelector(`.login-tab[data-tab="${nextTab}"]`);
-    if (tab) tab.click();
-    if (authModalRoot) {
-        authModalRoot.style.display = 'flex';
-        authModalRoot.setAttribute('aria-hidden', 'false');
-        authModalRoot.classList.add('is-open');
-        document.body.classList.add('modal-open');
-    }
-}
-
-document.addEventListener('click', (e) => {
-    const authTrigger = e.target.closest('[data-auth-tab]');
-    if (!authTrigger) return;
-
-    e.preventDefault();
-    openAuthModal(authTrigger.dataset.authTab || 'login');
-});
-
-function reloadWithoutLoginPrompt() {
-    const url = new URL(window.location.href);
-    url.searchParams.delete('login');
-    window.location.replace(url.toString());
 }
 
 function clearLegacyLoginPromptParam() {
@@ -173,13 +131,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
 });
 
-document.querySelectorAll('[data-requires-login="true"]').forEach(link => {
-    link.addEventListener('click', (e) => {
-        e.preventDefault();
-        openAuthModal('login');
-    });
-});
-
 if (prevBtn && nextBtn && gamesRow) {
     const scrollAmount = () => {
         const card = gamesRow.querySelector('.game-card');
@@ -206,42 +157,4 @@ if (prevBtn && nextBtn && gamesRow) {
     gamesRow.addEventListener('scroll', updateCarouselButtons);
     window.addEventListener('resize', updateCarouselButtons);
     updateCarouselButtons();
-}
-
-if (loginForm) {
-    loginForm.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const formData = new FormData(loginForm);
-        formData.append('action', 'login');
-
-        const response = await fetch(indexConfig.loginUrl, { method: 'POST', body: formData });
-        const data = await response.json();
-        const messageEl = document.getElementById('loginMessage');
-
-        messageEl.textContent = data.message || (data.success ? 'Login successful!' : 'Login failed');
-        messageEl.style.color = data.success ? '#00ff00' : '#ff6666';
-
-        if (data.success) {
-            setTimeout(reloadWithoutLoginPrompt, 700);
-        }
-    });
-}
-
-if (registerForm) {
-    registerForm.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const formData = new FormData(registerForm);
-        formData.append('action', 'register');
-
-        const response = await fetch(indexConfig.loginUrl, { method: 'POST', body: formData });
-        const data = await response.json();
-        const messageEl = document.getElementById('registerMessage');
-
-        messageEl.textContent = data.message || (data.success ? 'Registration successful!' : 'Registration failed');
-        messageEl.style.color = data.success ? '#00ff00' : '#ff6666';
-
-        if (data.success) {
-            setTimeout(reloadWithoutLoginPrompt, 700);
-        }
-    });
 }

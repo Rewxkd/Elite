@@ -6,6 +6,7 @@ class FavoriteButton {
         this.gameName = gameName;
         this.container = container;
         this.isFavorited = false;
+        this.requiresLogin = false;
         this.init();
     }
 
@@ -21,6 +22,10 @@ class FavoriteButton {
                 method: 'GET',
                 headers: { 'Content-Type': 'application/json' }
             });
+            if (response.status === 401) {
+                this.requiresLogin = true;
+                return;
+            }
             const data = await response.json();
             if (data.success) {
                 this.isFavorited = data.favorites.some(fav => fav.game_type && fav.game_type.toLowerCase() === this.gameType);
@@ -31,6 +36,11 @@ class FavoriteButton {
     }
 
     async toggleFavorite() {
+        if (this.requiresLogin) {
+            window.openEliteAuthModal?.('login');
+            return;
+        }
+
         const method = this.isFavorited ? 'DELETE' : 'POST';
         try {
             const response = await fetch(favoriteApiUrl, {
@@ -38,6 +48,11 @@ class FavoriteButton {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ game_type: this.gameType })
             });
+            if (response.status === 401) {
+                this.requiresLogin = true;
+                window.openEliteAuthModal?.('login');
+                return;
+            }
             const data = await response.json();
             if (data.success) {
                 this.isFavorited = !this.isFavorited;

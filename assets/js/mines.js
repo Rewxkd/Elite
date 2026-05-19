@@ -6,8 +6,10 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 const minesScript = document.currentScript;
+const minesDemoMode = minesScript?.dataset.demo === 'true';
 const minesState = {
-    balance: Number(minesScript?.dataset.balance || 0),
+    isDemo: minesDemoMode,
+    balance: minesDemoMode ? 1000000 : Number(minesScript?.dataset.balance || 0),
     totalWagered: Number(minesScript?.dataset.totalWagered || 0),
     bet: 0,
     mines: 5,
@@ -78,7 +80,8 @@ function getBetAmount() {
 
 function setBetAmount(amount) {
     if (!betInput) return;
-    const nextBet = Math.max(1, Math.min(Number(amount) || 1, Math.max(1, minesState.balance)));
+    const maxBet = minesState.isDemo ? 1000000 : Math.max(1, minesState.balance);
+    const nextBet = Math.max(1, Math.min(Number(amount) || 1, maxBet));
     betInput.value = Number.isInteger(nextBet) ? String(nextBet) : nextBet.toFixed(2);
     updatePanel();
 }
@@ -141,9 +144,9 @@ function updatePanel() {
 function setControls() {
     const locked = minesState.actionLocked;
     if (startBtn) startBtn.disabled = locked || minesState.inRound;
-    if (betInput) betInput.disabled = locked || minesState.inRound;
-    if (halfBetBtn) halfBetBtn.disabled = locked || minesState.inRound;
-    if (doubleBetBtn) doubleBetBtn.disabled = locked || minesState.inRound;
+    if (betInput) betInput.disabled = minesState.isDemo || locked || minesState.inRound;
+    if (halfBetBtn) halfBetBtn.disabled = minesState.isDemo || locked || minesState.inRound;
+    if (doubleBetBtn) doubleBetBtn.disabled = minesState.isDemo || locked || minesState.inRound;
     if (minesInput) minesInput.disabled = locked || minesState.inRound;
     if (lessMinesBtn) lessMinesBtn.disabled = locked || minesState.inRound;
     if (moreMinesBtn) moreMinesBtn.disabled = locked || minesState.inRound;
@@ -214,7 +217,7 @@ function beginRound() {
         return;
     }
 
-    if (bet > minesState.balance) {
+    if (!minesState.isDemo && bet > minesState.balance) {
         updateStatus('Not enough balance for that bet.', 'outcome-negative');
         return;
     }
@@ -225,7 +228,9 @@ function beginRound() {
     minesState.mineTiles = generateMines(minesState.mines);
     minesState.revealedTiles = new Set();
     minesState.inRound = true;
-    minesState.balance -= bet;
+    if (!minesState.isDemo) {
+        minesState.balance -= bet;
+    }
 
     updateStatus('Pick a tile. You can cash out after any safe reveal.');
     renderBoard();
@@ -263,7 +268,9 @@ async function cashOut(auto = false) {
 
     const payout = minesState.bet * getCurrentMultiplier();
     const net = payout - minesState.bet;
-    minesState.balance += payout;
+    if (!minesState.isDemo) {
+        minesState.balance += payout;
+    }
     minesState.inRound = false;
     updateStatus(`${auto ? 'Board cleared' : 'Cashed out'} for ${formatCurrency(payout)}.`, 'outcome-positive');
     if (net > 0) {
@@ -277,6 +284,14 @@ async function cashOut(auto = false) {
 async function finishRound(netChange) {
     minesState.actionLocked = true;
     setControls();
+
+    if (minesState.isDemo) {
+        minesState.actionLocked = false;
+        minesState.bet = 0;
+        setControls();
+        updatePanel();
+        return;
+    }
 
     try {
         const response = await fetch('mines.php', {
@@ -304,6 +319,8 @@ async function finishRound(netChange) {
 }
 
 async function refreshWallet() {
+    if (minesState.isDemo) return;
+
     try {
         const response = await fetch('mines.php', {
             method: 'POST',

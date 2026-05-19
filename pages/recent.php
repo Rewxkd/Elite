@@ -2,13 +2,8 @@
 session_start();
 include '../includes/db_connect.php';
 
-if (!isset($_SESSION['user_id'])) {
-    header('Location: ../index.php');
-    exit;
-}
-
-$user_id = (int)$_SESSION['user_id'];
-$is_logged_in = true;
+$user_id = isset($_SESSION['user_id']) ? (int)$_SESSION['user_id'] : null;
+$is_logged_in = $user_id !== null;
 $activePage = 'recent';
 $balance = 0.00;
 $total_wagered = 0.00;
@@ -42,39 +37,41 @@ $game_assets = [
     ],
 ];
 
-$stmt = $conn->prepare('SELECT balance, total_wagered FROM wallets WHERE user_id = ? LIMIT 1');
-$stmt->bind_param('i', $user_id);
-$stmt->execute();
-$wallet = $stmt->get_result()->fetch_assoc();
-$stmt->close();
+if ($is_logged_in) {
+    $stmt = $conn->prepare('SELECT balance, total_wagered FROM wallets WHERE user_id = ? LIMIT 1');
+    $stmt->bind_param('i', $user_id);
+    $stmt->execute();
+    $wallet = $stmt->get_result()->fetch_assoc();
+    $stmt->close();
 
-if ($wallet) {
-    $balance = (float)$wallet['balance'];
-    $total_wagered = (float)$wallet['total_wagered'];
+    if ($wallet) {
+        $balance = (float)$wallet['balance'];
+        $total_wagered = (float)$wallet['total_wagered'];
+    }
+
+    $stmt = $conn->prepare('SELECT COUNT(*) AS count FROM notifications WHERE user_id = ? AND is_read = FALSE');
+    $stmt->bind_param('i', $user_id);
+    $stmt->execute();
+    $notif = $stmt->get_result()->fetch_assoc();
+    $stmt->close();
+    $notification_count = (int)($notif['count'] ?? 0);
+
+    $stmt = $conn->prepare("
+        SELECT game_type, MAX(game_name) AS game_name, MAX(created_at) AS last_played, COUNT(*) AS rounds, SUM(wager_amount) AS total_wagered
+        FROM latest_bets
+        WHERE user_id = ?
+        GROUP BY LOWER(game_type)
+        ORDER BY last_played DESC
+        LIMIT 12
+    ");
+    $stmt->bind_param('i', $user_id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    while ($row = $result->fetch_assoc()) {
+        $recent_games[] = $row;
+    }
+    $stmt->close();
 }
-
-$stmt = $conn->prepare('SELECT COUNT(*) AS count FROM notifications WHERE user_id = ? AND is_read = FALSE');
-$stmt->bind_param('i', $user_id);
-$stmt->execute();
-$notif = $stmt->get_result()->fetch_assoc();
-$stmt->close();
-$notification_count = (int)($notif['count'] ?? 0);
-
-$stmt = $conn->prepare("
-    SELECT game_type, MAX(game_name) AS game_name, MAX(created_at) AS last_played, COUNT(*) AS rounds, SUM(wager_amount) AS total_wagered
-    FROM latest_bets
-    WHERE user_id = ?
-    GROUP BY LOWER(game_type)
-    ORDER BY last_played DESC
-    LIMIT 12
-");
-$stmt->bind_param('i', $user_id);
-$stmt->execute();
-$result = $stmt->get_result();
-while ($row = $result->fetch_assoc()) {
-    $recent_games[] = $row;
-}
-$stmt->close();
 
 function recent_game_meta($game, $game_assets) {
     $key = strtolower(trim((string)$game['game_type']));
@@ -130,16 +127,23 @@ function format_recent_time($value) {
             <div>
                 <span class="favourites-kicker">Elite history</span>
                 <h1>Recently Played</h1>
-                <p>Jump back into the games you have played most recently.</p>
+                <p><?php echo $is_logged_in ? 'Jump back into the games you have played most recently.' : 'Recent history starts after login. Until then, every live game is open in demo mode.'; ?></p>
             </div>
         </section>
 
         <?php if (empty($recent_games)): ?>
             <section class="favourites-empty compact">
                 <div class="favourites-empty-mark">+</div>
-                <h2>No recent games yet</h2>
-                <p>Play a round and your recent games will appear here for quick access.</p>
-                <a class="favourites-cta" href="games.php">Browse games</a>
+                <h2><?php echo $is_logged_in ? 'No recent games yet' : 'History unlocks after login'; ?></h2>
+                <p><?php echo $is_logged_in ? 'Play a round and your recent games will appear here for quick access.' : 'Try demos without a balance, then register or login to track real play history.'; ?></p>
+                <?php if ($is_logged_in): ?>
+                    <a class="favourites-cta" href="games.php">Browse games</a>
+                <?php else: ?>
+                    <div class="favourites-empty-actions">
+                        <a class="favourites-cta" href="games.php">Play demos</a>
+                        <button class="favourites-cta is-secondary" type="button" data-auth-tab="login">Login</button>
+                    </div>
+                <?php endif; ?>
             </section>
         <?php else: ?>
             <section class="favourites-grid" aria-label="Recently played games">

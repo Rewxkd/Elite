@@ -118,6 +118,48 @@ if (!function_exists('elite_icon')) {
     </div>
 </header>
 
+<?php if (!$is_logged_in): ?>
+<div class="login-modal" id="loginModal" style="display: none;" aria-hidden="true">
+    <div class="login-container" role="dialog" aria-modal="true" aria-labelledby="authModalTitle">
+        <button class="login-close" id="closeLogin" type="button" aria-label="Close login">&times;</button>
+        <div class="login-tabs" role="tablist" aria-label="Account access">
+            <button class="login-tab active" type="button" data-tab="login" role="tab" aria-selected="true">Login</button>
+            <button class="login-tab" type="button" data-tab="register" role="tab" aria-selected="false">Register</button>
+        </div>
+
+        <form id="loginForm" class="login-form active">
+            <h2 id="authModalTitle">Login to your Account</h2>
+            <div class="form-group">
+                <input type="text" placeholder="Username" name="username" autocomplete="username" required>
+            </div>
+            <div class="form-group">
+                <input type="password" placeholder="Password" name="password" autocomplete="current-password" required>
+            </div>
+            <button type="submit" class="submit-btn">Login</button>
+            <p class="form-message" id="loginMessage"></p>
+        </form>
+
+        <form id="registerForm" class="login-form">
+            <h2>Create an Account</h2>
+            <div class="form-group">
+                <input type="text" placeholder="Username" name="username" autocomplete="username" required>
+            </div>
+            <div class="form-group">
+                <input type="email" placeholder="Email" name="email" autocomplete="email" required>
+            </div>
+            <div class="form-group">
+                <input type="password" placeholder="Password" name="password" autocomplete="new-password" required>
+            </div>
+            <div class="form-group">
+                <input type="password" placeholder="Confirm Password" name="confirm_password" autocomplete="new-password" required>
+            </div>
+            <button type="submit" class="submit-btn">Register</button>
+            <p class="form-message" id="registerMessage"></p>
+        </form>
+    </div>
+</div>
+<?php endif; ?>
+
 <?php if ($is_logged_in): ?>
 <div class="login-modal account-modal" id="accountModal" style="display: none;" aria-hidden="true">
     <div class="login-container account-modal-container" role="dialog" aria-modal="true" aria-labelledby="accountModalTitle">

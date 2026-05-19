@@ -2253,6 +2253,72 @@ body.modal-open .container::after {
     font-weight: 800;
 }
 
+.game-play-action {
+    display: grid;
+    width: 100%;
+}
+
+.game-play-action > button {
+    width: 100%;
+}
+
+.mines-control-panel .game-play-action,
+.plinko-control-panel .game-play-action {
+    margin-top: auto;
+}
+
+.game-play-action > .mines-primary-btn,
+.game-play-action > .plinko-primary-btn {
+    margin-top: 0;
+}
+
+.bet-widget.is-demo-locked .bet-widget-head,
+.bet-widget.is-demo-locked .bet-widget-head span {
+    color: rgba(200, 212, 228, 0.58);
+}
+
+.bet-widget.is-demo-locked .bet-control {
+    border-color: rgba(128, 151, 210, 0.08);
+    background: rgba(30, 42, 82, 0.58);
+    box-shadow: none;
+}
+
+.bet-widget.is-demo-locked .bet-prefix,
+.bet-widget.is-demo-locked #betInput,
+.bet-widget.is-demo-locked #profitInput {
+    color: rgba(216, 226, 248, 0.48);
+    cursor: not-allowed;
+}
+
+.bet-widget.is-demo-locked #betInput:disabled,
+.bet-widget.is-demo-locked #profitInput:disabled {
+    opacity: 1;
+    -webkit-text-fill-color: rgba(216, 226, 248, 0.48);
+}
+
+.bet-widget.is-demo-locked .bet-adjust {
+    color: rgba(216, 226, 248, 0.38);
+    background: rgba(30, 42, 82, 0.5);
+    cursor: not-allowed;
+}
+
+.demo-mode .game-overlay-left::after {
+    content: 'Demo';
+    display: inline-flex;
+    align-items: center;
+    min-height: 24px;
+    margin-left: 0.65rem;
+    padding: 0 0.5rem;
+    border: 1px solid rgba(109, 240, 107, 0.24);
+    border-radius: 7px;
+    background: rgba(109, 240, 107, 0.1);
+    color: #9df59b;
+    font-size: 0.72rem;
+    font-weight: 900;
+    vertical-align: middle;
+    text-transform: uppercase;
+}
+
 .latest-bets-section {
     margin: 2rem auto;
     max-width: 1200px;
@@ -3052,6 +3118,22 @@ body.modal-open .container::after {
     border: 1px solid rgba(144, 190, 255, 0.28);
     border-radius: 8px;
     background: linear-gradient(90deg, #1f6aed, #2c9ffd);
+}
+
+button.favourites-cta {
+    font: inherit;
+    cursor: pointer;
+}
+
+.favourites-cta.is-secondary {
+    background: rgba(38, 52, 101, 0.78);
+}
+
+.favourites-empty-actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.65rem;
 }
 
 .favourite-card .favourite-card-action {

@@ -2,23 +2,29 @@
 session_start();
 include '../includes/db_connect.php';
 
-if (!isset($_SESSION['user_id'])) {
-    header('Location: ../index.php');
-    exit;
-}
-
-$user_id = intval($_SESSION['user_id']);
-$is_logged_in = true;
+$user_id = isset($_SESSION['user_id']) ? intval($_SESSION['user_id']) : null;
+$is_logged_in = $user_id !== null;
+$is_demo = !$is_logged_in;
 $activePage = 'blackjack';
 $notification_count = 0;
 
-$notif_count_query = $conn->query("SELECT COUNT(*) as count FROM notifications WHERE user_id = $user_id AND is_read = FALSE");
-if ($notif_count_query && $notif_count_query->num_rows > 0) {
-    $notif = $notif_count_query->fetch_assoc();
-    $notification_count = $notif['count'];
+if ($is_logged_in) {
+    $notif_count_query = $conn->query("SELECT COUNT(*) as count FROM notifications WHERE user_id = $user_id AND is_read = FALSE");
+    if ($notif_count_query && $notif_count_query->num_rows > 0) {
+        $notif = $notif_count_query->fetch_assoc();
+        $notification_count = $notif['count'];
+    }
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    header('Content-Type: application/json');
+
+    if (!$is_logged_in) {
+        http_response_code(401);
+        echo json_encode(['success' => false, 'message' => 'Login required for wallet play']);
+        exit;
+    }
+
     $payload = json_decode(file_get_contents('php://input'), true);
     if (!is_array($payload)) {
         $payload = $_POST;
@@ -27,7 +33,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $api = $payload['api'] ?? '';
 
     if (!$api) {
-        header('Content-Type: application/json');
         echo json_encode(['success' => false, 'message' => 'No API command']);
         exit;
     }
@@ -40,7 +45,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $stmt->close();
 
     if (!$wallet) {
-        header('Content-Type: application/json');
         echo json_encode(['success' => false, 'message' => 'Wallet not found']);
         exit;
     }
@@ -49,14 +53,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $total_wagered = floatval($wallet['total_wagered']);
 
     if ($api === 'get_wallet') {
-        header('Content-Type: application/json');
         echo json_encode(['success' => true, 'balance' => $balance, 'total_wagered' => $total_wagered]);
         exit;
     }
 
     if ($api === 'load_round') {
         $savedRound = $_SESSION['blackjack_round'][$user_id] ?? null;
-        header('Content-Type: application/json');
         echo json_encode(['success' => true, 'round' => $savedRound]);
         exit;
     }
@@ -64,7 +66,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($api === 'save_round') {
         $round = $payload['round'] ?? null;
         if (!is_array($round)) {
-            header('Content-Type: application/json');
             echo json_encode(['success' => false, 'message' => 'Invalid round state']);
             exit;
         }
@@ -74,7 +75,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         $_SESSION['blackjack_round'][$user_id] = $round;
-        header('Content-Type: application/json');
         echo json_encode(['success' => true]);
         exit;
     }
@@ -84,7 +84,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             unset($_SESSION['blackjack_round'][$user_id]);
         }
 
-        header('Content-Type: application/json');
         echo json_encode(['success' => true]);
         exit;
     }
@@ -95,7 +94,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         $newBalance = $balance + $delta;
         if ($newBalance < 0) {
-            header('Content-Type: application/json');
             echo json_encode(['success' => false, 'message' => 'Insufficient balance to apply update']);
             exit;
         }
@@ -117,31 +115,33 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $betStmt->close();
             }
 
-            header('Content-Type: application/json');
             echo json_encode(['success' => true, 'balance' => $newBalance, 'total_wagered' => $newTotal]);
             exit;
         }
 
         $updateStmt->close();
-        header('Content-Type: application/json');
         echo json_encode(['success' => false, 'message' => 'Failed to update wallet']);
         exit;
     }
 
-    header('Content-Type: application/json');
     echo json_encode(['success' => false, 'message' => 'Invalid API command']);
     exit;
 }
 
-$stmt = $conn->prepare('SELECT balance, total_wagered FROM wallets WHERE user_id = ?');
-$stmt->bind_param('i', $user_id);
-$stmt->execute();
-$result = $stmt->get_result();
-$wallet = $result->fetch_assoc();
-$stmt->close();
+$balance = 0.00;
+$total_wagered = 0.00;
 
-$balance = floatval($wallet['balance'] ?? 0);
-$total_wagered = floatval($wallet['total_wagered'] ?? 0);
+if ($is_logged_in) {
+    $stmt = $conn->prepare('SELECT balance, total_wagered FROM wallets WHERE user_id = ?');
+    $stmt->bind_param('i', $user_id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $wallet = $result->fetch_assoc();
+    $stmt->close();
+
+    $balance = floatval($wallet['balance'] ?? 0);
+    $total_wagered = floatval($wallet['total_wagered'] ?? 0);
+}
 
 ?>
 <!DOCTYPE html>
@@ -160,7 +160,7 @@ $total_wagered = floatval($wallet['total_wagered'] ?? 0);
     <link rel="stylesheet" href="../assets/css/live_stats.css" />
     <link rel="stylesheet" href="../assets/css/blackjack.css" />
 </head>
-<body class="blackjack-game-body">
+<body class="blackjack-game-body <?php echo $is_demo ? 'demo-mode' : ''; ?>">
     <?php include '../includes/header_sidebar.php'; ?>
 
     <main class="container page-game-main blackjack-page-main">
@@ -174,16 +174,16 @@ $total_wagered = floatval($wallet['total_wagered'] ?? 0);
                                 <h3>Blackjack</h3>
                             </div>
                             <p class="table-info">Dealer stands on soft 17. Blackjack pays 3:2.</p>
-                            <div class="bet-widget">
+                            <div class="bet-widget <?php echo $is_demo ? 'is-demo-locked' : ''; ?>">
                                 <div class="bet-widget-head">
                                     <label for="betInput">Bet Amount</label>
                                     <span id="betAmountPreview">$10.00</span>
                                 </div>
                                 <div class="bet-control">
                                     <span class="bet-prefix">$</span>
-                                    <input id="betInput" type="number" min="1" step="1" value="10" aria-label="Bet amount">
-                                    <button class="bet-adjust" id="halfBetBtn" type="button">1/2</button>
-                                    <button class="bet-adjust" id="doubleBetBtn" type="button">2x</button>
+                                    <input id="betInput" type="number" min="1" step="1" value="10" aria-label="Bet amount" <?php echo $is_demo ? 'disabled' : ''; ?>>
+                                    <button class="bet-adjust" id="halfBetBtn" type="button" <?php echo $is_demo ? 'disabled' : ''; ?>>1/2</button>
+                                    <button class="bet-adjust" id="doubleBetBtn" type="button" <?php echo $is_demo ? 'disabled' : ''; ?>>2x</button>
                                 </div>
                             </div>
                             <div class="action-grid">
@@ -192,8 +192,8 @@ $total_wagered = floatval($wallet['total_wagered'] ?? 0);
                                 <button id="splitBtn" disabled>Split</button>
                                 <button id="doubleBtn" disabled>Double</button>
                             </div>
-                            <div class="bet-actions">
-                                <button id="betBtn">Place Bet</button>
+                            <div class="bet-actions game-play-action">
+                                <button id="betBtn"><?php echo $is_demo ? 'Demo Bet' : 'Place Bet'; ?></button>
                             </div>
                         </div>
                     </aside>
@@ -239,6 +239,6 @@ $total_wagered = floatval($wallet['total_wagered'] ?? 0);
     <?php include '../includes/footer.php'; ?>
 
     <script src="../assets/js/favorite_button.js"></script>
-    <script src="../assets/js/blackjack.js" data-balance="<?php echo number_format($balance, 2, '.', ''); ?>" data-total-wagered="<?php echo number_format($total_wagered, 2, '.', ''); ?>"></script>
+    <script src="../assets/js/blackjack.js" data-demo="<?php echo $is_demo ? 'true' : 'false'; ?>" data-balance="<?php echo number_format($balance, 2, '.', ''); ?>" data-total-wagered="<?php echo number_format($total_wagered, 2, '.', ''); ?>"></script>
 </body>
 </html>

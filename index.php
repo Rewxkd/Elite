@@ -111,46 +111,6 @@ function mask_username($username) {
     <link rel="stylesheet" href="assets/css/live_stats.css">
 </head>
 <body>
-    <div class="login-modal" id="loginModal" style="display: none;" aria-hidden="true">
-        <div class="login-container">
-            <button class="login-close" id="closeLogin" aria-label="Close login">&times;</button>
-            <div class="login-tabs">
-                <button class="login-tab active" type="button" data-tab="login">Login</button>
-                <button class="login-tab" type="button" data-tab="register">Register</button>
-            </div>
-
-            <form id="loginForm" class="login-form active">
-                <h2>Login to your Account</h2>
-                <div class="form-group">
-                    <input type="text" placeholder="Username" name="username" autocomplete="username" required>
-                </div>
-                <div class="form-group">
-                    <input type="password" placeholder="Password" name="password" autocomplete="current-password" required>
-                </div>
-                <button type="submit" class="submit-btn">Login</button>
-                <p class="form-message" id="loginMessage"></p>
-            </form>
-
-            <form id="registerForm" class="login-form">
-                <h2>Create an Account</h2>
-                <div class="form-group">
-                    <input type="text" placeholder="Username" name="username" autocomplete="username" required>
-                </div>
-                <div class="form-group">
-                    <input type="email" placeholder="Email" name="email" autocomplete="email" required>
-                </div>
-                <div class="form-group">
-                    <input type="password" placeholder="Password" name="password" autocomplete="new-password" required>
-                </div>
-                <div class="form-group">
-                    <input type="password" placeholder="Confirm Password" name="confirm_password" autocomplete="new-password" required>
-                </div>
-                <button type="submit" class="submit-btn">Register</button>
-                <p class="form-message" id="registerMessage"></p>
-            </form>
-        </div>
-    </div>
-
     <?php include 'includes/header_sidebar.php'; ?>
 
     <main class="container <?php echo $is_logged_in ? '' : 'rank-obsidian'; ?>">
@@ -266,41 +226,41 @@ function mask_username($username) {
         </div>
         <div class="games-container">
             <div class="games-row" id="gamesRow">
-                <a href="<?php echo htmlspecialchars($game_assets['blackjack']['href'], ENT_QUOTES, 'UTF-8'); ?>" class="game-card" <?php echo $is_logged_in ? '' : 'data-requires-login="true"'; ?>>
+                <a href="<?php echo htmlspecialchars($game_assets['blackjack']['href'], ENT_QUOTES, 'UTF-8'); ?>" class="game-card">
                     <div class="game-img blackjack-game-img"><img src="<?php echo htmlspecialchars($game_assets['blackjack']['image'], ENT_QUOTES, 'UTF-8'); ?>" alt="<?php echo htmlspecialchars($game_assets['blackjack']['name'], ENT_QUOTES, 'UTF-8'); ?>"></div>
                     <div class="game-card-body">
                         <div class="game-title"><?php echo htmlspecialchars($game_assets['blackjack']['name'], ENT_QUOTES, 'UTF-8'); ?></div>
-                        <span class="game-status is-live">Play</span>
+                        <span class="game-status is-live"><?php echo $is_logged_in ? 'Play' : 'Demo'; ?></span>
                     </div>
                 </a>
 
-                <a href="<?php echo htmlspecialchars($game_assets['mines']['href'], ENT_QUOTES, 'UTF-8'); ?>" class="game-card" <?php echo $is_logged_in ? '' : 'data-requires-login="true"'; ?>>
+                <a href="<?php echo htmlspecialchars($game_assets['mines']['href'], ENT_QUOTES, 'UTF-8'); ?>" class="game-card">
                     <div class="game-img">
                         <img src="<?php echo htmlspecialchars($game_assets['mines']['image'], ENT_QUOTES, 'UTF-8'); ?>" alt="<?php echo htmlspecialchars($game_assets['mines']['name'], ENT_QUOTES, 'UTF-8'); ?>">
                     </div>
                     <div class="game-card-body">
                         <div class="game-title"><?php echo htmlspecialchars($game_assets['mines']['name'], ENT_QUOTES, 'UTF-8'); ?></div>
-                        <span class="game-status is-live">Play</span>
+                        <span class="game-status is-live"><?php echo $is_logged_in ? 'Play' : 'Demo'; ?></span>
                     </div>
                 </a>
 
-                <a href="<?php echo htmlspecialchars($game_assets['plinko']['href'], ENT_QUOTES, 'UTF-8'); ?>" class="game-card" <?php echo $is_logged_in ? '' : 'data-requires-login="true"'; ?>>
+                <a href="<?php echo htmlspecialchars($game_assets['plinko']['href'], ENT_QUOTES, 'UTF-8'); ?>" class="game-card">
                     <div class="game-img">
                         <img src="<?php echo htmlspecialchars($game_assets['plinko']['image'], ENT_QUOTES, 'UTF-8'); ?>" alt="<?php echo htmlspecialchars($game_assets['plinko']['name'], ENT_QUOTES, 'UTF-8'); ?>">
                     </div>
                     <div class="game-card-body">
                         <div class="game-title"><?php echo htmlspecialchars($game_assets['plinko']['name'], ENT_QUOTES, 'UTF-8'); ?></div>
-                        <span class="game-status is-live">Play</span>
+                        <span class="game-status is-live"><?php echo $is_logged_in ? 'Play' : 'Demo'; ?></span>
                     </div>
                 </a>
 
-                <a href="<?php echo htmlspecialchars($game_assets['dice']['href'], ENT_QUOTES, 'UTF-8'); ?>" class="game-card" <?php echo $is_logged_in ? '' : 'data-requires-login="true"'; ?>>
+                <a href="<?php echo htmlspecialchars($game_assets['dice']['href'], ENT_QUOTES, 'UTF-8'); ?>" class="game-card">
                     <div class="game-img">
                         <img src="<?php echo htmlspecialchars($game_assets['dice']['image'], ENT_QUOTES, 'UTF-8'); ?>" alt="<?php echo htmlspecialchars($game_assets['dice']['name'], ENT_QUOTES, 'UTF-8'); ?>">
                     </div>
                     <div class="game-card-body">
                         <div class="game-title"><?php echo htmlspecialchars($game_assets['dice']['name'], ENT_QUOTES, 'UTF-8'); ?></div>
-                        <span class="game-status is-live">Play</span>
+                        <span class="game-status is-live"><?php echo $is_logged_in ? 'Play' : 'Demo'; ?></span>
                     </div>
                 </a>
 
@@ -323,6 +283,6 @@ function mask_username($username) {
 
     <?php include 'includes/footer.php'; ?>
 
-    <script src="assets/js/index.js?v=<?php echo filemtime(__DIR__ . '/assets/js/index.js'); ?>" data-total-wagered="<?php echo htmlspecialchars((string)$total_wagered, ENT_QUOTES, 'UTF-8'); ?>" data-login-url="api/login.php"></script>
+    <script src="assets/js/index.js?v=<?php echo filemtime(__DIR__ . '/assets/js/index.js'); ?>" data-total-wagered="<?php echo htmlspecialchars((string)$total_wagered, ENT_QUOTES, 'UTF-8'); ?>"></script>
 </body>
 </html>
